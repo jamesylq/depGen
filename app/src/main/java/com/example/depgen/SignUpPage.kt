@@ -38,8 +38,10 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun SignUpPage() {
     var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var usernameError by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
+    var emailError by remember { mutableStateOf("") }
     val password = remember { TextFieldState() }
 
     Scaffold { innerPadding ->
@@ -121,20 +123,65 @@ fun SignUpPage() {
                     }
                 }
             )
+            OutlinedTextField(
+                value = email,
+                onValueChange = {
+                    email = it
+                    emailError = ""
+                },
+                label = { Text("Email Address") },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                supportingText = {
+                    if (emailError != "") {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = emailError,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                },
+                trailingIcon = {
+                    if (emailError != "") {
+                        Icon(
+                            Icons.Rounded.Warning,
+                            "",
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
+                }
+            )
             Spacer(modifier = Modifier.height(10.dp))
             CardButton (
                 text = "Sign Up",
                 onClick = {
                     val profile = findProfile(username)
                     val uStr = username.lowercase().replace(" ", "")
-                    if (uStr == "admin" || uStr == "guest") {
-                        usernameError = "This Username is Reserved!"
-                    } else if (profile == LOGGED_OUT) {
-                        Global.profileList.add(Profile(username, password.text.toString().encryptSHA256()))
+
+                    emailError = if (email.isBlank()) { "Email Cannot be Blank!" }
+                                 else if (!email.matches(EMAIL_REGEX)) { "Invalid Email!" }
+                                 else { "" }
+
+                    usernameError = if (uStr.isEmpty()) { "Username Cannot be Blank!" }
+                                    else if (uStr == "admin" || uStr == "guest") { "This Username is Reserved!" }
+                                    else if (profile != LOGGED_OUT) { "Username Already In Use!" }
+                                    else { "" }
+
+                    //TODO: Password Safety Requirements
+                    passwordError = if (password.text.isEmpty()) { "Password Cannot be Blank!" }
+                                    else { "" }
+
+                    if (emailError.isEmpty() && passwordError.isEmpty() && emailError.isEmpty()) {
+                        Global.profileList.add(
+                            Profile(
+                                username,
+                                password.text.toString().encryptSHA256(),
+                                email
+                            )
+                        )
+                        save()
                         toast("Signed up account $username!")
                         navController.navigate("Login")
-                    } else {
-                        usernameError = "Username Already In Use!"
                     }
                 }
             )

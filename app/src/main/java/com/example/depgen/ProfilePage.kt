@@ -85,9 +85,9 @@ fun ProfilePage(idx: Int) {
                 Spacer(modifier = Modifier.height(15.dp))
             }
             CardButton(
-                text = "Preferences",
+                text = "Settings",
                 onClick = {
-                    //TODO: Settings
+                    navController.navigate("Settings")
                 }
             )
         }

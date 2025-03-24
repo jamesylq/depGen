@@ -352,6 +352,7 @@ fun NewEventPage() {
                             } else {
                                 Global.eventList.add(newEvent.value)
                                 navController.navigate("EventList")
+                                save()
                             }
                         },
                         colors = CardDefaults.cardColors(

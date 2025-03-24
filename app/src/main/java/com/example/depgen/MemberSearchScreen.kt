@@ -39,12 +39,12 @@ fun MemberSearchScreen(onClickMember: (Int) -> Unit, errorMessage: String, exclu
     var searchQuery by remember { mutableStateOf("") }
     val profileRem = remember { mutableStateListOf<Profile>() }
     val profilesFiltered = remember { mutableStateListOf<Int>() }
-
+    Log.d("XXXXX", Global.profileList.size.toString())
     profileRem.clear()
     profilesFiltered.clear()
     for (i in 0 ..< Global.profileList.size) {
         profileRem.add(Global.profileList[i])
-        if (exclude == null || exclude.contains(i)) continue;
+        if (exclude != null && exclude.contains(i)) continue
         if (i >= minOf(2, Global.idx) &&
             (searchQuery.isBlank() ||
             Global.profileList[i].username.contains(searchQuery, true))

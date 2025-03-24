@@ -1,37 +1,43 @@
 package com.example.depgen
 
-import com.example.depgen.Global.idx
-import com.example.depgen.Global.profile
-import com.example.depgen.Global.profileList
+import android.util.Log
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
+import java.io.IOException
 import java.security.MessageDigest
 
 
 @Serializable
 data class Profile (
     var username: String,
-    var password: String
+    var password: String,
+    var email: String
 )
 
-val ADMIN = Profile(
+var ADMIN = Profile(
     "admin",
-    "7c97666f116c8f112e11c4f59f8c92fd5592aad0337e0c1bdeb0497b34c0e210"
-)
-
-val LOGGED_OUT = Profile(
-    "Guest",
+    "7c97666f116c8f112e11c4f59f8c92fd5592aad0337e0c1bdeb0497b34c0e210",
     ""
 )
 
+var LOGGED_OUT = Profile(
+    "Guest",
+    "",
+    ""
+)
+
+val json = Json {
+    allowStructuredMapKeys = true
+}
+
 fun switchProfile(newProfile: Profile) {
-    idx = profileList.indexOf(newProfile)
-    profile = newProfile
+    Global.idx = Global.profileList.indexOf(newProfile)
+    Global.profile = newProfile
 }
 
 fun findProfile(username: String) : Profile {
-    for (profile in profileList) {
+    for (profile in Global.profileList) {
         if (profile.username == username) {
             return profile
         }
@@ -40,8 +46,9 @@ fun findProfile(username: String) : Profile {
 }
 
 @Serializable
-data class Wrapper (
-    var global: Global
+data class Wrapper(
+    var profiles: ArrayList<Profile>,
+    var events: ArrayList<Event>
 )
 
 @OptIn(ExperimentalStdlibApi::class)
@@ -49,23 +56,38 @@ fun String.encryptSHA256() : String {
     return MessageDigest.getInstance("SHA-256").digest(toByteArray()).toHexString()
 }
 
-//fun save() {
-//    val file = File(ctxt.filesDir, "save.json")
-//    file.writeText(Json.encodeToString(Global))
-//}
-//
-//fun clear() {
-//    val file = File(ctxt.filesDir, "save.json")
-//    file.writeText("")
-//}
-//
-//fun load() {
-//    try {
-//        val file = File(ctxt.filesDir, "save.json")
-//        if (!file.exists()) throw RuntimeException()
-//
-//        val global: Global = Json.decodeFromString(file.readText())
-//        Global.profile = global.profile
-//
-//    } catch (_: RuntimeException) { }
-//}
+fun save() {
+    Log.d("IO", "Initiated Save ${Global.profileList}")
+    val file = File(ctxt.filesDir, "save.json")
+    val wrapper = Wrapper(Global.profileList, Global.eventList)
+
+    file.writeText(json.encodeToString(wrapper))
+    Log.d("IOWritten", json.encodeToString(wrapper))
+}
+
+fun clear() {
+    val file = File(ctxt.filesDir, "save.json")
+    file.writeText("")
+}
+
+fun load() {
+    try {
+        val file = File(ctxt.filesDir, "save.json")
+        if (!file.exists()) {
+            file.createNewFile()
+            throw RuntimeException()
+        }
+
+        val wrapper: Wrapper = json.decodeFromString(file.readText())
+        Log.d("IO", file.readText())
+
+        Global.eventList.addAll(wrapper.events)
+        Global.profileList.addAll(wrapper.profiles)
+        LOGGED_OUT = Global.profileList[0]
+        ADMIN = Global.profileList[1]
+
+    } catch (_: RuntimeException) {
+        Log.d("ERROR", "Save file not found, created new save file!")
+        throw IOException()
+    }
+}

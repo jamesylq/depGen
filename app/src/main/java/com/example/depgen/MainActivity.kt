@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,6 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.depgen.Global.profileList
 import com.example.depgen.ui.theme.DepGenTheme
 import kotlinx.serialization.Serializable
+import java.io.IOException
 
 var active: Toast? = null
 lateinit var ctxt : Context
@@ -27,8 +29,8 @@ lateinit var navController : NavHostController
 @Serializable
 object Global {
     var profile: Profile = LOGGED_OUT
-    val profileList: ArrayList<Profile> = ArrayList()
-    val eventList: ArrayList<Event> = ArrayList()
+    var profileList: ArrayList<Profile> = ArrayList()
+    var eventList: ArrayList<Event> = ArrayList()
     var idx: Int = 0
 }
 
@@ -38,11 +40,16 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        profileList.add(LOGGED_OUT)
-        profileList.add(ADMIN)
-
         setContent {
             ctxt = LocalContext.current
+
+            try {
+                load()
+            } catch (e: IOException) {
+                Log.d("IOException", e.toString())
+                profileList.add(LOGGED_OUT)
+                profileList.add(ADMIN)
+            }
 
             DepGenTheme {
                 navController = rememberNavController()
@@ -68,6 +75,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("NewEvent") {
                         NewEventPage()
+                    }
+                    composable("Settings") {
+                        SettingsPage()
                     }
                 }
             }
