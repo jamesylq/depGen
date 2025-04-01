@@ -1,4 +1,4 @@
-package com.example.depgen
+package com.example.depgen.ui.fragments
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +33,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.depgen.Global
+import com.example.depgen.model.Navigation
+import com.example.depgen.navController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

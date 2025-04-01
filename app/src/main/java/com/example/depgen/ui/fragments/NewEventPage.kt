@@ -1,4 +1,4 @@
-package com.example.depgen
+package com.example.depgen.ui.fragments
 
 import android.os.Build
 import android.util.Log
@@ -8,36 +8,41 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.NewLabel
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -47,11 +52,32 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.depgen.Global
+import com.example.depgen.R
+import com.example.depgen.ctxt
+import com.example.depgen.model.ComponentType
+import com.example.depgen.model.EVENT_TYPES
+import com.example.depgen.model.Event
+import com.example.depgen.model.EventComponent
+import com.example.depgen.model.EventRole
+import com.example.depgen.model.InvalidEventTypeException
+import com.example.depgen.model.Profile
+import com.example.depgen.model.ROLES
+import com.example.depgen.model.lazyTime
+import com.example.depgen.model.save
+import com.example.depgen.model.toNaturalDateTime
+import com.example.depgen.navController
+import com.example.depgen.toast
+import com.example.depgen.ui.components.CardButton
+import com.example.depgen.ui.components.EventRoleRender
+import com.example.depgen.ui.components.MemberSearchScreen
+import com.example.depgen.ui.components.TimePickerScreen
 import java.time.format.DateTimeParseException
 import java.util.Calendar
 import java.util.HashMap
@@ -66,67 +92,8 @@ fun removeLetters(str: String): String {
     return removed
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TimePickerScreen(setPicking: (Int) -> Unit, setText: (String) -> Unit, title: String) {
-    val calendar = Calendar.getInstance()
-
-    val timePickerState = rememberTimePickerState(
-        initialHour = calendar.get(Calendar.HOUR_OF_DAY),
-        initialMinute = calendar.get(Calendar.MINUTE),
-        is24Hour = true
-    )
-
-    BasicAlertDialog(
-        onDismissRequest = {
-            setPicking(0)
-        }
-    ) {
-        ElevatedCard (
-            colors = CardDefaults.cardColors(
-                containerColor = Color(220, 200, 200),
-                contentColor = Color.Black
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(550.dp)
-        ) {
-            Column (
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Text(
-                    text = title,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 20.sp,
-                    modifier = Modifier.padding(vertical = 30.dp)
-                )
-                TimePicker(state = timePickerState)
-                Spacer(modifier = Modifier.weight(1f))
-                Row (
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    Button(
-                        onClick = {
-                            val hr = timePickerState.hour.toString().padStart(2, '0')
-                            val min = timePickerState.minute.toString().padStart(2, '0')
-                            setText("$hr:$min")
-                            setPicking(0)
-                        },
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text("Done")
-                    }
-                }
-            }
-        }
-    }
-}
-
 @RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun NewEventPage() {
     var name by remember { mutableStateOf("") }
@@ -153,6 +120,11 @@ fun NewEventPage() {
     var startTime by remember { mutableStateOf("") }
     var endTime by remember { mutableStateOf("") }
     var componentType : ComponentType? by remember { mutableStateOf(null) }
+
+    var alertShowing by remember { mutableStateOf(false) }
+    val selectedRoles = remember { mutableStateListOf<Boolean>() }
+    var roleProfile by remember { mutableStateOf<Profile?>(null) }
+    for (i in ROLES.indices) selectedRoles.add(false)
 
     Scaffold (
         topBar = {
@@ -577,6 +549,75 @@ fun NewEventPage() {
                     )
                 }
                 "addComponent-2" -> {
+                    if (alertShowing) {
+                        BasicAlertDialog(
+                            onDismissRequest = {
+                                alertShowing = false
+                            }
+                        ) {
+                            ElevatedCard (
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color(220, 200, 200),
+                                    contentColor = Color.Black
+                                ),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(550.dp)
+                            ) {
+                                Column (
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text(
+                                        text = "Select Roles",
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 20.sp,
+                                        modifier = Modifier.padding(vertical = 30.dp)
+                                    )
+                                    Column {
+                                        for (i in ROLES.indices) {
+                                            Row (
+                                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                modifier = Modifier.clickable {
+                                                    selectedRoles[i] = !selectedRoles[i]
+                                                }
+                                            ) {
+                                                Checkbox(
+                                                    selectedRoles[i], {
+                                                        selectedRoles[i] = it
+                                                    }
+                                                )
+                                                Text(ROLES[i].eventRole)
+                                            }
+                                        }
+                                        Spacer(modifier = Modifier.height(30.dp))
+                                        Row (
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.End
+                                        ) {
+                                            Button(
+                                                onClick = {
+                                                    deployment[roleProfile]!!.clear()
+                                                    for (i in ROLES.indices) {
+                                                        if (selectedRoles[i]) {
+                                                            deployment[roleProfile]!!.add(ROLES[i])
+                                                        }
+                                                    }
+                                                    alertShowing = false
+                                                },
+                                                modifier = Modifier.padding(16.dp)
+                                            ) {
+                                                Text("Done")
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     Text(
                         text = "Deployment for Component",
                         fontSize = 20.sp,
@@ -611,26 +652,70 @@ fun NewEventPage() {
                                     ElevatedCard(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .height(114.dp)
+                                            .heightIn(114.dp)
                                             .padding(vertical = 7.dp),
                                         onClick = {
 //                                    onClickMember(profilesFiltered[i])
                                         }
                                     ) {
                                         Column {
-                                            Row {
+                                            Row (
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                                            ) {
                                                 Image(
                                                     //TODO: Profile Picture
                                                     painter = painterResource(R.drawable.icon_512),
                                                     contentDescription = "",
-                                                    modifier = Modifier.size(100.dp)
+                                                    modifier = Modifier
+                                                        .size(70.dp)
+                                                        .clip(RoundedCornerShape(13.dp))
                                                 )
                                                 Text(
                                                     entry.key.username,
                                                     fontWeight = FontWeight.Bold,
-                                                    fontSize = 19.sp,
-                                                    modifier = Modifier.padding(8.dp)
+                                                    fontSize = 19.sp
                                                 )
+                                            }
+                                            Spacer(modifier = Modifier.height(10.dp))
+                                            Column (
+                                                modifier = Modifier.padding(8.dp),
+                                                verticalArrangement = Arrangement.spacedBy(5.dp)
+                                            ) {
+                                                Text("Roles: ", fontWeight = FontWeight.SemiBold)
+                                                if (entry.value.isEmpty()) {
+                                                    Text("No Roles Yet!")
+                                                } else {
+                                                    FlowRow (
+                                                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                                        verticalArrangement = Arrangement.spacedBy(5.dp)
+                                                    ) {
+                                                        for (role in entry.value) {
+                                                            EventRoleRender(role)
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            Spacer(modifier = Modifier.weight(1f))
+                                            Row {
+                                                Spacer(modifier = Modifier.weight(1f))
+                                                FilledIconButton (
+                                                    onClick = {
+                                                        alertShowing = true
+                                                        roleProfile = entry.key
+                                                        for (i in ROLES.indices) {
+                                                            selectedRoles[i] = (ROLES[i] in entry.value)
+                                                        }
+                                                    },
+                                                    colors = IconButtonColors(
+                                                        MaterialTheme.colorScheme.tertiary,
+                                                        Color.Black,
+                                                        MaterialTheme.colorScheme.secondary,
+                                                        Color.Black,
+                                                    )
+                                                ) {
+                                                    Icon(Icons.Filled.NewLabel, "")
+                                                }
                                             }
                                         }
                                     }

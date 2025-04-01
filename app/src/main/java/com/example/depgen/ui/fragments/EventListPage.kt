@@ -1,4 +1,4 @@
-package com.example.depgen
+package com.example.depgen.ui.fragments
 
 import android.os.Build
 import android.util.Log
@@ -11,8 +11,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -23,6 +27,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.depgen.model.Event
+import com.example.depgen.Global
+import com.example.depgen.model.Navigation
+import com.example.depgen.navController
+import com.example.depgen.ui.components.DefaultTopAppBar
 import com.example.depgen.ui.theme.CARD_ORANGE
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -39,6 +48,13 @@ fun EventListPage() {
     Scaffold(
         topBar = {
             DefaultTopAppBar("Master", Navigation.EVENTLIST)
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                navController.navigate("NewEvent")
+            }) {
+                Icon(Icons.Filled.Add, "")
+            }
         }
     ) { innerPadding ->
         Column (
@@ -145,13 +161,6 @@ fun EventListPage() {
                     }
                 }
             }
-            Spacer(modifier = Modifier.weight(1f))
-            CardButton(
-                text = "Add Event",
-                onClick = {
-                    navController.navigate("NewEvent")
-                }
-            )
         }
     }
 }

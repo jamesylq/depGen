@@ -1,4 +1,4 @@
-package com.example.depgen
+package com.example.depgen.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

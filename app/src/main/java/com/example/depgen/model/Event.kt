@@ -1,4 +1,4 @@
-package com.example.depgen
+package com.example.depgen.model
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -57,11 +57,6 @@ data class EventComponent(
 data class ComponentType (
     val componentType: String,
     val priority: Int
-)
-
-@Serializable
-data class EventRole(
-    val eventRole: String
 )
 
 @Throws(DateTimeParseException::class)

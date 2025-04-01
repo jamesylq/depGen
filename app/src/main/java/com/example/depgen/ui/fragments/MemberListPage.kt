@@ -1,4 +1,4 @@
-package com.example.depgen
+package com.example.depgen.ui.fragments
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.depgen.Global
+import com.example.depgen.ui.components.MemberSearchScreen
+import com.example.depgen.model.ADMIN
+import com.example.depgen.model.Navigation
+import com.example.depgen.navController
+import com.example.depgen.ui.components.CardButton
+import com.example.depgen.ui.components.DefaultTopAppBar
 
 @Composable
 fun MemberListPage() {

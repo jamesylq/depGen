@@ -1,4 +1,4 @@
-package com.example.depgen
+package com.example.depgen.ui.components
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -33,6 +33,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.depgen.Global
+import com.example.depgen.R
+import com.example.depgen.model.Profile
 
 @Composable
 fun MemberSearchScreen(onClickMember: (Int) -> Unit, errorMessage: String, exclude: Set<Int>? = null) {

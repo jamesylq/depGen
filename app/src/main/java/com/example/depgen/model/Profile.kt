@@ -1,6 +1,8 @@
-package com.example.depgen
+package com.example.depgen.model
 
 import android.util.Log
+import com.example.depgen.Global
+import com.example.depgen.ctxt
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File

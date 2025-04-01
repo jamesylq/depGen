@@ -1,4 +1,4 @@
-package com.example.depgen
+package com.example.depgen.ui.fragments
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -29,19 +29,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.depgen.model.LOGGED_OUT
+import com.example.depgen.R
+import com.example.depgen.model.encryptSHA256
+import com.example.depgen.model.findProfile
+import com.example.depgen.navController
+import com.example.depgen.model.switchProfile
+import com.example.depgen.ui.components.CardButton
 
 @Composable
-fun SignUpPage() {
+fun LoginPage() {
     var username by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
     var usernameError by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
-    var emailError by remember { mutableStateOf("") }
     val password = remember { TextFieldState() }
 
     Scaffold { innerPadding ->
@@ -63,7 +67,7 @@ fun SignUpPage() {
                 )
             }
             Text(
-                text = "Sign Up",
+                text = "Login",
                 fontWeight = FontWeight.Bold,
                 fontSize = 25.sp
             )
@@ -123,65 +127,22 @@ fun SignUpPage() {
                     }
                 }
             )
-            OutlinedTextField(
-                value = email,
-                onValueChange = {
-                    email = it
-                    emailError = ""
-                },
-                label = { Text("Email Address") },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                supportingText = {
-                    if (emailError != "") {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = emailError,
-                            color = MaterialTheme.colorScheme.error
-                        )
-                    }
-                },
-                trailingIcon = {
-                    if (emailError != "") {
-                        Icon(
-                            Icons.Rounded.Warning,
-                            "",
-                            tint = MaterialTheme.colorScheme.error
-                        )
-                    }
-                }
-            )
             Spacer(modifier = Modifier.height(10.dp))
             CardButton (
-                text = "Sign Up",
+                text = "Login",
                 onClick = {
-                    val profile = findProfile(username)
-                    val uStr = username.lowercase().replace(" ", "")
-
-                    emailError = if (email.isBlank()) { "Email Cannot be Blank!" }
-                                 else if (!email.matches(EMAIL_REGEX)) { "Invalid Email!" }
-                                 else { "" }
-
-                    usernameError = if (uStr.isEmpty()) { "Username Cannot be Blank!" }
-                                    else if (uStr == "admin" || uStr == "guest") { "This Username is Reserved!" }
-                                    else if (profile != LOGGED_OUT) { "Username Already In Use!" }
-                                    else { "" }
-
-                    //TODO: Password Safety Requirements
-                    passwordError = if (password.text.isEmpty()) { "Password Cannot be Blank!" }
-                                    else { "" }
-
-                    if (emailError.isEmpty() && passwordError.isEmpty() && emailError.isEmpty()) {
-                        Global.profileList.add(
-                            Profile(
-                                username,
-                                password.text.toString().encryptSHA256(),
-                                email
-                            )
-                        )
-                        save()
-                        toast("Signed up account $username!")
-                        navController.navigate("Login")
+                    if (username.lowercase() == "guest") {
+                        usernameError = "Username Not Found!"
+                    } else {
+                        val profile = findProfile(username)
+                        if (profile == LOGGED_OUT) {
+                            usernameError = "Username Not Found!"
+                        } else if (profile.password == password.text.toString().encryptSHA256()) {
+                            switchProfile(profile)
+                            navController.navigate("Master")
+                        } else {
+                            passwordError = "Incorrect Password!"
+                        }
                     }
                 }
             )
@@ -192,20 +153,23 @@ fun SignUpPage() {
                 horizontalArrangement = Arrangement.End
             ) {
                 Text(
-                    "Already have an Account?   ",
+                    "Forgot Password",
                     modifier = Modifier
                         .clickable {
-                            navController.navigate("Login")
+                            //TODO: Forgot Password
                         },
+//                    textDecoration = TextDecoration.Underline,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    color = MaterialTheme.colorScheme.primary
                 )
+                Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    "Log In",
+                    "Sign Up",
                     modifier = Modifier
                         .clickable {
-                            navController.navigate("Login")
+                            navController.navigate("SignUp")
                         },
+//                    textDecoration = TextDecoration.Underline,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )

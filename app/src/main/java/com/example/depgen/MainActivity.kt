@@ -17,10 +17,22 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.depgen.Global.profileList
+import com.example.depgen.model.Event
+import com.example.depgen.model.LOGGED_OUT
+import com.example.depgen.model.Profile
+import com.example.depgen.model.load
+import com.example.depgen.ui.fragments.EventListPage
+import com.example.depgen.ui.fragments.EventPage
+import com.example.depgen.ui.fragments.LoginPage
+import com.example.depgen.ui.fragments.MasterPage
+import com.example.depgen.ui.fragments.MemberListPage
+import com.example.depgen.ui.fragments.NewEventPage
+import com.example.depgen.ui.fragments.OTDPage
+import com.example.depgen.ui.fragments.ProfilePage
+import com.example.depgen.ui.fragments.SettingsPage
+import com.example.depgen.ui.fragments.SignUpPage
 import com.example.depgen.ui.theme.DepGenTheme
 import kotlinx.serialization.Serializable
-import java.io.IOException
 
 var active: Toast? = null
 lateinit var ctxt : Context
@@ -79,6 +91,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("Settings") {
                         SettingsPage()
+                    }
+                    composable("OTD") {
+                        OTDPage()
                     }
                 }
             }

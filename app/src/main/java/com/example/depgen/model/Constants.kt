@@ -1,4 +1,4 @@
-package com.example.depgen
+package com.example.depgen.model
 
 val TECHRUN = ComponentType("Techrun", 0)
 val REHEARSAL = ComponentType("Rehearsal", 1)
