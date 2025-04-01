@@ -48,7 +48,7 @@ fun MasterPage() {
                     Text(
                         text = Global.profile.username,
                         modifier = Modifier.clickable {
-                            navController.navigate("Profile/${Global.idx}")
+                            navController.navigate("Profile/${Global.idx}/${Navigation.MASTER}")
                         }
                     )
                 },
@@ -61,7 +61,7 @@ fun MasterPage() {
                 },
                 actions = {
                     IconButton(onClick = {
-                        navController.navigate("Profile/${Global.idx}")
+                        navController.navigate("Profile/${Global.idx}/${Navigation.MASTER}")
                     }) {
                         Icon(Icons.Default.AccountCircle, "")
                     }

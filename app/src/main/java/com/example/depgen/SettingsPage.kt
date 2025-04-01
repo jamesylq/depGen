@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 fun SettingsPage() {
     Scaffold (
         topBar = {
-            DefaultTopAppBar()
+            DefaultTopAppBar("Master", Navigation.SETTINGS)
         }
     ) { innerPadding ->
         Column (
@@ -25,6 +25,7 @@ fun SettingsPage() {
                 CardButton("Clear Data", {
                     //TODO: Alert
                     clear()
+                    load()
                 })
             } else {
                 CardButton("Delete Account", {

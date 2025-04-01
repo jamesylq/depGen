@@ -38,7 +38,7 @@ fun EventListPage() {
 
     Scaffold(
         topBar = {
-            DefaultTopAppBar()
+            DefaultTopAppBar("Master", Navigation.EVENTLIST)
         }
     ) { innerPadding ->
         Column (
@@ -68,7 +68,10 @@ fun EventListPage() {
                         ElevatedCard (
                             colors = CardDefaults.cardColors(
                                 containerColor = CARD_ORANGE
-                            )
+                            ),
+                            onClick = {
+                                navController.navigate("Event/${i}")
+                            }
                         ) {
                             Column (
                                 modifier = Modifier.padding(8.dp)

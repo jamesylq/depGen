@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -17,11 +15,9 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun MemberListPage() {
-
-
     Scaffold (
         topBar = {
-            DefaultTopAppBar()
+            DefaultTopAppBar("Master", Navigation.MEMBERLIST)
         }
     ) { innerPadding ->
         Column (
@@ -38,7 +34,7 @@ fun MemberListPage() {
             Spacer(modifier = Modifier.height(20.dp))
             MemberSearchScreen(
                 onClickMember = {
-                    navController.navigate("Profile/$it")
+                    navController.navigate("Profile/$it/${Navigation.MEMBERLIST}")
                 },
                 errorMessage = "Sorry, we didn't find any profiles matching your search query!"
             )

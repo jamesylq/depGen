@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DefaultTopAppBar() {
+fun DefaultTopAppBar(prev: String, curr: Int) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.tertiary,
@@ -27,21 +27,21 @@ fun DefaultTopAppBar() {
             Text(
                 text = Global.profile.username,
                 modifier = Modifier.clickable {
-                    navController.navigate("Profile/${Global.idx}")
+                    navController.navigate("Profile/${Global.idx}/$curr")
                 }
             )
         },
         navigationIcon = {
             IconButton(onClick = {
                 //TODO: FIX THE NAVIGATION
-                navController.navigate("Master")
+                navController.navigate(prev)
             }) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, "")
             }
         },
         actions = {
             IconButton(onClick = {
-                navController.navigate("Profile/${Global.idx}")
+                navController.navigate("Profile/${Global.idx}/$curr")
             }) {
                 Icon(Icons.Default.AccountCircle, "")
             }

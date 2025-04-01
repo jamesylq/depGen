@@ -4,7 +4,6 @@ import android.util.Log
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.io.IOException
 import java.security.MessageDigest
 
 
@@ -57,12 +56,12 @@ fun String.encryptSHA256() : String {
 }
 
 fun save() {
-    Log.d("IO", "Initiated Save ${Global.profileList}")
+    Log.d("FileIO", "Initiated Save ${Global.profileList}")
     val file = File(ctxt.filesDir, "save.json")
     val wrapper = Wrapper(Global.profileList, Global.eventList)
 
     file.writeText(json.encodeToString(wrapper))
-    Log.d("IOWritten", json.encodeToString(wrapper))
+    Log.d("FileIO", json.encodeToString(wrapper))
 }
 
 fun clear() {
@@ -79,7 +78,7 @@ fun load() {
         }
 
         val wrapper: Wrapper = json.decodeFromString(file.readText())
-        Log.d("IO", file.readText())
+        Log.d("FileIO", file.readText())
 
         Global.eventList.addAll(wrapper.events)
         Global.profileList.addAll(wrapper.profiles)
@@ -88,6 +87,8 @@ fun load() {
 
     } catch (_: RuntimeException) {
         Log.d("ERROR", "Save file not found, created new save file!")
-        throw IOException()
+        Global.profileList.clear()
+        Global.profileList.add(LOGGED_OUT)
+        Global.profileList.add(ADMIN)
     }
 }

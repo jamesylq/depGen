@@ -27,16 +27,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+@Composable
+fun ProfilePage(idx: Int, prev: Int) {
+    ProfilePage(idx,
+        when (prev % Navigation.M) {
+            Navigation.MASTER -> "Master"
+            Navigation.EVENTLIST -> "EventList"
+            Navigation.MEMBERLIST -> "MemberList"
+            Navigation.SETTINGS -> "Settings"
+            Navigation.EVENT -> "Event/${prev / Navigation.M}"
+            else -> ""
+        }
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfilePage(idx: Int) {
+fun ProfilePage(idx: Int, prev: String) {
     Scaffold (
         topBar = {
             TopAppBar(
                 title = {},
                 actions = {
                     IconButton(onClick = {
-                        navController.navigateUp()
+                        navController.navigate(prev)
                     }) {
                         Icon(Icons.Default.Close, "")
                     }

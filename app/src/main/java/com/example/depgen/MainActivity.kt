@@ -43,13 +43,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ctxt = LocalContext.current
 
-            try {
-                load()
-            } catch (e: IOException) {
-                Log.d("IOException", e.toString())
-                profileList.add(LOGGED_OUT)
-                profileList.add(ADMIN)
-            }
+            load()
 
             DepGenTheme {
                 navController = rememberNavController()
@@ -61,8 +55,15 @@ class MainActivity : ComponentActivity() {
                     composable("Master") {
                         MasterPage()
                     }
-                    composable("Profile/{idx}") {
-                        ProfilePage(it.arguments!!.getString("idx")!!.toInt())
+                    composable("Profile/{idx}/{nxt}") {
+                        Log.d("DEBUG", it.arguments!!.getString("nxt")!!)
+                        ProfilePage(
+                            it.arguments!!.getString("idx")!!.toInt(),
+                            it.arguments!!.getString("nxt")!!.toInt()
+                        )
+                    }
+                    composable("Event/{idx}") {
+                        EventPage(it.arguments!!.getString("idx")!!.toInt())
                     }
                     composable("MemberList") {
                         MemberListPage()
