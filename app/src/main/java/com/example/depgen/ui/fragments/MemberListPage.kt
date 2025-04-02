@@ -50,18 +50,6 @@ fun MemberListPage() {
                     text = "Add Member",
                     onClick = {
                         //TODO: Add Member
-//                        val profile = Profile("test", "test")
-//                        profileRem.add(profile)
-//                        Global.profileList.add(profile)
-//
-//                        profilesFiltered.clear()
-//                        for (i in minOf(2, Global.idx) ..< Global.profileList.size) {
-//                            if (searchQuery.isBlank() ||
-//                                profileRem[i].username.contains(searchQuery, true)
-//                            ) {
-//                                profilesFiltered.add(i)
-//                            }
-//                        }
                     }
                 )
             }

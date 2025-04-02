@@ -142,7 +142,7 @@ fun MasterPage() {
             ) {
                 ElevatedCard (
                     onClick = {
-                        //TODO: Generate One Time Deployment
+                        navController.navigate("OTD")
                     },
                     modifier = Modifier
                         .width(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp)

@@ -7,7 +7,9 @@ import kotlinx.serialization.Serializable
 data class EventRole(
     val eventRole: String,
     val color: List<Int> = listOf(0, 0, 0),
-    val priority: Int
+    val priority: Int,
+    val maxCount: Int = Int.MAX_VALUE,
+    val minCount: Int = 0
 ) : Comparable<EventRole> {
     override fun compareTo(other: EventRole) : Int {
         return this.priority.compareTo(other.priority)
@@ -23,8 +25,8 @@ fun listToColor(lst: List<Int>): Color {
 }
 
 
-val OIC = EventRole("Overall in-Charge", colorToList(Color(255, 237, 0, 255)), 1)
-val IC = EventRole("In-Charge", colorToList(Color(255, 244, 179, 255)), 0)
+val OIC = EventRole("Overall in-Charge", colorToList(Color(255, 237, 0, 255)), 1, maxCount = 1)
+val IC = EventRole("In-Charge", colorToList(Color(255, 244, 179, 255)), 0, minCount = 1)
 val SOUND = EventRole("Sound Engineer", colorToList(Color(0, 115, 255, 255)), 0)
 val FOH = EventRole("Front of House", colorToList(Color(61, 148, 253, 255)), 2)
 val SFX = EventRole("SFX Engineer", colorToList(Color(104, 171, 255, 255)), 3)
@@ -35,3 +37,4 @@ val LIVESTREAM_IC = EventRole("Livestream in-Charge", colorToList(Color(123, 50,
 val LIVESTREAM = EventRole("Livestream", colorToList(Color(171, 125, 255, 255)), 0)
 
 val ROLES = listOf(OIC, IC, SOUND, FOH, SFX, LIGHTS, BACKSTAGE_IC, BACKSTAGE, LIVESTREAM_IC, LIVESTREAM)
+val SORTED_ROLES = ROLES.sorted()

@@ -16,6 +16,7 @@ class Navigation {
         const val MEMBERLIST = 2
         const val SETTINGS = 3
         const val EVENT = 4
+        const val OTD = 5
         const val M = 10
     }
 }
