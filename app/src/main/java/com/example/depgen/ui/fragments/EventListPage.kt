@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -30,7 +31,9 @@ import androidx.compose.ui.unit.sp
 import com.example.depgen.model.Event
 import com.example.depgen.Global
 import com.example.depgen.model.Navigation
+import com.example.depgen.model.save
 import com.example.depgen.navController
+import com.example.depgen.ui.components.CardButton
 import com.example.depgen.ui.components.DefaultTopAppBar
 import com.example.depgen.ui.theme.CARD_ORANGE
 
@@ -87,11 +90,13 @@ fun EventListPage() {
                             ),
                             onClick = {
                                 navController.navigate("Event/${i}")
-                            }
+                            },
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .fillMaxWidth()
+                                .heightIn(50.dp)
                         ) {
-                            Column (
-                                modifier = Modifier.padding(8.dp)
-                            ) {
+                            Column {
                                 var rem = eventRem[i].components.size
                                 for (entry in eventRem[i].components) {
                                     Text(
@@ -154,6 +159,16 @@ fun EventListPage() {
                                         }
                                     }
                                     if (--rem > 0) Spacer(modifier = Modifier.height(15.dp))
+                                }
+                                if (Global.isAdmin()) {
+                                    CardButton(
+                                        text = "Delete Event",
+                                        onClick = {
+                                            eventRem.removeAt(i)
+                                            Global.eventList.removeAt(i)
+                                            save()
+                                        }
+                                    )
                                 }
                             }
                         }

@@ -17,6 +17,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.depgen.model.ADMIN
 import com.example.depgen.model.Event
 import com.example.depgen.model.LOGGED_OUT
 import com.example.depgen.model.Profile
@@ -44,6 +45,10 @@ object Global {
     var profileList: ArrayList<Profile> = ArrayList()
     var eventList: ArrayList<Event> = ArrayList()
     var idx: Int = 0
+
+    fun isAdmin() : Boolean {
+        return this.profile == ADMIN
+    }
 }
 
 class MainActivity : ComponentActivity() {

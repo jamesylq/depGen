@@ -20,13 +20,22 @@ data class Event (
         for (entry in components) map[entry.key] = entry.value
         return map
     }
+
+    fun getComponentType(component: EventComponent): ComponentType? {
+        for (entry in components) {
+            if (component in entry.value) {
+                return entry.key
+            }
+        }
+        return null
+    }
 }
 
 @Serializable
 data class EventComponent(
     val deployment: HashMap<Profile, ArrayList<EventRole>>,
-    val start: String,
-    val end: String
+    var start: String,
+    var end: String
 ) {
     @RequiresApi(Build.VERSION_CODES.O)
     fun getStart(): LocalDateTime {
@@ -63,6 +72,12 @@ data class ComponentType (
 @RequiresApi(Build.VERSION_CODES.O)
 fun toNaturalDateTime(isoString: String): String {
     return LocalDateTime.parse(isoString).format(DateTimeFormatter.ofPattern("MMMM d, yyyy 'at' h:mm a"))
+}
+
+@Throws(DateTimeParseException::class)
+@RequiresApi(Build.VERSION_CODES.O)
+fun toHHMMTime(datetime: LocalDateTime): String {
+    return datetime.format(DateTimeFormatter.ofPattern("HH:mm"))
 }
 
 fun lazyTime(s: String): String {

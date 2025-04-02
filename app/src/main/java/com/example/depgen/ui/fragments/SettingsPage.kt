@@ -30,7 +30,7 @@ fun SettingsPage() {
                 .padding(16.dp)
         ) {
             Spacer(modifier = Modifier.weight(1f))
-            if (Global.idx == 1) {
+            if (Global.isAdmin()) {
                 CardButton("Clear Data", {
                     //TODO: Alert
                     clear()

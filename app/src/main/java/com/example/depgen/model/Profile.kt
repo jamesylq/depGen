@@ -14,7 +14,16 @@ data class Profile (
     var username: String,
     var password: String,
     var email: String
-)
+) {
+    fun getIdx(): Int {
+        for (i in Global.profileList.indices) {
+            if (Global.profileList[i].username == this.username) {
+                return i
+            }
+        }
+        return -1
+    }
+}
 
 var ADMIN = Profile(
     "admin",
@@ -82,6 +91,8 @@ fun load() {
         val wrapper: Wrapper = json.decodeFromString(file.readText())
         Log.d("FileIO", file.readText())
 
+        Global.eventList.clear()
+        Global.profileList.clear()
         Global.eventList.addAll(wrapper.events)
         Global.profileList.addAll(wrapper.profiles)
         LOGGED_OUT = Global.profileList[0]
@@ -90,6 +101,7 @@ fun load() {
     } catch (_: RuntimeException) {
         Log.d("ERROR", "Save file not found, created new save file!")
         Global.profileList.clear()
+        Global.eventList.clear()
         Global.profileList.add(LOGGED_OUT)
         Global.profileList.add(ADMIN)
     }
