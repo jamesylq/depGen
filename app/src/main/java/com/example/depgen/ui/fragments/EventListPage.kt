@@ -24,7 +24,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -73,7 +75,9 @@ fun EventListPage() {
                 modifier = Modifier.padding(start = 8.dp)
             )
             Spacer(modifier = Modifier.height(20.dp))
-            LazyColumn {
+            LazyColumn (
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 for (i in 0..< eventRem.size) {
                     item {
                         Text(
@@ -96,14 +100,16 @@ fun EventListPage() {
                                 .fillMaxWidth()
                                 .heightIn(50.dp)
                         ) {
-                            Column {
+                            Column (
+                                modifier = Modifier.padding(8.dp)
+                            ) {
                                 var rem = eventRem[i].components.size
                                 for (entry in eventRem[i].components) {
                                     Text(
                                         text = entry.key.componentType,
                                         fontSize = 18.sp,
                                         fontWeight = FontWeight.SemiBold,
-                                        modifier = Modifier.padding(bottom = 10.dp)
+                                        modifier = Modifier.padding(bottom = 10.dp, start = 4.dp)
                                     )
                                     entry.value.sortBy { it.getStart() }
                                     for (component in entry.value) {
@@ -173,6 +179,30 @@ fun EventListPage() {
                             }
                         }
                         Spacer(modifier = Modifier.height(10.dp))
+                    }
+                }
+                if (eventRem.isEmpty()) {
+                    item {
+                        Column (
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Spacer(
+                                modifier = Modifier.height(
+                                    maxOf(
+                                        0,
+                                        LocalConfiguration.current.screenHeightDp / 2 - 180
+                                    ).dp
+                                )
+                            )
+                            Text(
+                                "No Upcoming Events!",
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 18.sp,
+                                modifier = Modifier.padding(bottom = 10.dp)
+                            )
+                            Text("Time to take a well-deserved break!")
+                        }
                     }
                 }
             }
