@@ -17,19 +17,19 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.depgen.model.ADMIN
 import com.example.depgen.model.Event
-import com.example.depgen.model.LOGGED_OUT
 import com.example.depgen.model.Profile
-import com.example.depgen.model.load
+import com.example.depgen.ui.fragments.SkillsTrackerPage
 import com.example.depgen.ui.fragments.EventListPage
 import com.example.depgen.ui.fragments.EventPage
 import com.example.depgen.ui.fragments.LoginPage
 import com.example.depgen.ui.fragments.MasterPage
 import com.example.depgen.ui.fragments.MemberListPage
 import com.example.depgen.ui.fragments.NewEventPage
-import com.example.depgen.ui.fragments.OTDPage
+import com.example.depgen.ui.fragments.NewSkillPage
+import com.example.depgen.ui.fragments.OneTimeDeploymentPage
 import com.example.depgen.ui.fragments.ProfilePage
+import com.example.depgen.ui.fragments.RepeatingDeploymentPage
 import com.example.depgen.ui.fragments.SettingsPage
 import com.example.depgen.ui.fragments.SignUpPage
 import com.example.depgen.ui.theme.DepGenTheme
@@ -97,8 +97,17 @@ class MainActivity : ComponentActivity() {
                     composable("Settings") {
                         SettingsPage()
                     }
-                    composable("OTD") {
-                        OTDPage()
+                    composable("OneTimeDeployment") {
+                        OneTimeDeploymentPage()
+                    }
+                    composable("RepeatingDeployment") {
+                        RepeatingDeploymentPage()
+                    }
+                    composable("SkillsTracker") {
+                        SkillsTrackerPage()
+                    }
+                    composable("NewSkill") {
+                        NewSkillPage()
                     }
                 }
             }

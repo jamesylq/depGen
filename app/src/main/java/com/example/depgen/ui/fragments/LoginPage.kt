@@ -33,12 +33,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.depgen.model.LOGGED_OUT
+import com.example.depgen.LOGGED_OUT
 import com.example.depgen.R
-import com.example.depgen.model.encryptSHA256
-import com.example.depgen.model.findProfile
+import com.example.depgen.encryptSHA256
+import com.example.depgen.findProfile
 import com.example.depgen.navController
-import com.example.depgen.model.switchProfile
+import com.example.depgen.switchProfile
 import com.example.depgen.ui.components.CardButton
 
 @Composable

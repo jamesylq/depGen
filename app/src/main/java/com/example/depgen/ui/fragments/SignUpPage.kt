@@ -36,13 +36,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
 import com.example.depgen.R
-import com.example.depgen.model.EMAIL_REGEX
-import com.example.depgen.model.LOGGED_OUT
+import com.example.depgen.EMAIL_REGEX
+import com.example.depgen.LOGGED_OUT
+import com.example.depgen.encryptSHA256
+import com.example.depgen.findProfile
 import com.example.depgen.model.Profile
-import com.example.depgen.model.encryptSHA256
-import com.example.depgen.model.findProfile
-import com.example.depgen.model.save
 import com.example.depgen.navController
+import com.example.depgen.save
 import com.example.depgen.toast
 import com.example.depgen.ui.components.CardButton
 

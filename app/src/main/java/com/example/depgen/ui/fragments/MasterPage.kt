@@ -142,7 +142,7 @@ fun MasterPage() {
             ) {
                 ElevatedCard (
                     onClick = {
-                        navController.navigate("OTD")
+                        navController.navigate("OneTimeDeployment")
                     },
                     modifier = Modifier
                         .width(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp)
@@ -194,6 +194,30 @@ fun MasterPage() {
                             textAlign = TextAlign.Center
                         )
                     }
+                }
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            ElevatedCard (
+                onClick = {
+                    navController.navigate("SkillsTracker")
+                },
+                modifier = Modifier
+                    .size(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp),
+                colors = CardColors(
+                    containerColor = MaterialTheme.colorScheme.tertiary,
+                    contentColor = Color.Black,
+                    disabledContentColor = Color.Black,
+                    disabledContainerColor = MaterialTheme.colorScheme.tertiary
+                )
+            ) {
+                Column (
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Bottom
+                ) {
+                    Text("View Skills Tracker")
                 }
             }
         }

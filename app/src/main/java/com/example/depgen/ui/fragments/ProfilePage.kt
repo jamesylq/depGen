@@ -27,11 +27,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
+import com.example.depgen.LOGGED_OUT
 import com.example.depgen.R
-import com.example.depgen.model.LOGGED_OUT
 import com.example.depgen.model.Navigation
-import com.example.depgen.model.switchProfile
 import com.example.depgen.navController
+import com.example.depgen.switchProfile
 import com.example.depgen.ui.components.CardButton
 
 @Composable
@@ -43,6 +43,9 @@ fun ProfilePage(idx: Int, prev: Int) {
             Navigation.MEMBERLIST -> "MemberList"
             Navigation.SETTINGS -> "Settings"
             Navigation.EVENT -> "Event/${prev / Navigation.M}"
+            Navigation.ONETIMEDEPLOYMENT -> "OneTimeDeployment"
+            Navigation.REPEATINGDEPLOYMENT -> "RepeatingDeployment"
+            Navigation.SKILLSTRACKER -> "SkillsTracker"
             else -> ""
         }
     )

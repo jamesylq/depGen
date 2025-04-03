@@ -1,6 +1,5 @@
 package com.example.depgen.ui.components
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,7 +41,7 @@ fun MemberSearchScreen(onClickMember: (Int) -> Unit, errorMessage: String, exclu
     var searchQuery by remember { mutableStateOf("") }
     val profileRem = remember { mutableStateListOf<Profile>() }
     val profilesFiltered = remember { mutableStateListOf<Int>() }
-    Log.d("XXXXX", Global.profileList.size.toString())
+
     profileRem.clear()
     profilesFiltered.clear()
     for (i in 0 ..< Global.profileList.size) {

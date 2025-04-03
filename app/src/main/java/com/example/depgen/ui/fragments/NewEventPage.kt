@@ -37,13 +37,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
-import com.example.depgen.model.EVENT_TYPES
+import com.example.depgen.EVENT_TYPES
 import com.example.depgen.model.Event
 import com.example.depgen.model.EventComponent
-import com.example.depgen.model.save
 import com.example.depgen.navController
+import com.example.depgen.save
 import com.example.depgen.toast
 import com.example.depgen.ui.components.CardButton
+import com.example.depgen.ui.components.ConfirmationScreen
 import com.example.depgen.ui.components.EditEventComponent
 import com.example.depgen.ui.components.TimePickerScreen
 
@@ -65,6 +66,7 @@ fun NewEventPage() {
     var picking by remember { mutableIntStateOf(0) }
     var eventComponent : EventComponent? by remember { mutableStateOf(null) }
     var addingEventComponent by remember { mutableStateOf(false) }
+    var confirmationShowing by remember { mutableStateOf(false) }
     var editingEventComponent: EventComponent? by remember { mutableStateOf(null) }
 
     val selected = remember { mutableStateListOf<Boolean>() }
@@ -77,7 +79,18 @@ fun NewEventPage() {
     var endTime by remember { mutableStateOf("") }
 
 
-    if (addingEventComponent) {
+     if (confirmationShowing) {
+         ConfirmationScreen(
+             {
+                 navController.navigate("EventList")
+                 confirmationShowing = false
+             },
+             {
+                 confirmationShowing = false
+             }
+         )
+
+     } else if (addingEventComponent) {
         EditEventComponent(
             eventComponent = eventComponent!!,
             onExit = {
@@ -114,7 +127,7 @@ fun NewEventPage() {
                         ) {
                             IconButton(
                                 onClick = {
-                                    navController.navigate("EventList")
+                                    confirmationShowing = true
                                 },
                                 modifier = Modifier.height(30.dp)
                             ) {
@@ -265,7 +278,10 @@ fun NewEventPage() {
                     onClick = {
                         eventComponent = EventComponent(HashMap(), "", "")
                         addingEventComponent = true
-                    }
+                    },
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondary
+                    )
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 CardButton(

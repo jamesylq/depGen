@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
@@ -18,19 +17,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.depgen.SORTED_ROLES
 import com.example.depgen.model.Navigation
-import com.example.depgen.model.SORTED_ROLES
+import com.example.depgen.ui.components.CardButton
 import com.example.depgen.ui.components.DefaultTopAppBar
 import com.example.depgen.ui.components.QuantityPicker
 
 @Composable
-fun OTDPage() {
+fun OneTimeDeploymentPage() {
     val roleNums = remember { mutableStateListOf<Int>() }
     if (roleNums.isEmpty()) for (role in SORTED_ROLES) roleNums.add(role.minCount)
 
     Scaffold (
         topBar = {
-            DefaultTopAppBar("Master", Navigation.OTD)
+            DefaultTopAppBar("Master", Navigation.ONETIMEDEPLOYMENT)
         }
     ) { innerPadding ->
         Column (
@@ -51,7 +51,7 @@ fun OTDPage() {
             LazyColumn (
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier.heightIn(0.dp, 400.dp)
+                modifier = Modifier.weight(1f)
             ) {
                 for (i in SORTED_ROLES.indices) {
                     item {
@@ -70,6 +70,12 @@ fun OTDPage() {
                     }
                 }
             }
+            CardButton(
+                text = "Generate!",
+                onClick = {
+                    // ...
+                }
+            )
         }
     }
 }

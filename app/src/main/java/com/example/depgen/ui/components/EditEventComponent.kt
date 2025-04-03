@@ -61,16 +61,16 @@ import com.example.depgen.Global
 import com.example.depgen.R
 import com.example.depgen.ctxt
 import com.example.depgen.model.ComponentType
-import com.example.depgen.model.EVENT_TYPES
+import com.example.depgen.EVENT_TYPES
 import com.example.depgen.model.EventComponent
 import com.example.depgen.model.EventRole
+import com.example.depgen.ROLES
+import com.example.depgen.lazyTime
 import com.example.depgen.model.InvalidEventTypeException
 import com.example.depgen.model.Profile
-import com.example.depgen.model.ROLES
-import com.example.depgen.model.lazyTime
-import com.example.depgen.model.save
-import com.example.depgen.model.toHHMMTime
-import com.example.depgen.model.toNaturalDateTime
+import com.example.depgen.save
+import com.example.depgen.toHHMMTime
+import com.example.depgen.toNaturalDateTime
 import com.example.depgen.toast
 import com.example.depgen.ui.fragments.removeLetters
 import java.time.format.DateTimeParseException
@@ -420,9 +420,9 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                     startTime = lazyTime(startTime)
                                     endTime = lazyTime(endTime)
 
-                                    if (currEventTypeSelection == -1) throw InvalidEventTypeException(
-                                        ""
-                                    )
+                                    if (currEventTypeSelection == -1) {
+                                        throw InvalidEventTypeException("")
+                                    }
 
                                     screen = "addComponent-2"
 
