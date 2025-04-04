@@ -78,19 +78,7 @@ fun NewEventPage() {
     var startTime by remember { mutableStateOf("") }
     var endTime by remember { mutableStateOf("") }
 
-
-     if (confirmationShowing) {
-         ConfirmationScreen(
-             {
-                 navController.navigate("EventList")
-                 confirmationShowing = false
-             },
-             {
-                 confirmationShowing = false
-             }
-         )
-
-     } else if (addingEventComponent) {
+     if (addingEventComponent) {
         EditEventComponent(
             eventComponent = eventComponent!!,
             onExit = {
@@ -146,6 +134,18 @@ fun NewEventPage() {
                 )
             }
         ) { innerPadding ->
+            if (confirmationShowing) {
+                ConfirmationScreen(
+                    {
+                        navController.navigate("EventList")
+                        confirmationShowing = false
+                    },
+                    {
+                        confirmationShowing = false
+                    }
+                )
+
+            }
             Column(
                 modifier = Modifier
                     .padding(innerPadding)

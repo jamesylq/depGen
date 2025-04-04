@@ -19,6 +19,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.depgen.model.Event
 import com.example.depgen.model.Profile
+import com.example.depgen.model.Skill
 import com.example.depgen.ui.fragments.SkillsTrackerPage
 import com.example.depgen.ui.fragments.EventListPage
 import com.example.depgen.ui.fragments.EventPage
@@ -32,6 +33,7 @@ import com.example.depgen.ui.fragments.ProfilePage
 import com.example.depgen.ui.fragments.RepeatingDeploymentPage
 import com.example.depgen.ui.fragments.SettingsPage
 import com.example.depgen.ui.fragments.SignUpPage
+import com.example.depgen.ui.fragments.SkillPage
 import com.example.depgen.ui.theme.DepGenTheme
 import kotlinx.serialization.Serializable
 
@@ -44,6 +46,7 @@ object Global {
     var profile: Profile = LOGGED_OUT
     var profileList: ArrayList<Profile> = ArrayList()
     var eventList: ArrayList<Event> = ArrayList()
+    var skillsList: ArrayList<Skill> = ArrayList()
     var idx: Int = 0
 
     fun isAdmin() : Boolean {
@@ -108,6 +111,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("NewSkill") {
                         NewSkillPage()
+                    }
+                    composable("Skill/{idx}") {
+                        SkillPage(it.arguments!!.getString("idx")!!.toInt())
                     }
                 }
             }

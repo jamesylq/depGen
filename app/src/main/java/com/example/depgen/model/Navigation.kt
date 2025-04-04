@@ -10,6 +10,7 @@ class Navigation {
         const val ONETIMEDEPLOYMENT = 5
         const val REPEATINGDEPLOYMENT = 6
         const val SKILLSTRACKER = 7
+        const val SKILL = 8
         const val M = 10
     }
 }

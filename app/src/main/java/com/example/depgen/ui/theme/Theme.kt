@@ -5,12 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 
-val POWDER_BLUE = Color(130, 140, 235)
-val POWDER_RED = Color(255, 140, 140)
-val POWDER_ORANGE = Color(225, 189, 157)
-val CARD_ORANGE = Color(250, 212, 189, 255)
 
 private val DarkColorScheme = darkColorScheme(
     primary = POWDER_BLUE,
@@ -21,7 +16,8 @@ private val DarkColorScheme = darkColorScheme(
 private val LightColorScheme = lightColorScheme(
     primary = POWDER_BLUE,
     secondary = POWDER_RED,
-    tertiary = POWDER_ORANGE
+    tertiary = POWDER_ORANGE,
+    tertiaryContainer = CARD_ORANGE
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

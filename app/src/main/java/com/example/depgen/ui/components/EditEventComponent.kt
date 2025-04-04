@@ -143,506 +143,506 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
 
     if (selectedRoles.isEmpty()) for (role in ROLES) selectedRoles.add(false)
 
-    if (confirmationShowing) {
-        ConfirmationScreen(
-            {
-                onExit(null)
-                confirmationShowing = false
-            },
-            {}
-        )
-
-    } else {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            IconButton(
-                                onClick = {
-                                    when (screen) {
-                                        "addMember" -> {
-                                            screen = "addComponent-2"
-                                        }
-
-                                        "addComponent-1" -> {
-                                            confirmationShowing = true
-                                        }
-
-                                        "addComponent-2" -> {
-                                            screen = "addComponent-1"
-                                        }
-
-                                        else -> {}
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = {
+                                when (screen) {
+                                    "addMember" -> {
+                                        screen = "addComponent-2"
                                     }
-                                },
-                                modifier = Modifier.height(30.dp)
-                            ) {
-                                Icon(Icons.Default.Close, "")
-                            }
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = title,
-                                fontSize = 24.sp,
-                            )
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        MaterialTheme.colorScheme.tertiary
-                    )
-                )
-            }
-        ) { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .padding(16.dp)
-            ) {
-                if (picking == 1) {
-                    TimePickerScreen(
-                        setPicking = { picking = it },
-                        setText = { startTime = it },
-                        "Select Starting Time"
-                    )
-                    return@Column
 
-                } else if (picking == 2) {
-                    TimePickerScreen(
-                        setPicking = { picking = it },
-                        setText = { endTime = it },
-                        "Select Ending Time"
+                                    "addComponent-1" -> {
+                                        confirmationShowing = true
+                                    }
+
+                                    "addComponent-2" -> {
+                                        screen = "addComponent-1"
+                                    }
+
+                                    else -> {}
+                                }
+                            },
+                            modifier = Modifier.height(30.dp)
+                        ) {
+                            Icon(Icons.Default.Close, "")
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = title,
+                            fontSize = 24.sp,
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    MaterialTheme.colorScheme.tertiary
+                )
+            )
+        }
+    ) { innerPadding ->
+        if (confirmationShowing) {
+            ConfirmationScreen(
+                {
+                    onExit(null)
+                    confirmationShowing = false
+                },
+                {}
+            )
+
+        }
+
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(16.dp)
+        ) {
+            if (picking == 1) {
+                TimePickerScreen(
+                    setPicking = { picking = it },
+                    setText = { startTime = it },
+                    "Select Starting Time"
+                )
+                return@Column
+
+            } else if (picking == 2) {
+                TimePickerScreen(
+                    setPicking = { picking = it },
+                    setText = { endTime = it },
+                    "Select Ending Time"
+                )
+                return@Column
+            }
+
+            when (screen) {
+                "addMember" -> {
+                    title = "Select Member to Deploy"
+                    Spacer(modifier = Modifier.height(20.dp))
+                    val exclude = mutableSetOf(1)
+                    for (entry in eventComponent.deployment) exclude.add(entry.key.getIdx())
+                    MemberSearchScreen(
+                        onClickMember = {
+                            screen = "addComponent-2"
+                            eventComponent.deployment[Global.profileList[it]] = ArrayList()
+                        },
+                        errorMessage = "No members found!",
+                        exclude = exclude
                     )
-                    return@Column
                 }
 
-                when (screen) {
-                    "addMember" -> {
-                        title = "Select Member to Deploy"
-                        Spacer(modifier = Modifier.height(20.dp))
-                        val exclude = mutableSetOf(1)
-                        for (entry in eventComponent.deployment) exclude.add(entry.key.getIdx())
-                        MemberSearchScreen(
-                            onClickMember = {
-                                screen = "addComponent-2"
-                                eventComponent.deployment[Global.profileList[it]] = ArrayList()
+                "addComponent-1" -> {
+                    title = "New Event Component"
+                    Text(
+                        text = "Date and Time of Component",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 15.dp)
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Date: ",
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        TextField(
+                            value = day,
+                            onValueChange = {
+                                day = removeLetters(it)
+                                if (day.length > 2) day = day.substring(0, 2)
+
+                                if (month.isNotBlank()) month = month.padStart(2, '0')
+                                if (year.isNotBlank()) year = year.padStart(4, '0')
                             },
-                            errorMessage = "No members found!",
-                            exclude = exclude
+                            modifier = Modifier
+                                .padding(end = 8.dp)
+                                .weight(0.3f),
+                            placeholder = {
+                                Text("DD")
+                            }
                         )
-                    }
+                        TextField(
+                            value = month,
+                            onValueChange = {
+                                month = removeLetters(it)
+                                if (month.length > 2) month = month.substring(0, 2)
 
-                    "addComponent-1" -> {
-                        title = "New Event Component"
-                        Text(
-                            text = "Date and Time of Component",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(bottom = 15.dp)
+                                if (day.isNotBlank()) day = day.padStart(2, '0')
+                                if (year.isNotBlank()) year = year.padStart(4, '0')
+                            },
+                            modifier = Modifier
+                                .padding(end = 8.dp)
+                                .weight(0.3f),
+                            placeholder = {
+                                Text("MM")
+                            }
                         )
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Date: ",
-                                fontWeight = FontWeight.SemiBold,
-                                modifier = Modifier.padding(end = 8.dp)
-                            )
-                            TextField(
-                                value = day,
-                                onValueChange = {
-                                    day = removeLetters(it)
-                                    if (day.length > 2) day = day.substring(0, 2)
+                        TextField(
+                            value = year,
+                            onValueChange = {
+                                year = removeLetters(it)
+                                if (year.length > 4) year = year.substring(0, 4)
 
-                                    if (month.isNotBlank()) month = month.padStart(2, '0')
-                                    if (year.isNotBlank()) year = year.padStart(4, '0')
-                                },
-                                modifier = Modifier
-                                    .padding(end = 8.dp)
-                                    .weight(0.3f),
-                                placeholder = {
-                                    Text("DD")
-                                }
-                            )
-                            TextField(
-                                value = month,
-                                onValueChange = {
-                                    month = removeLetters(it)
-                                    if (month.length > 2) month = month.substring(0, 2)
-
-                                    if (day.isNotBlank()) day = day.padStart(2, '0')
-                                    if (year.isNotBlank()) year = year.padStart(4, '0')
-                                },
-                                modifier = Modifier
-                                    .padding(end = 8.dp)
-                                    .weight(0.3f),
-                                placeholder = {
-                                    Text("MM")
-                                }
-                            )
-                            TextField(
-                                value = year,
-                                onValueChange = {
-                                    year = removeLetters(it)
-                                    if (year.length > 4) year = year.substring(0, 4)
-
-                                    if (day.isNotBlank()) day = day.padStart(2, '0')
-                                    if (month.isNotBlank()) month = month.padStart(2, '0')
-                                },
-                                modifier = Modifier
-                                    .padding(end = 8.dp)
-                                    .weight(0.4f),
-                                placeholder = {
-                                    Text("YYYY")
-                                }
-                            )
-                            IconButton(
-                                onClick = {
-                                    val datePickerDialog = android.app.DatePickerDialog(
-                                        ctxt,
-                                        { _:
-                                          DatePicker,
-                                          selectedYear: Int,
-                                          selectedMonth: Int,
-                                          selectedDay: Int
-                                            ->
-                                            run {
-                                                day = selectedDay.toString().padStart(2, '0')
-                                                month = "${selectedMonth + 1}".padStart(2, '0')
-                                                year = selectedYear.toString().padStart(4, '0')
-                                            }
-                                        },
-                                        calendar.get(Calendar.YEAR),
-                                        calendar.get(Calendar.MONTH),
-                                        calendar.get(Calendar.DAY_OF_MONTH)
-                                    )
-                                    datePickerDialog.show()
-                                },
-                                modifier = Modifier.width(50.dp)
-                            ) {
-                                Icon(Icons.Default.DateRange, "")
+                                if (day.isNotBlank()) day = day.padStart(2, '0')
+                                if (month.isNotBlank()) month = month.padStart(2, '0')
+                            },
+                            modifier = Modifier
+                                .padding(end = 8.dp)
+                                .weight(0.4f),
+                            placeholder = {
+                                Text("YYYY")
                             }
-                        }
-                        Row(
-                            modifier = Modifier.padding(top = 12.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text("Start Time: ", fontWeight = FontWeight.SemiBold)
-                            Spacer(modifier = Modifier.width(30.dp))
-                            TextField(
-                                value = startTime,
-                                onValueChange = { startTime = it },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(end = 8.dp),
-                                placeholder = {
-                                    Text("Enter Start Time")
-                                }
-                            )
-                            IconButton(
-                                onClick = { picking = 1 },
-                                modifier = Modifier.width(50.dp)
-                            ) {
-                                Icon(Icons.Default.AccessTime, "")
-                            }
-                        }
-                        Row(
-                            modifier = Modifier.padding(top = 12.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text("End Time: ", fontWeight = FontWeight.SemiBold)
-                            Spacer(modifier = Modifier.width(38.dp))
-                            TextField(
-                                value = endTime,
-                                onValueChange = { endTime = it },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(end = 8.dp),
-                                placeholder = {
-                                    Text("Enter End Time")
-                                }
-                            )
-                            IconButton(
-                                onClick = { picking = 2 },
-                                modifier = Modifier.width(50.dp)
-                            ) {
-                                Icon(Icons.Default.AccessTime, "")
-                            }
-                        }
-                        Text(
-                            text = "Type of Event Component",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(top = 40.dp, bottom = 10.dp)
                         )
-
-                        for (i in EVENT_TYPES.indices) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.clickable {
-                                    selectedEventType[i] = !selectedEventType[i]
-                                    if (currEventTypeSelection != -1) selectedEventType[currEventTypeSelection] =
-                                        false
-
-                                    if (selectedEventType[i]) {
-                                        currEventTypeSelection = i
-                                        componentType = EVENT_TYPES[i]
-                                    } else {
-                                        currEventTypeSelection = -1
-                                        componentType = null
-                                    }
-                                }
-                            ) {
-                                Checkbox(
-                                    checked = selectedEventType[i],
-                                    onCheckedChange = null,
-                                    modifier = Modifier
-                                        .padding(vertical = 8.dp)
-                                        .padding(end = 5.dp)
-                                )
-                                Text(text = EVENT_TYPES[i].componentType)
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.weight(1f))
-                        CardButton(
-                            text = "Next",
+                        IconButton(
                             onClick = {
-                                val startString = "$year-$month-${day}T${lazyTime(startTime)}:00"
-                                val endString = "$year-$month-${day}T${lazyTime(endTime)}:00"
-
-                                try {
-                                    toNaturalDateTime(startString)
-                                    toNaturalDateTime(endString)
-
-                                    startTime = lazyTime(startTime)
-                                    endTime = lazyTime(endTime)
-
-                                    if (currEventTypeSelection == -1) {
-                                        throw InvalidEventTypeException("")
-                                    }
-
-                                    screen = "addComponent-2"
-
-                                } catch (_: DateTimeParseException) {
-                                    toast("Invalid Date/Time!")
-                                    Log.d("INVALID", "Strings:\n$startString\n$endString")
-
-                                } catch (_: InvalidEventTypeException) {
-                                    toast("Invalid Event Component Type")
-
-                                } catch (e: Exception) {
-                                    toast("An Error Occurred!")
-                                    Log.d("UNKNOWN", e.toString())
-                                }
+                                val datePickerDialog = android.app.DatePickerDialog(
+                                    ctxt,
+                                    { _:
+                                      DatePicker,
+                                      selectedYear: Int,
+                                      selectedMonth: Int,
+                                      selectedDay: Int
+                                        ->
+                                        run {
+                                            day = selectedDay.toString().padStart(2, '0')
+                                            month = "${selectedMonth + 1}".padStart(2, '0')
+                                            year = selectedYear.toString().padStart(4, '0')
+                                        }
+                                    },
+                                    calendar.get(Calendar.YEAR),
+                                    calendar.get(Calendar.MONTH),
+                                    calendar.get(Calendar.DAY_OF_MONTH)
+                                )
+                                datePickerDialog.show()
                             },
-                            colors = CardDefaults.cardColors(
-                                MaterialTheme.colorScheme.primary
-                            )
+                            modifier = Modifier.width(50.dp)
+                        ) {
+                            Icon(Icons.Default.DateRange, "")
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.padding(top = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Start Time: ", fontWeight = FontWeight.SemiBold)
+                        Spacer(modifier = Modifier.width(30.dp))
+                        TextField(
+                            value = startTime,
+                            onValueChange = { startTime = it },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp),
+                            placeholder = {
+                                Text("Enter Start Time")
+                            }
                         )
+                        IconButton(
+                            onClick = { picking = 1 },
+                            modifier = Modifier.width(50.dp)
+                        ) {
+                            Icon(Icons.Default.AccessTime, "")
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.padding(top = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("End Time: ", fontWeight = FontWeight.SemiBold)
+                        Spacer(modifier = Modifier.width(38.dp))
+                        TextField(
+                            value = endTime,
+                            onValueChange = { endTime = it },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp),
+                            placeholder = {
+                                Text("Enter End Time")
+                            }
+                        )
+                        IconButton(
+                            onClick = { picking = 2 },
+                            modifier = Modifier.width(50.dp)
+                        ) {
+                            Icon(Icons.Default.AccessTime, "")
+                        }
+                    }
+                    Text(
+                        text = "Type of Event Component",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 40.dp, bottom = 10.dp)
+                    )
+
+                    for (i in EVENT_TYPES.indices) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.clickable {
+                                selectedEventType[i] = !selectedEventType[i]
+                                if (currEventTypeSelection != -1) selectedEventType[currEventTypeSelection] =
+                                    false
+
+                                if (selectedEventType[i]) {
+                                    currEventTypeSelection = i
+                                    componentType = EVENT_TYPES[i]
+                                } else {
+                                    currEventTypeSelection = -1
+                                    componentType = null
+                                }
+                            }
+                        ) {
+                            Checkbox(
+                                checked = selectedEventType[i],
+                                onCheckedChange = null,
+                                modifier = Modifier
+                                    .padding(vertical = 8.dp)
+                                    .padding(end = 5.dp)
+                            )
+                            Text(text = EVENT_TYPES[i].componentType)
+                        }
                     }
 
-                    "addComponent-2" -> {
-                        if (alertShowing) {
-                            BasicAlertDialog(
-                                onDismissRequest = {
-                                    alertShowing = false
+                    Spacer(modifier = Modifier.weight(1f))
+                    CardButton(
+                        text = "Next",
+                        onClick = {
+                            val startString = "$year-$month-${day}T${lazyTime(startTime)}:00"
+                            val endString = "$year-$month-${day}T${lazyTime(endTime)}:00"
+
+                            try {
+                                toNaturalDateTime(startString)
+                                toNaturalDateTime(endString)
+
+                                startTime = lazyTime(startTime)
+                                endTime = lazyTime(endTime)
+
+                                if (currEventTypeSelection == -1) {
+                                    throw InvalidEventTypeException("")
                                 }
+
+                                screen = "addComponent-2"
+
+                            } catch (_: DateTimeParseException) {
+                                toast("Invalid Date/Time!")
+                                Log.d("INVALID", "Strings:\n$startString\n$endString")
+
+                            } catch (_: InvalidEventTypeException) {
+                                toast("Invalid Event Component Type")
+
+                            } catch (e: Exception) {
+                                toast("An Error Occurred!")
+                                Log.d("UNKNOWN", e.toString())
+                            }
+                        },
+                        colors = CardDefaults.cardColors(
+                            MaterialTheme.colorScheme.primary
+                        )
+                    )
+                }
+
+                "addComponent-2" -> {
+                    if (alertShowing) {
+                        BasicAlertDialog(
+                            onDismissRequest = {
+                                alertShowing = false
+                            }
+                        ) {
+                            ElevatedCard(
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color(220, 200, 200),
+                                    contentColor = Color.Black
+                                ),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(550.dp)
                             ) {
-                                ElevatedCard(
-                                    colors = CardDefaults.cardColors(
-                                        containerColor = Color(220, 200, 200),
-                                        contentColor = Color.Black
-                                    ),
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .heightIn(550.dp)
+                                Column(
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    Column(
-                                        verticalArrangement = Arrangement.Center,
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Text(
-                                            text = "Select Roles",
-                                            fontWeight = FontWeight.SemiBold,
-                                            fontSize = 20.sp,
-                                            modifier = Modifier.padding(vertical = 30.dp)
-                                        )
-                                        Column {
-                                            for (i in ROLES.indices) {
-                                                Row(
-                                                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                                    verticalAlignment = Alignment.CenterVertically,
-                                                    modifier = Modifier.clickable {
-                                                        selectedRoles[i] = !selectedRoles[i]
-                                                    }
-                                                ) {
-                                                    Checkbox(
-                                                        selectedRoles[i], {
-                                                            selectedRoles[i] = it
-                                                        }
-                                                    )
-                                                    Text(ROLES[i].eventRole)
-                                                }
-                                            }
-                                            Spacer(modifier = Modifier.height(30.dp))
+                                    Text(
+                                        text = "Select Roles",
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 20.sp,
+                                        modifier = Modifier.padding(vertical = 30.dp)
+                                    )
+                                    Column {
+                                        for (i in ROLES.indices) {
                                             Row(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalArrangement = Arrangement.End
-                                            ) {
-                                                Button(
-                                                    onClick = {
-                                                        eventComponent.deployment[roleProfile]!!.clear()
-                                                        for (i in ROLES.indices) {
-                                                            if (selectedRoles[i]) {
-                                                                eventComponent.deployment[roleProfile]!!.add(
-                                                                    ROLES[i]
-                                                                )
-                                                            }
-                                                        }
-                                                        alertShowing = false
-                                                    },
-                                                    modifier = Modifier.padding(16.dp)
-                                                ) {
-                                                    Text("Done")
+                                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                modifier = Modifier.clickable {
+                                                    selectedRoles[i] = !selectedRoles[i]
                                                 }
+                                            ) {
+                                                Checkbox(
+                                                    selectedRoles[i], {
+                                                        selectedRoles[i] = it
+                                                    }
+                                                )
+                                                Text(ROLES[i].eventRole)
                                             }
                                         }
-                                    }
-                                }
-                            }
-                        }
-
-                        Text(
-                            text = "Deployment for Component",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(bottom = 10.dp)
-                        )
-                        LazyColumn(
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            item {
-                                if (eventComponent.deployment.isEmpty()) {
-                                    Column(
-                                        modifier = Modifier.fillParentMaxHeight(0.5f)
-                                    ) {
-                                        Spacer(modifier = Modifier.weight(0.5f))
+                                        Spacer(modifier = Modifier.height(30.dp))
                                         Row(
                                             modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.Center
+                                            horizontalArrangement = Arrangement.End
                                         ) {
-                                            Text(
-                                                text = "No Members are Currently Deployed!",
-                                                fontSize = 16.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                modifier = Modifier.padding(bottom = 10.dp)
-                                            )
+                                            Button(
+                                                onClick = {
+                                                    eventComponent.deployment[roleProfile]!!.clear()
+                                                    for (i in ROLES.indices) {
+                                                        if (selectedRoles[i]) {
+                                                            eventComponent.deployment[roleProfile]!!.add(
+                                                                ROLES[i]
+                                                            )
+                                                        }
+                                                    }
+                                                    alertShowing = false
+                                                },
+                                                modifier = Modifier.padding(16.dp)
+                                            ) {
+                                                Text("Done")
+                                            }
                                         }
                                     }
                                 }
+                            }
+                        }
+                    }
 
-                                Column {
-                                    if (compile) {
-                                        for (entry in eventComponent.deployment) {
-                                            ElevatedCard(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .heightIn(114.dp)
-                                                    .padding(vertical = 7.dp),
-                                                onClick = {
+                    Text(
+                        text = "Deployment for Component",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 10.dp)
+                    )
+                    LazyColumn(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        item {
+                            if (eventComponent.deployment.isEmpty()) {
+                                Column(
+                                    modifier = Modifier.fillParentMaxHeight(0.5f)
+                                ) {
+                                    Spacer(modifier = Modifier.weight(0.5f))
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        Text(
+                                            text = "No Members are Currently Deployed!",
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            modifier = Modifier.padding(bottom = 10.dp)
+                                        )
+                                    }
+                                }
+                            }
+
+                            Column {
+                                if (compile) {
+                                    for (entry in eventComponent.deployment) {
+                                        ElevatedCard(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .heightIn(114.dp)
+                                                .padding(vertical = 7.dp),
+                                            onClick = {
 //                                    onClickMember(profilesFiltered[i])
-                                                }
-                                            ) {
-                                                Column {
-                                                    Row(
-                                                        verticalAlignment = Alignment.CenterVertically,
-                                                        horizontalArrangement = Arrangement.spacedBy(
-                                                            10.dp
+                                            }
+                                        ) {
+                                            Column {
+                                                Row(
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.spacedBy(
+                                                        10.dp
+                                                    )
+                                                ) {
+                                                    Image(
+                                                        //TODO: Profile Picture
+                                                        painter = painterResource(R.drawable.icon_512),
+                                                        contentDescription = "",
+                                                        modifier = Modifier
+                                                            .size(70.dp)
+                                                            .clip(RoundedCornerShape(13.dp))
+                                                    )
+                                                    Text(
+                                                        entry.key.username,
+                                                        fontWeight = FontWeight.Bold,
+                                                        fontSize = 19.sp
+                                                    )
+                                                    Spacer(modifier = Modifier.weight(1f))
+                                                    FilledIconButton(
+                                                        onClick = {
+                                                            compile = false
+                                                            eventComponent.deployment.remove(
+                                                                entry.key
+                                                            )
+                                                            compile = true
+                                                        },
+                                                        colors = IconButtonColors(
+                                                            contentColor = Color.Black,
+                                                            containerColor = MaterialTheme.colorScheme.secondary,
+                                                            disabledContentColor = Color.Black,
+                                                            disabledContainerColor = MaterialTheme.colorScheme.secondary
                                                         )
                                                     ) {
-                                                        Image(
-                                                            //TODO: Profile Picture
-                                                            painter = painterResource(R.drawable.icon_512),
-                                                            contentDescription = "",
-                                                            modifier = Modifier
-                                                                .size(70.dp)
-                                                                .clip(RoundedCornerShape(13.dp))
-                                                        )
-                                                        Text(
-                                                            entry.key.username,
-                                                            fontWeight = FontWeight.Bold,
-                                                            fontSize = 19.sp
-                                                        )
-                                                        Spacer(modifier = Modifier.weight(1f))
-                                                        FilledIconButton(
-                                                            onClick = {
-                                                                compile = false
-                                                                eventComponent.deployment.remove(
-                                                                    entry.key
-                                                                )
-                                                                compile = true
-                                                            },
-                                                            colors = IconButtonColors(
-                                                                contentColor = Color.Black,
-                                                                containerColor = MaterialTheme.colorScheme.secondary,
-                                                                disabledContentColor = Color.Black,
-                                                                disabledContainerColor = MaterialTheme.colorScheme.secondary
+                                                        Icon(Icons.Default.Delete, "")
+                                                    }
+                                                }
+                                                Spacer(modifier = Modifier.height(10.dp))
+                                                Column(
+                                                    modifier = Modifier.padding(8.dp),
+                                                    verticalArrangement = Arrangement.spacedBy(5.dp)
+                                                ) {
+                                                    Text(
+                                                        "Roles: ",
+                                                        fontWeight = FontWeight.SemiBold
+                                                    )
+                                                    if (entry.value.isEmpty()) {
+                                                        Text("No Roles Yet!")
+                                                    } else {
+                                                        FlowRow(
+                                                            horizontalArrangement = Arrangement.spacedBy(
+                                                                10.dp
+                                                            ),
+                                                            verticalArrangement = Arrangement.spacedBy(
+                                                                5.dp
                                                             )
                                                         ) {
-                                                            Icon(Icons.Default.Delete, "")
-                                                        }
-                                                    }
-                                                    Spacer(modifier = Modifier.height(10.dp))
-                                                    Column(
-                                                        modifier = Modifier.padding(8.dp),
-                                                        verticalArrangement = Arrangement.spacedBy(5.dp)
-                                                    ) {
-                                                        Text(
-                                                            "Roles: ",
-                                                            fontWeight = FontWeight.SemiBold
-                                                        )
-                                                        if (entry.value.isEmpty()) {
-                                                            Text("No Roles Yet!")
-                                                        } else {
-                                                            FlowRow(
-                                                                horizontalArrangement = Arrangement.spacedBy(
-                                                                    10.dp
-                                                                ),
-                                                                verticalArrangement = Arrangement.spacedBy(
-                                                                    5.dp
-                                                                )
-                                                            ) {
-                                                                for (role in entry.value) {
-                                                                    EventRoleRender(role)
-                                                                }
+                                                            for (role in entry.value) {
+                                                                EventRoleRender(role)
                                                             }
                                                         }
                                                     }
+                                                }
+                                                Spacer(modifier = Modifier.weight(1f))
+                                                Row {
                                                     Spacer(modifier = Modifier.weight(1f))
-                                                    Row {
-                                                        Spacer(modifier = Modifier.weight(1f))
-                                                        FilledIconButton(
-                                                            onClick = {
-                                                                alertShowing = true
-                                                                roleProfile = entry.key
-                                                                for (i in ROLES.indices) {
-                                                                    selectedRoles[i] =
-                                                                        (ROLES[i] in entry.value)
-                                                                }
-                                                            },
-                                                            colors = IconButtonColors(
-                                                                MaterialTheme.colorScheme.tertiary,
-                                                                Color.Black,
-                                                                MaterialTheme.colorScheme.secondary,
-                                                                Color.Black,
-                                                            )
-                                                        ) {
-                                                            Icon(Icons.Filled.NewLabel, "")
-                                                        }
+                                                    FilledIconButton(
+                                                        onClick = {
+                                                            alertShowing = true
+                                                            roleProfile = entry.key
+                                                            for (i in ROLES.indices) {
+                                                                selectedRoles[i] =
+                                                                    (ROLES[i] in entry.value)
+                                                            }
+                                                        },
+                                                        colors = IconButtonColors(
+                                                            MaterialTheme.colorScheme.tertiary,
+                                                            Color.Black,
+                                                            MaterialTheme.colorScheme.secondary,
+                                                            Color.Black,
+                                                        )
+                                                    ) {
+                                                        Icon(Icons.Filled.NewLabel, "")
                                                     }
                                                 }
                                             }
@@ -651,43 +651,43 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                 }
                             }
                         }
-                        Spacer(modifier = Modifier.height(20.dp))
-                        CardButton(
-                            text = "Add Member to Deployment",
-                            onClick = {
-                                screen = "addMember"
-                            }
-                        )
-                        Spacer(modifier = Modifier.height(20.dp))
-                        CardButton(
-                            text = "Done",
-                            onClick = {
-                                try {
-                                    val startString = "$year-$month-${day}T$startTime:00"
-                                    val endString = "$year-$month-${day}T$endTime:00"
-
-                                    val deploymentHashMap = HashMap<Profile, ArrayList<EventRole>>()
-                                    for (entry in eventComponent.deployment) deploymentHashMap[entry.key] = entry.value
-
-                                    EventComponent(
-                                        deployment = deploymentHashMap,
-                                        start = startString,
-                                        end = endString
-                                    )
-
-                                    eventComponent.start = startString
-                                    eventComponent.end = endString
-
-                                    onExit(componentType!!)
-                                    save()
-
-                                } catch (_: DateTimeParseException) { }
-                            },
-                            colors = CardDefaults.cardColors(
-                                MaterialTheme.colorScheme.primary
-                            )
-                        )
                     }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    CardButton(
+                        text = "Add Member to Deployment",
+                        onClick = {
+                            screen = "addMember"
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    CardButton(
+                        text = "Done",
+                        onClick = {
+                            try {
+                                val startString = "$year-$month-${day}T$startTime:00"
+                                val endString = "$year-$month-${day}T$endTime:00"
+
+                                val deploymentHashMap = HashMap<Profile, ArrayList<EventRole>>()
+                                for (entry in eventComponent.deployment) deploymentHashMap[entry.key] = entry.value
+
+                                EventComponent(
+                                    deployment = deploymentHashMap,
+                                    start = startString,
+                                    end = endString
+                                )
+
+                                eventComponent.start = startString
+                                eventComponent.end = endString
+
+                                onExit(componentType!!)
+                                save()
+
+                            } catch (_: DateTimeParseException) { }
+                        },
+                        colors = CardDefaults.cardColors(
+                            MaterialTheme.colorScheme.primary
+                        )
+                    )
                 }
             }
         }

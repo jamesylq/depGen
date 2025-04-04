@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,10 +17,9 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonColors
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -37,9 +37,9 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.depgen.model.Event
 import com.example.depgen.Global
 import com.example.depgen.model.ComponentType
+import com.example.depgen.model.Event
 import com.example.depgen.model.EventComponent
 import com.example.depgen.model.Navigation
 import com.example.depgen.navController
@@ -48,7 +48,6 @@ import com.example.depgen.ui.components.CardButton
 import com.example.depgen.ui.components.ConfirmationScreen
 import com.example.depgen.ui.components.DefaultTopAppBar
 import com.example.depgen.ui.components.EditEventComponent
-import com.example.depgen.ui.theme.CARD_ORANGE
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -71,20 +70,6 @@ fun EventListPage() {
             editingComponentType!!
         )
 
-    } else if (confirmationShowing > -1) {
-        ConfirmationScreen(
-            {
-                eventRem.removeAt(confirmationShowing)
-                Global.eventList.removeAt(confirmationShowing)
-                save()
-                confirmationShowing = -1
-            },
-            {
-                confirmationShowing = -1
-            },
-            body = "This action is irreversible!"
-        )
-
     } else {
         Scaffold(
             topBar = {
@@ -98,6 +83,21 @@ fun EventListPage() {
                 }
             }
         ) { innerPadding ->
+            if (confirmationShowing > -1) {
+                ConfirmationScreen(
+                    {
+                        eventRem.removeAt(confirmationShowing)
+                        Global.eventList.removeAt(confirmationShowing)
+                        save()
+                        confirmationShowing = -1
+                    },
+                    {
+                        confirmationShowing = -1
+                    },
+                    body = "This action is irreversible!"
+                )
+            }
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -126,7 +126,8 @@ fun EventListPage() {
                             )
                             ElevatedCard(
                                 colors = CardDefaults.cardColors(
-                                    containerColor = CARD_ORANGE
+                                    containerColor = MaterialTheme.colorScheme.tertiary,
+                                    contentColor = Color.Black
                                 ),
                                 modifier = Modifier
                                     .padding(8.dp)
@@ -153,7 +154,7 @@ fun EventListPage() {
                                             ElevatedCard(
                                                 modifier = Modifier
                                                     .fillMaxWidth()
-                                                    .height(100.dp)
+//                                                    .height(7.dp)
                                                     .padding(bottom = 12.dp),
                                                 colors = CardDefaults.cardColors(
                                                     containerColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -165,7 +166,7 @@ fun EventListPage() {
                                                     Row {
                                                         Column(
                                                             modifier = Modifier
-                                                                .padding(vertical = 10.dp)
+                                                                .padding(vertical = 3.dp)
                                                                 .padding(start = 8.dp)
                                                         ) {
                                                             Text(
@@ -181,7 +182,7 @@ fun EventListPage() {
                                                         }
                                                         Column(
                                                             modifier = Modifier
-                                                                .padding(vertical = 10.dp)
+                                                                .padding(vertical = 3.dp)
                                                                 .padding(start = 5.dp)
                                                         ) {
                                                             Text(
@@ -199,24 +200,16 @@ fun EventListPage() {
                                                         }
                                                         Row (
                                                             verticalAlignment = Alignment.CenterVertically,
-                                                            modifier = Modifier.padding(
-                                                                bottom = 3.dp,
-                                                                start = 4.dp
-                                                            )
+                                                            modifier = Modifier
+                                                                .fillMaxHeight()
                                                         ) {
                                                             Spacer(modifier = Modifier.weight(1f))
-                                                            FilledIconButton(
+                                                            IconButton(
                                                                 onClick = {
                                                                     editingComponent = component
                                                                     editingComponentType = entry.key
     //                                                    navController.navigate("Event/${i}")
-                                                                },
-                                                                colors = IconButtonColors(
-                                                                    Color.LightGray,
-                                                                    Color.Black,
-                                                                    Color.LightGray,
-                                                                    Color.Black
-                                                                )
+                                                                }
                                                             ) {
                                                                 Icon(Icons.Default.Edit, "")
                                                             }

@@ -51,7 +51,7 @@ fun toHHMMTime(datetime: LocalDateTime): String {
 fun save() {
     Log.d("FileIO", "Initiated Save ${Global.profileList}")
     val file = File(ctxt.filesDir, "save.json")
-    val wrapper = Wrapper(Global.profileList, Global.eventList)
+    val wrapper = Wrapper(Global.profileList, Global.eventList, Global.skillsList)
 
     file.writeText(json.encodeToString(wrapper))
     Log.d("FileIO", json.encodeToString(wrapper))
@@ -75,8 +75,10 @@ fun load() {
 
         Global.eventList.clear()
         Global.profileList.clear()
+        Global.skillsList.clear()
         Global.eventList.addAll(wrapper.events)
         Global.profileList.addAll(wrapper.profiles)
+        Global.skillsList.addAll(wrapper.skills)
         LOGGED_OUT = Global.profileList[0]
         ADMIN = Global.profileList[1]
 
@@ -84,6 +86,7 @@ fun load() {
         Log.d("ERROR", "Save file not found, created new save file!")
         Global.profileList.clear()
         Global.eventList.clear()
+        Global.skillsList.clear()
         Global.profileList.add(LOGGED_OUT)
         Global.profileList.add(ADMIN)
     }

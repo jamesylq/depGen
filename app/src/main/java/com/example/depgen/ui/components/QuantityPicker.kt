@@ -1,6 +1,5 @@
 package com.example.depgen.ui.components
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -52,11 +51,9 @@ fun QuantityPicker(onUpdate: (Int) -> Unit, initialQty: Int = 0, minQty: Int = 0
             value = tf,
             onValueChange = {
                 tf = it
-                try {
-                    Log.wtf("DEBUG", tf)
-                    if (tf.toInt() < 0) throw NumberFormatException()
-                    onUpdate(tf.toInt())
-                } catch (_: NumberFormatException) {}
+                if (tf.toIntOrNull() != null) {
+                    onUpdate(maxOf(minOf(tf.toInt(), maxQty), minQty))
+                }
             },
             modifier = Modifier
                 .height(50.dp)
