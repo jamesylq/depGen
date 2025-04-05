@@ -7,5 +7,6 @@ import kotlinx.serialization.Serializable
 data class Wrapper(
     var profiles: ArrayList<Profile>,
     var events: ArrayList<Event>,
-    var skills: ArrayList<Skill>
+    var skills: ArrayList<Skill>,
+    var roles: ArrayList<EventRole>
 )

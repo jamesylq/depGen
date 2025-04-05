@@ -1,8 +1,8 @@
 package com.example.depgen
 
-import androidx.compose.ui.graphics.Color
 import com.example.depgen.model.ComponentType
-import com.example.depgen.model.EventRole
+import com.example.depgen.model.Condition
+import com.example.depgen.model.ConditionType
 import com.example.depgen.model.Profile
 import kotlinx.serialization.json.Json
 
@@ -14,19 +14,24 @@ val EXECUTION_1 = ComponentType("Tier 1 Event", 4)
 val EXECUTION_0 = ComponentType("Tier 0 Event", 5)
 val EVENT_TYPES = listOf(TECHRUN, REHEARSAL, EXECUTION_3, EXECUTION_2, EXECUTION_1, EXECUTION_0)
 
-val OIC = EventRole("Overall in-Charge", colorToList(Color(255, 237, 0, 255)), 1, maxCount = 1)
-val IC = EventRole("In-Charge", colorToList(Color(255, 244, 179, 255)), 0, minCount = 1)
-val SOUND = EventRole("Sound Engineer", colorToList(Color(0, 115, 255, 255)), 0)
-val FOH = EventRole("Front of House", colorToList(Color(61, 148, 253, 255)), 2)
-val SFX = EventRole("SFX Engineer", colorToList(Color(104, 171, 255, 255)), 3)
-val LIGHTS = EventRole("Lighting Engineer", colorToList(Color(65, 255, 69, 255)), 1)
-val BACKSTAGE_IC = EventRole("Backstage in-Charge", colorToList(Color(255, 38, 56, 255)), 1)
-val BACKSTAGE = EventRole("Backstage", colorToList(Color(255, 134, 144, 255)), 0)
-val LIVESTREAM_IC = EventRole("Livestream in-Charge", colorToList(Color(123, 50, 255, 255)), 1)
-val LIVESTREAM = EventRole("Livestream", colorToList(Color(171, 125, 255, 255)), 0)
+val AT_LEAST = ConditionType(100000, "at least")
+val AT_MOST = ConditionType(100001, "at most")
 
-val ROLES = listOf(OIC, IC, SOUND, FOH, SFX, LIGHTS, BACKSTAGE_IC, BACKSTAGE, LIVESTREAM_IC, LIVESTREAM)
-val SORTED_ROLES = ROLES.sorted()
+val CONDITION_TYPES = listOf(AT_LEAST.typeName, AT_MOST.typeName)
+
+//val OIC = EventRole("Overall in-Charge", colorToList(Color(255, 237, 0, 255)), 1, maxCount = 1)
+//val IC = EventRole("In-Charge", colorToList(Color(255, 244, 179, 255)), 0, minCount = 1)
+//val SOUND = EventRole("Sound Engineer", colorToList(Color(0, 115, 255, 255)), 0)
+//val FOH = EventRole("Front of House", colorToList(Color(61, 148, 253, 255)), 2)
+//val SFX = EventRole("SFX Engineer", colorToList(Color(104, 171, 255, 255)), 3)
+//val LIGHTS = EventRole("Lighting Engineer", colorToList(Color(65, 255, 69, 255)), 1)
+//val BACKSTAGE_IC = EventRole("Backstage in-Charge", colorToList(Color(255, 38, 56, 255)), 1)
+//val BACKSTAGE = EventRole("Backstage", colorToList(Color(255, 134, 144, 255)), 0)
+//val LIVESTREAM_IC = EventRole("Livestream in-Charge", colorToList(Color(123, 50, 255, 255)), 1)
+//val LIVESTREAM = EventRole("Livestream", colorToList(Color(171, 125, 255, 255)), 0)
+//
+//val ROLES = listOf(OIC, IC, SOUND, FOH, SFX, LIGHTS, BACKSTAGE_IC, BACKSTAGE, LIVESTREAM_IC, LIVESTREAM)
+//val SORTED_ROLES = ROLES.sorted()
 
 val EMAIL_REGEX = Regex("^(?!.*\\.\\.)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$")
 

@@ -170,7 +170,7 @@ fun MasterPage() {
                 }
                 ElevatedCard (
                     onClick = {
-                        //TODO: Generate Repeating Deployment
+                        navController.navigate("RepeatingDeployment")
                     },
                     modifier = Modifier
                         .width(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp)
@@ -197,27 +197,64 @@ fun MasterPage() {
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
-            ElevatedCard (
-                onClick = {
-                    navController.navigate("SkillsTracker")
-                },
-                modifier = Modifier
-                    .size(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp),
-                colors = CardColors(
-                    containerColor = MaterialTheme.colorScheme.tertiary,
-                    contentColor = Color.Black,
-                    disabledContentColor = Color.Black,
-                    disabledContainerColor = MaterialTheme.colorScheme.tertiary
-                )
+            Row (
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Column (
+                ElevatedCard (
+                    onClick = {
+                        navController.navigate("SkillsTracker")
+                    },
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Bottom
+                        .width(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp)
+                        .height(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp),
+                    colors = CardColors(
+                        containerColor = MaterialTheme.colorScheme.tertiary,
+                        contentColor = Color.Black,
+                        disabledContentColor = Color.Black,
+                        disabledContainerColor = MaterialTheme.colorScheme.tertiary
+                    )
                 ) {
-                    Text("View Skills Tracker")
+                    Column (
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Bottom
+                    ) {
+
+                        Text(
+                            text = "View Skills Tracker",
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+                ElevatedCard (
+                    onClick = {
+                        navController.navigate("RolesList")
+                    },
+                    modifier = Modifier
+                        .width(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp)
+                        .height(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp),
+                    colors = CardColors(
+                        containerColor = MaterialTheme.colorScheme.tertiary,
+                        contentColor = Color.Black,
+                        disabledContentColor = Color.Black,
+                        disabledContainerColor = MaterialTheme.colorScheme.tertiary
+                    )
+                ) {
+                    Column (
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Bottom
+                    ) {
+                        Text(
+                            text = "View Roles",
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             }
         }

@@ -18,6 +18,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.depgen.model.Event
+import com.example.depgen.model.EventRole
 import com.example.depgen.model.Profile
 import com.example.depgen.model.Skill
 import com.example.depgen.ui.fragments.SkillsTrackerPage
@@ -27,10 +28,12 @@ import com.example.depgen.ui.fragments.LoginPage
 import com.example.depgen.ui.fragments.MasterPage
 import com.example.depgen.ui.fragments.MemberListPage
 import com.example.depgen.ui.fragments.NewEventPage
+import com.example.depgen.ui.fragments.NewRolePage
 import com.example.depgen.ui.fragments.NewSkillPage
 import com.example.depgen.ui.fragments.OneTimeDeploymentPage
 import com.example.depgen.ui.fragments.ProfilePage
 import com.example.depgen.ui.fragments.RepeatingDeploymentPage
+import com.example.depgen.ui.fragments.RolesListPage
 import com.example.depgen.ui.fragments.SettingsPage
 import com.example.depgen.ui.fragments.SignUpPage
 import com.example.depgen.ui.fragments.SkillPage
@@ -47,10 +50,26 @@ object Global {
     var profileList: ArrayList<Profile> = ArrayList()
     var eventList: ArrayList<Event> = ArrayList()
     var skillsList: ArrayList<Skill> = ArrayList()
+    var rolesList: ArrayList<EventRole> = ArrayList()
     var idx: Int = 0
 
     fun isAdmin() : Boolean {
         return this.profile == ADMIN
+    }
+
+    fun getSkillsString(): ArrayList<String> {
+        val ans = ArrayList<String>()
+        for (skill in skillsList) ans.add(skill.skill)
+        return ans
+    }
+
+    fun getSkillFromString(string: String) : Skill? {
+        for (skill in skillsList) {
+            if (skill.skill == string) {
+                return skill
+            }
+        }
+        return null
     }
 }
 
@@ -114,6 +133,12 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("Skill/{idx}") {
                         SkillPage(it.arguments!!.getString("idx")!!.toInt())
+                    }
+                    composable("RolesList") {
+                        RolesListPage()
+                    }
+                    composable("NewRole") {
+                        NewRolePage()
                     }
                 }
             }

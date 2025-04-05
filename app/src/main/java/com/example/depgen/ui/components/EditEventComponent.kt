@@ -64,7 +64,6 @@ import com.example.depgen.model.ComponentType
 import com.example.depgen.EVENT_TYPES
 import com.example.depgen.model.EventComponent
 import com.example.depgen.model.EventRole
-import com.example.depgen.ROLES
 import com.example.depgen.lazyTime
 import com.example.depgen.model.InvalidEventTypeException
 import com.example.depgen.model.Profile
@@ -141,7 +140,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
     var roleProfile by remember { mutableStateOf<Profile?>(null) }
     var compile by remember { mutableStateOf(true) }
 
-    if (selectedRoles.isEmpty()) for (role in ROLES) selectedRoles.add(false)
+    if (selectedRoles.isEmpty()) for (role in Global.rolesList) selectedRoles.add(false)
 
     Scaffold(
         topBar = {
@@ -473,7 +472,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                         modifier = Modifier.padding(vertical = 30.dp)
                                     )
                                     Column {
-                                        for (i in ROLES.indices) {
+                                        for (i in Global.rolesList.indices) {
                                             Row(
                                                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                                                 verticalAlignment = Alignment.CenterVertically,
@@ -486,7 +485,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                                         selectedRoles[i] = it
                                                     }
                                                 )
-                                                Text(ROLES[i].eventRole)
+                                                Text(Global.rolesList[i].eventRole)
                                             }
                                         }
                                         Spacer(modifier = Modifier.height(30.dp))
@@ -497,10 +496,10 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                             Button(
                                                 onClick = {
                                                     eventComponent.deployment[roleProfile]!!.clear()
-                                                    for (i in ROLES.indices) {
+                                                    for (i in Global.rolesList.indices) {
                                                         if (selectedRoles[i]) {
                                                             eventComponent.deployment[roleProfile]!!.add(
-                                                                ROLES[i]
+                                                                Global.rolesList[i]
                                                             )
                                                         }
                                                     }
@@ -630,9 +629,9 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                                         onClick = {
                                                             alertShowing = true
                                                             roleProfile = entry.key
-                                                            for (i in ROLES.indices) {
+                                                            for (i in Global.rolesList.indices) {
                                                                 selectedRoles[i] =
-                                                                    (ROLES[i] in entry.value)
+                                                                    (Global.rolesList[i] in entry.value)
                                                             }
                                                         },
                                                         colors = IconButtonColors(

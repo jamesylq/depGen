@@ -51,7 +51,7 @@ fun toHHMMTime(datetime: LocalDateTime): String {
 fun save() {
     Log.d("FileIO", "Initiated Save ${Global.profileList}")
     val file = File(ctxt.filesDir, "save.json")
-    val wrapper = Wrapper(Global.profileList, Global.eventList, Global.skillsList)
+    val wrapper = Wrapper(Global.profileList, Global.eventList, Global.skillsList, Global.rolesList)
 
     file.writeText(json.encodeToString(wrapper))
     Log.d("FileIO", json.encodeToString(wrapper))
@@ -76,9 +76,11 @@ fun load() {
         Global.eventList.clear()
         Global.profileList.clear()
         Global.skillsList.clear()
+        Global.rolesList.clear()
         Global.eventList.addAll(wrapper.events)
         Global.profileList.addAll(wrapper.profiles)
         Global.skillsList.addAll(wrapper.skills)
+        Global.rolesList.addAll(wrapper.roles)
         LOGGED_OUT = Global.profileList[0]
         ADMIN = Global.profileList[1]
 
@@ -87,6 +89,7 @@ fun load() {
         Global.profileList.clear()
         Global.eventList.clear()
         Global.skillsList.clear()
+        Global.rolesList.clear()
         Global.profileList.add(LOGGED_OUT)
         Global.profileList.add(ADMIN)
     }
@@ -101,4 +104,12 @@ fun lazyTime(s: String): String {
     if (s.length < 3 || s.contains(":")) return s
     val l = s.length
     return s.substring(0, l - 2) + ":" + s.substring(l - 2, l)
+}
+
+fun isInt(s: String): Boolean {
+    return s.isNotBlank() && s.toIntOrNull() != null
+}
+
+fun isNotInt(s: String): Boolean {
+    return s.isNotBlank() && s.toIntOrNull() == null
 }

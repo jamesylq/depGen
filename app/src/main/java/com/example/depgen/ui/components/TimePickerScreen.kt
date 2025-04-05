@@ -10,11 +10,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimePickerColors
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -43,7 +46,7 @@ fun TimePickerScreen(setPicking: (Int) -> Unit, setText: (String) -> Unit, title
     ) {
         ElevatedCard (
             colors = CardDefaults.cardColors(
-                containerColor = Color(220, 200, 200),
+                containerColor = Color.White,
                 contentColor = Color.Black
             ),
             modifier = Modifier
@@ -61,7 +64,25 @@ fun TimePickerScreen(setPicking: (Int) -> Unit, setText: (String) -> Unit, title
                     fontSize = 20.sp,
                     modifier = Modifier.padding(vertical = 30.dp)
                 )
-                TimePicker(state = timePickerState)
+                TimePicker(
+                    state = timePickerState,
+                    colors = TimePickerColors(
+                        clockDialColor = Color.LightGray,
+                        selectorColor = MaterialTheme.colorScheme.primary,
+                        containerColor = Color.White,
+                        periodSelectorBorderColor = Color.Transparent,
+                        clockDialSelectedContentColor = Color.Black,
+                        clockDialUnselectedContentColor = Color.Black,
+                        periodSelectorSelectedContentColor = Color.Black,
+                        periodSelectorUnselectedContentColor = Color.Black,
+                        periodSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
+                        periodSelectorUnselectedContainerColor = Color.LightGray,
+                        timeSelectorSelectedContentColor = Color.Black,
+                        timeSelectorUnselectedContentColor = Color.Black,
+                        timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
+                        timeSelectorUnselectedContainerColor = Color.LightGray
+                    )
+                )
                 Spacer(modifier = Modifier.weight(1f))
                 Row (
                     modifier = Modifier.fillMaxWidth(),
@@ -74,7 +95,13 @@ fun TimePickerScreen(setPicking: (Int) -> Unit, setText: (String) -> Unit, title
                             setText("$hr:$min")
                             setPicking(0)
                         },
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(16.dp),
+                        colors = ButtonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = Color.Black,
+                            disabledContainerColor = Color.Black,
+                            disabledContentColor = Color.Black
+                        )
                     ) {
                         Text("Done")
                     }

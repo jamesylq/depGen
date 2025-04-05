@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.depgen.SORTED_ROLES
+import com.example.depgen.Global
 import com.example.depgen.model.Navigation
 import com.example.depgen.ui.components.CardButton
 import com.example.depgen.ui.components.DefaultTopAppBar
@@ -26,7 +26,7 @@ import com.example.depgen.ui.components.QuantityPicker
 @Composable
 fun OneTimeDeploymentPage() {
     val roleNums = remember { mutableStateListOf<Int>() }
-    if (roleNums.isEmpty()) for (role in SORTED_ROLES) roleNums.add(role.minCount)
+    if (roleNums.isEmpty()) for (role in Global.rolesList) roleNums.add(role.minCount)
 
     Scaffold (
         topBar = {
@@ -53,18 +53,18 @@ fun OneTimeDeploymentPage() {
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier.weight(1f)
             ) {
-                for (i in SORTED_ROLES.indices) {
+                for (i in Global.rolesList.indices) {
                     item {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-                            Text(SORTED_ROLES[i].eventRole)
+                            Text(Global.rolesList[i].eventRole)
                             QuantityPicker(
                                 { roleNums[i] = it },
-                                initialQty = SORTED_ROLES[i].minCount,
-                                minQty = SORTED_ROLES[i].minCount,
-                                maxQty = SORTED_ROLES[i].maxCount
+                                initialQty = Global.rolesList[i].minCount,
+                                minQty = Global.rolesList[i].minCount,
+                                maxQty = Global.rolesList[i].maxCount
                             )
                         }
                     }

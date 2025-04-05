@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.depgen.isInt
 
 
 @Composable
@@ -51,7 +52,7 @@ fun QuantityPicker(onUpdate: (Int) -> Unit, initialQty: Int = 0, minQty: Int = 0
             value = tf,
             onValueChange = {
                 tf = it
-                if (tf.toIntOrNull() != null) {
+                if (isInt(tf)) {
                     onUpdate(maxOf(minOf(tf.toInt(), maxQty), minQty))
                 }
             },
