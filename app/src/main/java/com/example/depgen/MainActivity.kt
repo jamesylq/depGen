@@ -6,7 +6,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -95,7 +94,6 @@ class MainActivity : ComponentActivity() {
                         MasterPage()
                     }
                     composable("Profile/{idx}/{nxt}") {
-                        Log.d("DEBUG", it.arguments!!.getString("nxt")!!)
                         ProfilePage(
                             it.arguments!!.getString("idx")!!.toInt(),
                             it.arguments!!.getString("nxt")!!.toInt()

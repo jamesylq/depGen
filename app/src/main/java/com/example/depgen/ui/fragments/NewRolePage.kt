@@ -1,6 +1,7 @@
 package com.example.depgen.ui.fragments
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,11 +9,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Square
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.CardColors
@@ -30,12 +33,15 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,6 +49,7 @@ import com.example.depgen.AT_LEAST
 import com.example.depgen.AT_MOST
 import com.example.depgen.CONDITION_TYPES
 import com.example.depgen.Global
+import com.example.depgen.colorToList
 import com.example.depgen.isNotInt
 import com.example.depgen.model.Condition
 import com.example.depgen.model.EventRole
@@ -52,6 +59,9 @@ import com.example.depgen.save
 import com.example.depgen.ui.components.CardButton
 import com.example.depgen.ui.components.ComboBox
 import com.example.depgen.ui.components.ConfirmationScreen
+import com.example.depgen.ui.components.IntegerTextField
+import com.example.depgen.ui.components.colorPicker.HsvColorPicker
+import com.example.depgen.ui.components.colorPicker.rememberColorPickerController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,6 +78,10 @@ fun NewRolePage() {
     var selectedSkill by remember { mutableStateOf("") }
     var skillLevel by remember { mutableStateOf("") }
     val prerequisites = remember { mutableMapOf<Skill, ArrayList<Condition?>>() }
+    var priority by remember { mutableIntStateOf(0) }
+    var priorityError by remember { mutableStateOf(false) }
+    var selectedColor by remember { mutableStateOf(Color.Black) }
+    var selectingColor by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -251,6 +265,7 @@ fun NewRolePage() {
                                     if (works) {
                                         if (!prerequisites.containsKey(skill!!)) prerequisites[skill] = ArrayList()
                                         prerequisites[skill]!!.add(condition!!)
+                                        addingPreReq = false
                                     }
                                 },
                                 colors = CardDefaults.cardColors(
@@ -262,56 +277,146 @@ fun NewRolePage() {
                     }
                 }
             }
+        } else if (selectingColor) {
+            BasicAlertDialog(
+                onDismissRequest = {
+                    selectingColor = false
+                }
+            ) {
+                ElevatedCard {
+                    Column (
+                        modifier = Modifier.padding(50.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Text(
+                            text = "Select Role Color",
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Column(
+                            modifier = Modifier.size(LocalConfiguration.current.screenWidthDp.dp)
+                        ) {
+                            val controller = rememberColorPickerController()
+                            HsvColorPicker(
+                                modifier = Modifier,
+                                controller = controller,
+                                onColorChanged = { selectedColor = it.color },
+                                initialColor = selectedColor,
+                                drawOnPosSelected = {
+                                    drawCircle(
+                                        color = selectedColor,
+                                        radius = 20.0f,
+                                        center = controller.selectedPoint.value
+                                    )
+                                    drawCircle(
+                                        color = Color.Black,
+                                        radius = 20.0f,
+                                        center = controller.selectedPoint.value,
+                                        style = Stroke(4f)
+                                    )
+                                }
+                            )
+                        }
+                        CardButton(
+                            text = "Done",
+                            onClick = { selectingColor = false },
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primary
+                            )
+                        )
+                    }
+                }
+            }
         }
 
-        Column(
+        Column (
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
-            Text(
-                text = "Role Name",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 15.dp)
-            )
-            OutlinedTextField(
-                value = name,
-                onValueChange = {
-                    name = it
-                    nameError = false
-                },
-                placeholder = { Text("Enter Role Name") },
-                modifier = Modifier.fillMaxWidth(),
-                supportingText = {
-                    if (nameError) {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = "Name cannot be empty!",
-                            color = MaterialTheme.colorScheme.error
-                        )
-                    }
-                },
-                trailingIcon = {
-                    if (nameError) {
-                        Icon(
-                            Icons.Rounded.Warning,
-                            "",
-                            tint = MaterialTheme.colorScheme.error
-                        )
-                    }
-                }
-            )
-            Text(
-                text = "Role Prerequisites",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .padding(bottom = 5.dp, top = 25.dp)
-            )
-            LazyColumn(
+            LazyColumn (
                 modifier = Modifier.weight(1f)
             ) {
+                item {
+                    Text(
+                        text = "Role Name",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 15.dp)
+                    )
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = {
+                            name = it
+                            nameError = false
+                        },
+                        placeholder = { Text("Enter Role Name") },
+                        modifier = Modifier.fillMaxWidth(),
+                        supportingText = {
+                            if (nameError) {
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = "Name cannot be empty!",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        },
+                        trailingIcon = {
+                            if (nameError) {
+                                Icon(
+                                    Icons.Rounded.Warning,
+                                    "",
+                                    tint = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        }
+                    )
+                    Text(
+                        text = "Role Priority",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(bottom = 5.dp, top = 25.dp)
+                    )
+                    Text(
+                        text = "Role priority refers to how important a role is to an event, with 0 being most important.",
+                        modifier = Modifier.padding(bottom = 10.dp)
+                    )
+                    IntegerTextField(
+                        fieldName = "Role Priority",
+                        onFieldEdit = { priority = it },
+                        onError = { priorityError = it },
+                        modifier = Modifier.fillMaxWidth(),
+                        default = "0"
+                    )
+                    Text(
+                        text = "Role Color",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(bottom = 5.dp, top = 25.dp)
+                    )
+                    Row {
+                        Text("Selected Role Color: ")
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            imageVector = Icons.Default.Square,
+                            contentDescription = "",
+                            tint = selectedColor,
+                            modifier = Modifier.clickable {
+                                selectingColor = true
+                            }
+                        )
+                    }
+                    Text(
+                        text = "Role Prerequisites",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(bottom = 5.dp, top = 25.dp)
+                    )
+                }
                 for (entry in prerequisites) {
                     item {
                         ElevatedCard(
@@ -342,6 +447,7 @@ fun NewRolePage() {
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(30.dp))
             CardButton(
                 text = "Add Role Prerequisite",
                 onClick = {
@@ -365,11 +471,13 @@ fun NewRolePage() {
                     Global.rolesList.add(
                         EventRole(
                             eventRole = name,
-                            priority = 0,
+                            priority = priority,
+                            color = colorToList(selectedColor),
                             prerequisites = HashMap(prerequisites)
                         )
                     )
                     save()
+                    navController.navigate("RolesList")
                 },
                 colors = CardColors(
                     containerColor = MaterialTheme.colorScheme.primary,
