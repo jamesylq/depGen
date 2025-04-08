@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
 import com.example.depgen.model.Navigation
 import com.example.depgen.model.Skill
-import com.example.depgen.navController
+import com.example.depgen.safeNavigate
 import com.example.depgen.view.components.ConfirmationScreen
 import com.example.depgen.view.components.DefaultTopAppBar
 
@@ -52,7 +52,7 @@ fun SkillsTrackerPage() {
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                navController.navigate("NewSkill")
+                safeNavigate("NewSkill")
             }) {
                 Icon(Icons.Filled.Add, "")
             }
@@ -97,7 +97,7 @@ fun SkillsTrackerPage() {
                                 contentColor = Color.Black
                             ),
                             onClick = {
-                                navController.navigate("Skill/$i")
+                                safeNavigate("Skill/$i")
                             }
                         ) {
                             Column(
@@ -139,7 +139,7 @@ fun SkillsTrackerPage() {
                                         fontWeight = FontWeight.Bold
                                     )
                                     Text(
-                                        text = "1 to ${skill.maxLevel} (Default: ${skill.defaultLevel})",
+                                        text = "0 to ${skill.maxLevel} (Default: ${skill.defaultLevel})",
                                         modifier = Modifier.padding(start = 5.dp),
                                     )
                                 }

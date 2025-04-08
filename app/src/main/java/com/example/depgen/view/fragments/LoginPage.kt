@@ -37,7 +37,7 @@ import com.example.depgen.LOGGED_OUT
 import com.example.depgen.R
 import com.example.depgen.encryptSHA256
 import com.example.depgen.findProfile
-import com.example.depgen.navController
+import com.example.depgen.safeNavigate
 import com.example.depgen.switchProfile
 import com.example.depgen.view.components.CardButton
 
@@ -139,7 +139,7 @@ fun LoginPage() {
                             usernameError = "Username Not Found!"
                         } else if (profile.password == password.text.toString().encryptSHA256()) {
                             switchProfile(profile)
-                            navController.navigate("Master")
+                            safeNavigate("Master")
                         } else {
                             passwordError = "Incorrect Password!"
                         }
@@ -167,7 +167,7 @@ fun LoginPage() {
                     "Sign Up",
                     modifier = Modifier
                         .clickable {
-                            navController.navigate("SignUp")
+                            safeNavigate("SignUp")
                         },
 //                    textDecoration = TextDecoration.Underline,
                     fontWeight = FontWeight.Bold,

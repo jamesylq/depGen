@@ -30,7 +30,7 @@ import com.example.depgen.Global
 import com.example.depgen.LOGGED_OUT
 import com.example.depgen.R
 import com.example.depgen.model.Navigation
-import com.example.depgen.navController
+import com.example.depgen.safeNavigate
 import com.example.depgen.switchProfile
 import com.example.depgen.view.components.CardButton
 
@@ -61,7 +61,7 @@ fun ProfilePage(idx: Int, prev: String) {
                 title = {},
                 actions = {
                     IconButton(onClick = {
-                        navController.navigate(prev)
+                        safeNavigate(prev)
                     }) {
                         Icon(Icons.Default.Close, "")
                     }
@@ -104,7 +104,7 @@ fun ProfilePage(idx: Int, prev: String) {
                     text = "Sign Out",
                     onClick = {
                         switchProfile(LOGGED_OUT)
-                        navController.navigate("Login")
+                        safeNavigate("Login")
                     }
                 )
                 Spacer(modifier = Modifier.height(15.dp))
@@ -112,7 +112,7 @@ fun ProfilePage(idx: Int, prev: String) {
             CardButton(
                 text = "Settings",
                 onClick = {
-                    navController.navigate("Settings")
+                    safeNavigate("Settings")
                 }
             )
         }

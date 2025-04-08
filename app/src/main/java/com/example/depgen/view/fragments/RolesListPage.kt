@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
 import com.example.depgen.model.EventRole
 import com.example.depgen.model.Navigation
-import com.example.depgen.navController
+import com.example.depgen.safeNavigate
 import com.example.depgen.view.components.ConfirmationScreen
 import com.example.depgen.view.components.DefaultTopAppBar
 import com.example.depgen.view.components.EventRoleRender
@@ -53,7 +53,7 @@ fun RolesListPage() {
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                navController.navigate("NewRole")
+                safeNavigate("NewRole")
             }) {
                 Icon(Icons.Filled.Add, "")
             }
@@ -130,7 +130,7 @@ fun RolesListPage() {
                             Spacer(modifier = Modifier.weight(1f))
                             IconButton(
                                 onClick = {
-
+                                    //TODO: Make Role Prerequisites Editable
                                 }
                             ) {
                                 Icon(Icons.Default.Edit, "")
@@ -147,10 +147,10 @@ fun RolesListPage() {
                                         text = "${entry.key.skill} Skill",
                                         fontWeight = FontWeight.SemiBold
                                     )
-                                    for (i in entry.value.indices) {
+                                    for (j in entry.value.indices) {
                                         DisplayRequirement(
                                             entry.value,
-                                            i,
+                                            j,
                                             deleteShowing = false
                                         )
                                     }

@@ -4,6 +4,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.graphics.Color
+import com.example.depgen.model.EventRole
 import com.example.depgen.model.Profile
 import com.example.depgen.model.Wrapper
 import java.io.File
@@ -11,7 +12,6 @@ import java.security.MessageDigest
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
-import kotlin.jvm.Throws
 
 
 fun switchProfile(newProfile: Profile) {
@@ -34,6 +34,15 @@ fun findProfile(username: String) : Profile {
         }
     }
     return LOGGED_OUT
+}
+
+fun findRole(role: String): EventRole? {
+    for (eventRole in Global.rolesList) {
+        if (eventRole.eventRole == role) {
+            return eventRole
+        }
+    }
+    return null
 }
 
 @Throws(DateTimeParseException::class)
@@ -112,4 +121,8 @@ fun isInt(s: String): Boolean {
 
 fun isNotInt(s: String): Boolean {
     return s.isNotBlank() && s.toIntOrNull() == null
+}
+
+fun safeNavigate(dest: String) {
+    navController.navigate(dest) { popUpTo(dest) }
 }

@@ -16,7 +16,7 @@ import com.example.depgen.LOGGED_OUT
 import com.example.depgen.clear
 import com.example.depgen.load
 import com.example.depgen.model.Navigation
-import com.example.depgen.navController
+import com.example.depgen.safeNavigate
 import com.example.depgen.switchProfile
 import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.ConfirmationScreen
@@ -44,7 +44,7 @@ fun SettingsPage() {
                 {
                     Global.profileList.removeAt(Global.idx)
                     switchProfile(LOGGED_OUT)
-                    navController.navigate("Login")
+                    safeNavigate("Login")
                     confirmationShowing = false
                 },
                 {

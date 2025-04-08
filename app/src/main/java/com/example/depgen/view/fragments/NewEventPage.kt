@@ -36,11 +36,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.depgen.Global
 import com.example.depgen.EVENT_TYPES
+import com.example.depgen.Global
 import com.example.depgen.model.Event
 import com.example.depgen.model.EventComponent
-import com.example.depgen.navController
+import com.example.depgen.safeNavigate
 import com.example.depgen.save
 import com.example.depgen.toast
 import com.example.depgen.view.components.CardButton
@@ -137,7 +137,7 @@ fun NewEventPage() {
             if (confirmationShowing) {
                 ConfirmationScreen(
                     {
-                        navController.navigate("EventList")
+                        safeNavigate("EventList")
                         confirmationShowing = false
                     },
                     {
@@ -293,12 +293,12 @@ fun NewEventPage() {
                             toast("There must be at least 1 Event Component!")
                         } else {
                             Global.eventList.add(newEvent.value)
-                            navController.navigate("EventList")
+                            safeNavigate("EventList")
                             save()
                         }
                     },
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primary
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
                     )
                 )
             }

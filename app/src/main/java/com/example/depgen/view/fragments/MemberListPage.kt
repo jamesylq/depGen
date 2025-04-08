@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
 import com.example.depgen.model.Navigation
 import com.example.depgen.view.components.MemberSearchScreen
-import com.example.depgen.navController
+import com.example.depgen.safeNavigate
 import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.DefaultTopAppBar
 
@@ -40,7 +40,7 @@ fun MemberListPage() {
             Spacer(modifier = Modifier.height(20.dp))
             MemberSearchScreen(
                 onClickMember = {
-                    navController.navigate("Profile/$it/${Navigation.MEMBERLIST}")
+                    safeNavigate("Profile/$it/${Navigation.MEMBERLIST}")
                 },
                 errorMessage = "Sorry, we didn't find any profiles matching your search query!"
             )

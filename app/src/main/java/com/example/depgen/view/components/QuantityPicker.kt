@@ -21,16 +21,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
 import com.example.depgen.isInt
 
 
 @Composable
-fun QuantityPicker(onUpdate: (Int) -> Unit, initialQty: Int = 0, minQty: Int = 0, maxQty: Int = Int.MAX_VALUE) {
+fun QuantityPicker(onUpdate: (Int) -> Unit, initialQty: Int = 0, minQty: Int = 0, maxQty: Int = Int.MAX_VALUE, scale: Float = 1f) {
     var qty by remember { mutableIntStateOf(initialQty) }
     var tf by remember { mutableStateOf("$initialQty") }
 
-    Row (verticalAlignment = Alignment.CenterVertically) {
+    Row (
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.scale(scale)
+    ) {
         IconButton(
             onClick = {
                 onUpdate(--qty)

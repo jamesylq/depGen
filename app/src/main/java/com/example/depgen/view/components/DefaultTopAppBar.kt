@@ -15,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.depgen.Global
-import com.example.depgen.navController
+import com.example.depgen.safeNavigate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,21 +29,20 @@ fun DefaultTopAppBar(prev: String, curr: Int) {
             Text(
                 text = Global.profile.username,
                 modifier = Modifier.clickable {
-                    navController.navigate("Profile/${Global.idx}/$curr")
+                    safeNavigate("Profile/${Global.idx}/$curr")
                 }
             )
         },
         navigationIcon = {
             IconButton(onClick = {
-                //TODO: FIX THE NAVIGATION
-                navController.navigate(prev)
+                safeNavigate(prev)
             }) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, "")
             }
         },
         actions = {
             IconButton(onClick = {
-                navController.navigate("Profile/${Global.idx}/$curr")
+                safeNavigate("Profile/${Global.idx}/$curr")
             }) {
                 Icon(Icons.Default.AccountCircle, "")
             }

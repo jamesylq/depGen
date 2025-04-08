@@ -42,7 +42,7 @@ import com.example.depgen.model.ComponentType
 import com.example.depgen.model.Event
 import com.example.depgen.model.EventComponent
 import com.example.depgen.model.Navigation
-import com.example.depgen.navController
+import com.example.depgen.safeNavigate
 import com.example.depgen.save
 import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.ConfirmationScreen
@@ -77,7 +77,7 @@ fun EventListPage() {
             },
             floatingActionButton = {
                 FloatingActionButton(onClick = {
-                    navController.navigate("NewEvent")
+                    safeNavigate("NewEvent")
                 }) {
                     Icon(Icons.Filled.Add, "")
                 }
@@ -208,7 +208,6 @@ fun EventListPage() {
                                                                 onClick = {
                                                                     editingComponent = component
                                                                     editingComponentType = entry.key
-    //                                                    navController.navigate("Event/${i}")
                                                                 }
                                                             ) {
                                                                 Icon(Icons.Default.Edit, "")

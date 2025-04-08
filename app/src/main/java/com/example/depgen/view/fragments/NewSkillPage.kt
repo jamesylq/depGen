@@ -35,7 +35,7 @@ import com.example.depgen.Global
 import com.example.depgen.isInt
 import com.example.depgen.isNotInt
 import com.example.depgen.model.Skill
-import com.example.depgen.navController
+import com.example.depgen.safeNavigate
 import com.example.depgen.save
 import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.ConfirmationScreen
@@ -80,7 +80,7 @@ fun NewSkillPage() {
         if (confirmationShowing) {
             ConfirmationScreen(
                 {
-                    navController.navigate("SkillsTracker")
+                    safeNavigate("SkillsTracker")
                     confirmationShowing = false
                 },
                 {
@@ -214,7 +214,7 @@ fun NewSkillPage() {
                         nameError = true
                     } else if (isInt(maxLvl) && isInt(defLvl)) {
                         Global.skillsList.add(Skill(name, maxLvl.toInt(), defLvl.toInt()))
-                        navController.navigate("SkillsTracker")
+                        safeNavigate("SkillsTracker")
                     }
                     save()
                 },

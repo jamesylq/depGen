@@ -34,14 +34,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.depgen.Global
-import com.example.depgen.R
 import com.example.depgen.EMAIL_REGEX
+import com.example.depgen.Global
 import com.example.depgen.LOGGED_OUT
+import com.example.depgen.R
 import com.example.depgen.encryptSHA256
 import com.example.depgen.findProfile
 import com.example.depgen.model.Profile
-import com.example.depgen.navController
+import com.example.depgen.safeNavigate
 import com.example.depgen.save
 import com.example.depgen.toast
 import com.example.depgen.view.components.CardButton
@@ -192,7 +192,7 @@ fun SignUpPage() {
                         )
                         save()
                         toast("Signed up account $username!")
-                        navController.navigate("Login")
+                        safeNavigate("Login")
                     }
                 }
             )
@@ -206,7 +206,7 @@ fun SignUpPage() {
                     "Already have an Account?   ",
                     modifier = Modifier
                         .clickable {
-                            navController.navigate("Login")
+                            safeNavigate("Login")
                         },
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
@@ -215,10 +215,10 @@ fun SignUpPage() {
                     "Log In",
                     modifier = Modifier
                         .clickable {
-                            navController.navigate("Login")
+                            safeNavigate("Login")
                         },
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primaryContainer
                 )
             }
         }

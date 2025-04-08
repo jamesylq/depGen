@@ -54,7 +54,7 @@ import com.example.depgen.isNotInt
 import com.example.depgen.model.Condition
 import com.example.depgen.model.EventRole
 import com.example.depgen.model.Skill
-import com.example.depgen.navController
+import com.example.depgen.safeNavigate
 import com.example.depgen.save
 import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.ComboBox
@@ -114,7 +114,7 @@ fun NewRolePage() {
         if (exitConfirmationShowing) {
             ConfirmationScreen(
                 {
-                    navController.navigate("RolesList")
+                    safeNavigate("RolesList")
                     exitConfirmationShowing = false
                 },
                 {
@@ -494,7 +494,7 @@ fun NewRolePage() {
                         )
                     )
                     save()
-                    navController.navigate("RolesList")
+                    safeNavigate("RolesList")
                 },
                 colors = CardColors(
                     containerColor = MaterialTheme.colorScheme.primary,

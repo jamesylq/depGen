@@ -68,7 +68,7 @@ fun RepeatingDeploymentPage() {
 
                 },
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
             )
             Spacer(modifier = Modifier.height(10.dp))

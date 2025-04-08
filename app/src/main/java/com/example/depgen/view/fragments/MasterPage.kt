@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
 import com.example.depgen.model.Navigation
-import com.example.depgen.navController
+import com.example.depgen.safeNavigate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,7 +51,7 @@ fun MasterPage() {
                     Text(
                         text = Global.profile.username,
                         modifier = Modifier.clickable {
-                            navController.navigate("Profile/${Global.idx}/${Navigation.MASTER}")
+                            safeNavigate("Profile/${Global.idx}/${Navigation.MASTER}")
                         }
                     )
                 },
@@ -64,7 +64,7 @@ fun MasterPage() {
                 },
                 actions = {
                     IconButton(onClick = {
-                        navController.navigate("Profile/${Global.idx}/${Navigation.MASTER}")
+                        safeNavigate("Profile/${Global.idx}/${Navigation.MASTER}")
                     }) {
                         Icon(Icons.Default.AccountCircle, "")
                     }
@@ -89,7 +89,7 @@ fun MasterPage() {
             ) {
                 ElevatedCard (
                     onClick = {
-                        navController.navigate("MemberList")
+                        safeNavigate("MemberList")
                     },
                     modifier = Modifier
                         .size(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp),
@@ -112,7 +112,7 @@ fun MasterPage() {
                 }
                 ElevatedCard (
                     onClick = {
-                        navController.navigate("EventList")
+                        safeNavigate("EventList")
                     },
                     modifier = Modifier
                         .width(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp)
@@ -142,7 +142,7 @@ fun MasterPage() {
             ) {
                 ElevatedCard (
                     onClick = {
-                        navController.navigate("OneTimeDeployment")
+                        safeNavigate("OneTimeDeployment")
                     },
                     modifier = Modifier
                         .width(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp)
@@ -170,7 +170,7 @@ fun MasterPage() {
                 }
                 ElevatedCard (
                     onClick = {
-                        navController.navigate("RepeatingDeployment")
+                        safeNavigate("RepeatingDeployment")
                     },
                     modifier = Modifier
                         .width(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp)
@@ -203,7 +203,7 @@ fun MasterPage() {
             ) {
                 ElevatedCard (
                     onClick = {
-                        navController.navigate("SkillsTracker")
+                        safeNavigate("SkillsTracker")
                     },
                     modifier = Modifier
                         .width(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp)
@@ -231,7 +231,7 @@ fun MasterPage() {
                 }
                 ElevatedCard (
                     onClick = {
-                        navController.navigate("RolesList")
+                        safeNavigate("RolesList")
                     },
                     modifier = Modifier
                         .width(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp)

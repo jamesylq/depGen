@@ -2,7 +2,6 @@ package com.example.depgen.view.components
 
 import android.os.Build
 import android.util.Log
-import android.widget.DatePicker
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -57,14 +56,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.depgen.EVENT_TYPES
 import com.example.depgen.Global
 import com.example.depgen.R
-import com.example.depgen.ctxt
+import com.example.depgen.lazyTime
 import com.example.depgen.model.ComponentType
-import com.example.depgen.EVENT_TYPES
 import com.example.depgen.model.EventComponent
 import com.example.depgen.model.EventRole
-import com.example.depgen.lazyTime
 import com.example.depgen.model.InvalidEventTypeException
 import com.example.depgen.model.Profile
 import com.example.depgen.save
@@ -73,7 +71,6 @@ import com.example.depgen.toNaturalDateTime
 import com.example.depgen.toast
 import com.example.depgen.view.fragments.removeLetters
 import java.time.format.DateTimeParseException
-import java.util.Calendar
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -95,8 +92,6 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
             }
         }
     }
-
-    val calendar = Calendar.getInstance()
 
     var title by remember { mutableStateOf("") }
     var day by remember {
@@ -134,6 +129,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
     var endTime by remember { mutableStateOf(if (eventComponent.end != "") toHHMMTime(eventComponent.getEnd()) else "") }
     var componentType: ComponentType? by remember { mutableStateOf(comType) }
 
+    var pickingDate by remember { mutableStateOf(false) }
     var alertShowing by remember { mutableStateOf(false) }
     var confirmationShowing by remember { mutableStateOf(false) }
     val selectedRoles = remember { mutableStateListOf<Boolean>() }
@@ -184,22 +180,37 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
             )
         }
     ) { innerPadding ->
-        if (confirmationShowing) {
-            ConfirmationScreen(
-                {
-                    onExit(null)
-                    confirmationShowing = false
-                },
-                {}
-            )
-
-        }
-
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
+            if (confirmationShowing) {
+                ConfirmationScreen(
+                    {
+                        onExit(null)
+                        confirmationShowing = false
+                    },
+                    {
+                        confirmationShowing = false
+                    }
+                )
+
+            }
+
+            if (pickingDate) {
+                DatePickerScreen (
+                    onDateSelected = {
+                        day = it.dayOfMonth.toString().padStart(2, '0')
+                        month = it.monthValue.toString().padStart(2, '0')
+                        year = it.year.toString().padStart(4, '0')
+                    },
+                    onDismiss = {
+                        pickingDate = false
+                    }
+                )
+            }
+
             if (picking == 1) {
                 TimePickerScreen(
                     setPicking = { picking = it },
@@ -300,25 +311,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                         )
                         IconButton(
                             onClick = {
-                                val datePickerDialog = android.app.DatePickerDialog(
-                                    ctxt,
-                                    { _:
-                                      DatePicker,
-                                      selectedYear: Int,
-                                      selectedMonth: Int,
-                                      selectedDay: Int
-                                        ->
-                                        run {
-                                            day = selectedDay.toString().padStart(2, '0')
-                                            month = "${selectedMonth + 1}".padStart(2, '0')
-                                            year = selectedYear.toString().padStart(4, '0')
-                                        }
-                                    },
-                                    calendar.get(Calendar.YEAR),
-                                    calendar.get(Calendar.MONTH),
-                                    calendar.get(Calendar.DAY_OF_MONTH)
-                                )
-                                datePickerDialog.show()
+                                pickingDate = true
                             },
                             modifier = Modifier.width(50.dp)
                         ) {
@@ -439,7 +432,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                             }
                         },
                         colors = CardDefaults.cardColors(
-                            MaterialTheme.colorScheme.primary
+                            MaterialTheme.colorScheme.primaryContainer
                         )
                     )
                 }

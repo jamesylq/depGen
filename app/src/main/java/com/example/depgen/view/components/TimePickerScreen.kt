@@ -67,20 +67,20 @@ fun TimePickerScreen(setPicking: (Int) -> Unit, setText: (String) -> Unit, title
                 TimePicker(
                     state = timePickerState,
                     colors = TimePickerColors(
-                        clockDialColor = Color.LightGray,
-                        selectorColor = MaterialTheme.colorScheme.primary,
+                        clockDialColor = MaterialTheme.colorScheme.secondaryContainer,
+                        selectorColor = MaterialTheme.colorScheme.tertiary,
                         containerColor = Color.White,
-                        periodSelectorBorderColor = Color.Transparent,
+                        periodSelectorBorderColor = Color.Black,
                         clockDialSelectedContentColor = Color.Black,
                         clockDialUnselectedContentColor = Color.Black,
                         periodSelectorSelectedContentColor = Color.Black,
                         periodSelectorUnselectedContentColor = Color.Black,
-                        periodSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
-                        periodSelectorUnselectedContainerColor = Color.LightGray,
+                        periodSelectorSelectedContainerColor = MaterialTheme.colorScheme.tertiary,
+                        periodSelectorUnselectedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                         timeSelectorSelectedContentColor = Color.Black,
                         timeSelectorUnselectedContentColor = Color.Black,
-                        timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
-                        timeSelectorUnselectedContainerColor = Color.LightGray
+                        timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.tertiary,
+                        timeSelectorUnselectedContainerColor = MaterialTheme.colorScheme.secondaryContainer
                     )
                 )
                 Spacer(modifier = Modifier.weight(1f))
