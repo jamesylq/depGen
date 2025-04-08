@@ -101,12 +101,12 @@ fun NewEventPage() {
         EditEventComponent(
             eventComponent = editingEventComponent!!,
             onExit = {
-                if (it != currType) {
+                if (it != currType && it != null) {
                     newEvent.value.components[currType]!!.remove(editingEventComponent!!)
                     if (newEvent.value.components[currType]!!.isEmpty()) {
                         newEvent.value.components.remove(currType)
                     }
-                    if (!newEvent.value.components.containsKey(it!!)) {
+                    if (!newEvent.value.components.containsKey(it)) {
                         newEvent.value.components[it] = ArrayList()
                     }
                     newEvent.value.components[it]!!.add(editingEventComponent!!)

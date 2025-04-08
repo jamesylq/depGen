@@ -64,13 +64,13 @@ fun EventListPage() {
         EditEventComponent(
             editingComponent!!,
             {
-                if (it != editingComponentType) {
+                if (it != null && it != editingComponentType) {
                     val components = editingComponent!!.getEvent()!!.components
                     components[editingComponentType]!!.remove(editingComponent!!)
                     if (components[editingComponentType]!!.isEmpty()) {
                         components.remove(editingComponentType)
                     }
-                    if (!components.containsKey(it!!)) {
+                    if (!components.containsKey(it)) {
                         components[it] = ArrayList()
                     }
                     components[it]!!.add(editingComponent!!)

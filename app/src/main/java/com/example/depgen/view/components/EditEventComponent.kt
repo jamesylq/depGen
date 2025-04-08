@@ -1,14 +1,11 @@
 package com.example.depgen.view.components
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,13 +17,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.NewLabel
+import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ElevatedCard
@@ -59,6 +58,7 @@ import androidx.compose.ui.unit.sp
 import com.example.depgen.EVENT_TYPES
 import com.example.depgen.Global
 import com.example.depgen.R
+import com.example.depgen.findRole
 import com.example.depgen.lazyTime
 import com.example.depgen.model.ComponentType
 import com.example.depgen.model.EventComponent
@@ -73,7 +73,7 @@ import com.example.depgen.view.fragments.removeLetters
 import java.time.format.DateTimeParseException
 
 @RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) -> Unit, comType: ComponentType?) {
     var screen by remember { mutableStateOf("addComponent-1") }
@@ -126,17 +126,43 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
             ) else ""
         )
     }
-    var endTime by remember { mutableStateOf(if (eventComponent.end != "") toHHMMTime(eventComponent.getEnd()) else "") }
+    var endTime by remember {
+        mutableStateOf(
+            if (eventComponent.end != "") toHHMMTime(
+                eventComponent.getEnd()
+            ) else ""
+        )
+    }
+
     var componentType: ComponentType? by remember { mutableStateOf(comType) }
 
     var pickingDate by remember { mutableStateOf(false) }
-    var alertShowing by remember { mutableStateOf(false) }
     var confirmationShowing by remember { mutableStateOf(false) }
     val selectedRoles = remember { mutableStateListOf<Boolean>() }
-    var roleProfile by remember { mutableStateOf<Profile?>(null) }
-    var compile by remember { mutableStateOf(true) }
+    var recompile by remember { mutableIntStateOf(1) }
+    var deployedMembersCount by remember { mutableIntStateOf(0) }
 
-    if (selectedRoles.isEmpty()) for (role in Global.rolesList) selectedRoles.add(false)
+    val rolesNeeded = remember { mutableMapOf<EventRole, Int>() }
+    val membersDeployed = remember { mutableMapOf<EventRole, ArrayList<Profile>>() }
+    val rolesNotSelected = remember { mutableStateListOf<String>() }
+    var searchingRole by remember { mutableStateOf(false) }
+    var selectedRole by remember { mutableStateOf("") }
+    var roleError by remember { mutableStateOf("") }
+    var appendingRole by remember { mutableStateOf<EventRole?>(null) }
+
+    if (selectedRoles.isEmpty()) {
+        membersDeployed.clear()
+        rolesNeeded.clear()
+
+        for (role in Global.rolesList) selectedRoles.add(false)
+        for (entry in eventComponent.rolesRequired) rolesNeeded[entry.key] = entry.value
+        for (entry in eventComponent.deployment) {
+            for (role in entry.value) {
+                if (!membersDeployed.contains(role)) membersDeployed[role] = ArrayList()
+                membersDeployed[role]!!.add(entry.key)
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -149,7 +175,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                             onClick = {
                                 when (screen) {
                                     "addMember" -> {
-                                        screen = "addComponent-2"
+                                        screen = "addComponent-3"
                                     }
 
                                     "addComponent-1" -> {
@@ -160,12 +186,23 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                         screen = "addComponent-1"
                                     }
 
+                                    "addComponent-3" -> {
+                                        screen = "addComponent-2"
+                                    }
+
                                     else -> {}
                                 }
                             },
                             modifier = Modifier.height(30.dp)
                         ) {
-                            Icon(Icons.Default.Close, "")
+                            Icon(
+                                imageVector = when (screen) {
+                                    "addComponent-2", "addComponent-3" -> Icons.AutoMirrored.Filled.ArrowBack
+                                    "addComponent-1", "addMember" -> Icons.Default.Close
+                                    else -> Icons.Default.QuestionMark
+                                },
+                                contentDescription = ""
+                            )
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
@@ -211,6 +248,68 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                 )
             }
 
+            if (searchingRole) {
+                BasicAlertDialog(
+                    onDismissRequest = {
+                        searchingRole = false
+                    }
+                ) {
+                    ElevatedCard(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(500.dp)
+                    ) {
+                        Column (
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Row (
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = "Select Role",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp,
+                                    color = Color.Black
+                                )
+                            }
+                            Text(
+                                text = "Start typing to search for the role!",
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+                            Spacer(modifier = Modifier.height(20.dp))
+                            Row (
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                ComboBox(
+                                    rolesNotSelected,
+                                    selectedRole,
+                                    { selectedRole = it },
+                                    errorMessage = roleError,
+                                    resetErrorMessage = { roleError = "" }
+                                )
+                            }
+                            Spacer(modifier = Modifier.weight(1f))
+                            CardButton(
+                                text = "Select",
+                                onClick = {
+                                    val role = findRole(selectedRole)
+                                    if (role == null) {
+                                        roleError = "Undefined Role!"
+                                    } else {
+                                        selectedRole = ""
+                                        rolesNeeded[role] = 1
+                                        searchingRole = false
+                                    }
+                                },
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+
             if (picking == 1) {
                 TimePickerScreen(
                     setPicking = { picking = it },
@@ -234,10 +333,12 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                     Spacer(modifier = Modifier.height(20.dp))
                     val exclude = mutableSetOf(1)
                     for (entry in eventComponent.deployment) exclude.add(entry.key.getIdx())
+
                     MemberSearchScreen(
                         onClickMember = {
-                            screen = "addComponent-2"
-                            eventComponent.deployment[Global.profileList[it]] = ArrayList()
+                            screen = "addComponent-3"
+                            membersDeployed[appendingRole]!!.add(Global.profileList[it])
+                            deployedMembersCount++
                         },
                         errorMessage = "No members found!",
                         exclude = exclude
@@ -421,14 +522,12 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
 
                             } catch (_: DateTimeParseException) {
                                 toast("Invalid Date/Time!")
-                                Log.d("INVALID", "Strings:\n$startString\n$endString")
 
                             } catch (_: InvalidEventTypeException) {
                                 toast("Invalid Event Component Type")
 
                             } catch (e: Exception) {
                                 toast("An Error Occurred!")
-                                Log.d("UNKNOWN", e.toString())
                             }
                         },
                         colors = CardDefaults.cardColors(
@@ -438,77 +537,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                 }
 
                 "addComponent-2" -> {
-                    if (alertShowing) {
-                        BasicAlertDialog(
-                            onDismissRequest = {
-                                alertShowing = false
-                            }
-                        ) {
-                            ElevatedCard(
-                                colors = CardDefaults.cardColors(
-                                    containerColor = Color(220, 200, 200),
-                                    contentColor = Color.Black
-                                ),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .heightIn(550.dp)
-                            ) {
-                                Column(
-                                    verticalArrangement = Arrangement.Center,
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Text(
-                                        text = "Select Roles",
-                                        fontWeight = FontWeight.SemiBold,
-                                        fontSize = 20.sp,
-                                        modifier = Modifier.padding(vertical = 30.dp)
-                                    )
-                                    Column {
-                                        for (i in Global.rolesList.indices) {
-                                            Row(
-                                                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                                verticalAlignment = Alignment.CenterVertically,
-                                                modifier = Modifier.clickable {
-                                                    selectedRoles[i] = !selectedRoles[i]
-                                                }
-                                            ) {
-                                                Checkbox(
-                                                    selectedRoles[i], {
-                                                        selectedRoles[i] = it
-                                                    }
-                                                )
-                                                Text(Global.rolesList[i].eventRole)
-                                            }
-                                        }
-                                        Spacer(modifier = Modifier.height(30.dp))
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.End
-                                        ) {
-                                            Button(
-                                                onClick = {
-                                                    eventComponent.deployment[roleProfile]!!.clear()
-                                                    for (i in Global.rolesList.indices) {
-                                                        if (selectedRoles[i]) {
-                                                            eventComponent.deployment[roleProfile]!!.add(
-                                                                Global.rolesList[i]
-                                                            )
-                                                        }
-                                                    }
-                                                    alertShowing = false
-                                                },
-                                                modifier = Modifier.padding(16.dp)
-                                            ) {
-                                                Text("Done")
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
+                    /*
                     Text(
                         text = "Deployment for Component",
                         fontSize = 20.sp,
@@ -651,16 +680,201 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                             screen = "addMember"
                         }
                     )
+                    */
+
+                    Text(
+                        text = "Roles Required for Component",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 10.dp)
+                    )
+                    Text(
+                        text = "Select the roles needed for your event!",
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    LazyColumn (
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                    ) {
+                        if (recompile > 0) {
+                            for (entry in rolesNeeded) {
+                                item {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Text(entry.key.eventRole)
+                                        Spacer(modifier = Modifier.weight(1f))
+                                        QuantityPicker(
+                                            {
+                                                rolesNeeded[entry.key] = it
+                                                if (rolesNeeded[entry.key] == 0) {
+                                                    rolesNeeded.remove(entry.key)
+                                                    recompile++
+                                                }
+                                            },
+                                            initialQty = minOf(
+                                                maxOf(
+                                                    entry.key.minCount,
+                                                    rolesNeeded[entry.key]!!
+                                                ), entry.key.maxCount
+                                            ),
+                                            minQty = entry.key.minCount,
+                                            maxQty = entry.key.maxCount,
+                                            scale = 0.8f
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    CardButton(
+                        text = "Add Role Needed",
+                        onClick = {
+                            searchingRole = true
+                            rolesNotSelected.clear()
+                            for (role in Global.rolesList) {
+                                if (!rolesNeeded.containsKey(role)) {
+                                    rolesNotSelected.add(role.eventRole)
+                                }
+                            }
+                        },
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer
+                        )
+                    )
+                    
                     Spacer(modifier = Modifier.height(20.dp))
                     CardButton(
-                        text = "Done",
+                        text = "Next",
+                        onClick = {
+                            if (rolesNeeded.isEmpty()) {
+                                toast("There must be at least 1 role needed!")
+                            } else {
+                                screen = "addComponent-3"
+                            }
+                        },
+                        colors = CardDefaults.cardColors(
+                            MaterialTheme.colorScheme.primaryContainer
+                        )
+                    )
+                }
+
+                "addComponent-3" -> {
+                    for (entry in rolesNeeded) {
+                        if (!membersDeployed.containsKey(entry.key)) {
+                            membersDeployed[entry.key] = ArrayList()
+                        }
+                    }
+
+                    Text(
+                        text = "Deployment for Roles",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 10.dp)
+                    )
+                    Text(
+                        text = "You may choose to manually input all the deployment in this page, or leave this page blank and generate deployment automatically.",
+                        modifier = Modifier.padding(bottom = 30.dp)
+                    )
+                    LazyColumn (
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        for (entry in rolesNeeded) {
+                            item {
+                                Column {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = "${entry.key.eventRole} (Required: ${entry.value})",
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.Bold,
+                                        )
+                                        Spacer(modifier = Modifier.weight(1f))
+                                        IconButton(
+                                            onClick = {
+                                                if (membersDeployed[entry.key]!!.size < rolesNeeded[entry.key]!!) {
+                                                    appendingRole = entry.key
+                                                    screen = "addMember"
+                                                }
+                                            }
+                                        ) {
+                                            if (membersDeployed[entry.key]!!.size < rolesNeeded[entry.key]!!) {
+                                                Icon(Icons.Default.Add, "")
+                                            } else {
+                                                Icon(Icons.Default.Check, "")
+                                            }
+                                        }
+                                    }
+                                    for (member in membersDeployed[entry.key]!!) {
+                                        ElevatedCard(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .heightIn(114.dp)
+                                                .padding(vertical = 7.dp),
+                                            onClick = {
+                                                //TODO: Decide what to do here
+                                            }
+                                        ) {
+                                            Column {
+                                                Row(
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.spacedBy(
+                                                        10.dp
+                                                    )
+                                                ) {
+                                                    Image(
+                                                        //TODO: Profile Picture
+                                                        painter = painterResource(R.drawable.icon_512),
+                                                        contentDescription = "",
+                                                        modifier = Modifier
+                                                            .size(70.dp)
+                                                            .clip(RoundedCornerShape(13.dp))
+                                                    )
+                                                    Text(
+                                                        member.username,
+                                                        fontWeight = FontWeight.Bold,
+                                                        fontSize = 19.sp
+                                                    )
+                                                    Spacer(modifier = Modifier.weight(1f))
+                                                    FilledIconButton(
+                                                        onClick = {
+                                                            membersDeployed[entry.key]!!.remove(member)
+                                                            deployedMembersCount--
+                                                            recompile++
+                                                        },
+                                                        colors = IconButtonColors(
+                                                            contentColor = Color.Black,
+                                                            containerColor = MaterialTheme.colorScheme.secondary,
+                                                            disabledContentColor = Color.Black,
+                                                            disabledContainerColor = MaterialTheme.colorScheme.secondary
+                                                        )
+                                                    ) {
+                                                        Icon(Icons.Default.Delete, "")
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    CardButton(
+                        text = if (deployedMembersCount > 0) "Done" else "Skip",
                         onClick = {
                             try {
                                 val startString = "$year-$month-${day}T$startTime:00"
                                 val endString = "$year-$month-${day}T$endTime:00"
 
                                 val deploymentHashMap = HashMap<Profile, ArrayList<EventRole>>()
-                                for (entry in eventComponent.deployment) deploymentHashMap[entry.key] = entry.value
+                                for (entry in eventComponent.deployment) {
+                                    deploymentHashMap[entry.key] = entry.value
+                                }
 
                                 EventComponent(
                                     deployment = HashMap(),
@@ -672,10 +886,24 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                 eventComponent.start = startString
                                 eventComponent.end = endString
 
+                                eventComponent.rolesRequired.clear()
+                                eventComponent.deployment.clear()
+                                for (entry in rolesNeeded) {
+                                    eventComponent.rolesRequired[entry.key] = entry.value
+                                }
+                                for (entry in membersDeployed) {
+                                    for (member in entry.value) {
+                                        if (!eventComponent.deployment.contains(member)) {
+                                            eventComponent.deployment[member] = ArrayList()
+                                        }
+                                        eventComponent.deployment[member]!!.add(entry.key)
+                                    }
+                                }
+
                                 onExit(componentType!!)
                                 save()
 
-                            } catch (_: DateTimeParseException) { }
+                            } catch (_: DateTimeParseException) {}
                         },
                         colors = CardDefaults.cardColors(
                             MaterialTheme.colorScheme.primaryContainer
