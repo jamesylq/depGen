@@ -2,15 +2,16 @@ package com.example.depgen.model
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.example.depgen.Global
 import com.example.depgen.toNaturalDateTime
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 import java.time.format.DateTimeParseException
-import kotlin.jvm.Throws
 
 @Serializable
 data class EventComponent(
     val deployment: HashMap<Profile, ArrayList<EventRole>>,
+    val rolesRequired: HashMap<EventRole, Int>,
     var start: String,
     var end: String
 ) {
@@ -36,5 +37,16 @@ data class EventComponent(
     fun getNaturalEnd(): String {
         return try { toNaturalDateTime(end) }
         catch (_: DateTimeParseException) { "" }
+    }
+
+    fun getEvent() : Event? {
+        for (event in Global.eventList) {
+            for (entry in event.components) {
+                if (entry.value.contains(this)) {
+                    return event
+                }
+            }
+        }
+        return null
     }
 }

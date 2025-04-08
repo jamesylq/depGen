@@ -97,12 +97,23 @@ fun NewEventPage() {
         )
 
     } else if (editingEventComponent != null) {
+        val currType = newEvent.value.getComponentType(editingEventComponent!!)
         EditEventComponent(
             eventComponent = editingEventComponent!!,
             onExit = {
+                if (it != currType) {
+                    newEvent.value.components[currType]!!.remove(editingEventComponent!!)
+                    if (newEvent.value.components[currType]!!.isEmpty()) {
+                        newEvent.value.components.remove(currType)
+                    }
+                    if (!newEvent.value.components.containsKey(it!!)) {
+                        newEvent.value.components[it] = ArrayList()
+                    }
+                    newEvent.value.components[it]!!.add(editingEventComponent!!)
+                }
                 editingEventComponent = null
             },
-            comType = newEvent.value.getComponentType(editingEventComponent!!)
+            comType = currType
         )
 
     } else {
@@ -276,7 +287,7 @@ fun NewEventPage() {
                 CardButton(
                     text = "Add Event Component",
                     onClick = {
-                        eventComponent = EventComponent(HashMap(), "", "")
+                        eventComponent = EventComponent(HashMap(), HashMap(), "", "")
                         addingEventComponent = true
                     },
                     colors = CardDefaults.cardColors(

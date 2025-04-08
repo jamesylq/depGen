@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -83,90 +84,94 @@ fun RolesListPage() {
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 15.dp)
             )
-            for (i in remRolesList.indices) {
-                val role = remRolesList[i]
-                ElevatedCard (
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary,
-                        contentColor = Color.Black
-                    )
-                ) {
-                    Column (
-                        modifier = Modifier.padding(8.dp)
-                    ) {
-                        Row(
+            LazyColumn {
+                for (i in remRolesList.indices) {
+                    val role = remRolesList[i]
+                    item {
+                        ElevatedCard(
                             modifier = Modifier
-                                .padding(top = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                                .fillMaxWidth()
+                                .padding(bottom = 16.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.tertiary,
+                                contentColor = Color.Black
+                            )
                         ) {
-                            Column {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text("Role: ", fontWeight = FontWeight.Bold)
-                                    EventRoleRender(role)
-                                }
-                            }
-                            Spacer(modifier = Modifier.weight(1f))
-                            IconButton(
-                                onClick = { deleting = i }
+                            Column(
+                                modifier = Modifier.padding(8.dp)
                             ) {
-                                Icon(Icons.Default.Delete, "")
-                            }
-                        }
-                        Row(
-                            modifier = Modifier
-                                .padding(bottom = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Column {
-                                Text(
-                                    text = "Prerequisites:",
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(vertical = 5.dp)
-                                )
-                            }
-                            Spacer(modifier = Modifier.weight(1f))
-                            IconButton(
-                                onClick = {
-                                    //TODO: Make Role Prerequisites Editable
-                                }
-                            ) {
-                                Icon(Icons.Default.Edit, "")
-                            }
-                        }
-                        for (entry in role.prerequisites) {
-                            ElevatedCard {
-                                Column(
+                                Row(
                                     modifier = Modifier
-                                        .padding(8.dp)
-                                        .fillMaxWidth()
+                                        .padding(top = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text(
-                                        text = "${entry.key.skill} Skill",
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                    for (j in entry.value.indices) {
-                                        DisplayRequirement(
-                                            entry.value,
-                                            j,
-                                            deleteShowing = false
-                                        )
+                                    Column {
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            Text("Role: ", fontWeight = FontWeight.Bold)
+                                            EventRoleRender(role)
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    IconButton(
+                                        onClick = { deleting = i }
+                                    ) {
+                                        Icon(Icons.Default.Delete, "")
                                     }
                                 }
-                            }
-                        }
-                        if (role.prerequisites.isEmpty()) {
-                            ElevatedCard {
-                                Row (
-                                    horizontalArrangement = Arrangement.Center,
-                                    verticalAlignment = Alignment.CenterVertically,
+                                Row(
                                     modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(40.dp)
+                                        .padding(bottom = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text("This role has no prerequisites!")
+                                    Column {
+                                        Text(
+                                            text = "Prerequisites:",
+                                            fontWeight = FontWeight.Bold,
+                                            modifier = Modifier.padding(vertical = 5.dp)
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    IconButton(
+                                        onClick = {
+                                            //TODO: Make Role Prerequisites Editable
+                                        }
+                                    ) {
+                                        Icon(Icons.Default.Edit, "")
+                                    }
+                                }
+                                for (entry in role.prerequisites) {
+                                    ElevatedCard {
+                                        Column(
+                                            modifier = Modifier
+                                                .padding(8.dp)
+                                                .fillMaxWidth()
+                                        ) {
+                                            Text(
+                                                text = "${entry.key.skill} Skill",
+                                                fontWeight = FontWeight.SemiBold
+                                            )
+                                            for (j in entry.value.indices) {
+                                                DisplayRequirement(
+                                                    entry.value,
+                                                    j,
+                                                    deleteShowing = false
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                                if (role.prerequisites.isEmpty()) {
+                                    ElevatedCard {
+                                        Row(
+                                            horizontalArrangement = Arrangement.Center,
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(40.dp)
+                                        ) {
+                                            Text("This role has no prerequisites!")
+                                        }
+                                    }
                                 }
                             }
                         }

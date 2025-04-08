@@ -4,10 +4,12 @@ package com.example.depgen
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
@@ -20,7 +22,6 @@ import com.example.depgen.model.Event
 import com.example.depgen.model.EventRole
 import com.example.depgen.model.Profile
 import com.example.depgen.model.Skill
-import com.example.depgen.view.fragments.SkillsTrackerPage
 import com.example.depgen.view.fragments.EventListPage
 import com.example.depgen.view.fragments.EventPage
 import com.example.depgen.view.fragments.LoginPage
@@ -36,10 +37,12 @@ import com.example.depgen.view.fragments.RolesListPage
 import com.example.depgen.view.fragments.SettingsPage
 import com.example.depgen.view.fragments.SignUpPage
 import com.example.depgen.view.fragments.SkillPage
+import com.example.depgen.view.fragments.SkillsTrackerPage
 import com.example.depgen.view.theme.DepGenTheme
 import kotlinx.serialization.Serializable
 
 var active: Toast? = null
+var lastBack: Long = 0
 lateinit var ctxt : Context
 lateinit var navController : NavHostController
 
@@ -89,9 +92,27 @@ class MainActivity : ComponentActivity() {
                 NavHost(navController = navController, startDestination = "Login") {
                     composable("Login") {
                         LoginPage()
+                        BackHandler(enabled = true) {
+                            if (System.currentTimeMillis() - lastBack < DELTA) {
+                                val intent = Intent(Intent.ACTION_MAIN)
+                                intent.addCategory(Intent.CATEGORY_HOME)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                ctxt.startActivity(intent)
+
+                                if (active != null) {
+                                    active!!.cancel()
+                                    active = null
+                                }
+
+                            } else {
+                                lastBack = System.currentTimeMillis()
+                                toast("Press back again to exit!")
+                            }
+                        }
                     }
                     composable("Master") {
                         MasterPage()
+                        BackHandler(enabled = true) {}
                     }
                     composable("Profile/{idx}/{nxt}") {
                         ProfilePage(

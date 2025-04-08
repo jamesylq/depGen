@@ -64,6 +64,17 @@ fun EventListPage() {
         EditEventComponent(
             editingComponent!!,
             {
+                if (it != editingComponentType) {
+                    val components = editingComponent!!.getEvent()!!.components
+                    components[editingComponentType]!!.remove(editingComponent!!)
+                    if (components[editingComponentType]!!.isEmpty()) {
+                        components.remove(editingComponentType)
+                    }
+                    if (!components.containsKey(it!!)) {
+                        components[it] = ArrayList()
+                    }
+                    components[it]!!.add(editingComponent!!)
+                }
                 editingComponent = null
                 editingComponentType = null
             },
@@ -137,8 +148,8 @@ fun EventListPage() {
                                 Column(
                                     modifier = Modifier.padding(8.dp)
                                 ) {
-                                    var rem = eventRem[i].components.size
-                                    for (entry in eventRem[i].components) {
+                                    var rem = eventRem[i].getComponents().size
+                                    for (entry in eventRem[i].getComponents()) {
                                         Text(
                                             text = entry.key.componentType,
                                             fontSize = 18.sp,
@@ -154,7 +165,6 @@ fun EventListPage() {
                                             ElevatedCard(
                                                 modifier = Modifier
                                                     .fillMaxWidth()
-//                                                    .height(7.dp)
                                                     .padding(bottom = 12.dp),
                                                 colors = CardDefaults.cardColors(
                                                     containerColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -170,12 +180,12 @@ fun EventListPage() {
                                                                 .padding(start = 8.dp)
                                                         ) {
                                                             Text(
-                                                                text = "Start Time:",
+                                                                text = "Start:",
                                                                 modifier = Modifier.padding(bottom = 5.dp),
                                                                 fontWeight = FontWeight.SemiBold
                                                             )
                                                             Text(
-                                                                text = "  End Time:",
+                                                                text = "  End:",
                                                                 modifier = Modifier.padding(bottom = 5.dp),
                                                                 fontWeight = FontWeight.SemiBold
                                                             )
@@ -224,7 +234,10 @@ fun EventListPage() {
                                             text = "Delete Event",
                                             onClick = {
                                                 confirmationShowing = i
-                                            }
+                                            },
+                                            colors = CardDefaults.cardColors(
+                                                containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                                            )
                                         )
                                     }
                                 }

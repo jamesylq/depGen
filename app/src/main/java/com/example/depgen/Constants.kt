@@ -1,7 +1,6 @@
 package com.example.depgen
 
 import com.example.depgen.model.ComponentType
-import com.example.depgen.model.Condition
 import com.example.depgen.model.ConditionType
 import com.example.depgen.model.Profile
 import kotlinx.serialization.json.Json
@@ -18,6 +17,8 @@ val AT_LEAST = ConditionType(100000, "at least")
 val AT_MOST = ConditionType(100001, "at most")
 
 val CONDITION_TYPES = listOf(AT_LEAST.typeName, AT_MOST.typeName)
+
+const val DELTA = 1000L
 
 //val OIC = EventRole("Overall in-Charge", colorToList(Color(255, 237, 0, 255)), 1, maxCount = 1)
 //val IC = EventRole("In-Charge", colorToList(Color(255, 244, 179, 255)), 0, minCount = 1)

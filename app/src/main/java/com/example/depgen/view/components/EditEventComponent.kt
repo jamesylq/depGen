@@ -547,7 +547,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                                 .heightIn(114.dp)
                                                 .padding(vertical = 7.dp),
                                             onClick = {
-//                                    onClickMember(profilesFiltered[i])
+                                                //TODO: Decide what to do here
                                             }
                                         ) {
                                             Column {
@@ -663,7 +663,8 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                 for (entry in eventComponent.deployment) deploymentHashMap[entry.key] = entry.value
 
                                 EventComponent(
-                                    deployment = deploymentHashMap,
+                                    deployment = HashMap(),
+                                    rolesRequired = HashMap(),
                                     start = startString,
                                     end = endString
                                 )
@@ -677,7 +678,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                             } catch (_: DateTimeParseException) { }
                         },
                         colors = CardDefaults.cardColors(
-                            MaterialTheme.colorScheme.primary
+                            MaterialTheme.colorScheme.primaryContainer
                         )
                     )
                 }
