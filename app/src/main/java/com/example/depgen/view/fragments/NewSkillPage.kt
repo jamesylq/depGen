@@ -219,9 +219,9 @@ fun NewSkillPage() {
                     save()
                 },
                 colors = CardColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
                     contentColor = Color.Black,
-                    disabledContainerColor = MaterialTheme.colorScheme.primary,
+                    disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
                     disabledContentColor = Color.Black
                 )
             )

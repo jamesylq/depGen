@@ -34,6 +34,7 @@ private val LightColorScheme = lightColorScheme(
 
 private val MonoChromaticScheme = lightColorScheme(
     primary = POWDER_BLUE,
+    inversePrimary = DARK_BROWN,
     secondary = POWDER_ORANGE,
     tertiary = POWDER_ORANGE,
     tertiaryContainer = CARD_ORANGE,

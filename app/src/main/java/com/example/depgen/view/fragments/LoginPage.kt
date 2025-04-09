@@ -158,9 +158,8 @@ fun LoginPage() {
                         .clickable {
                             //TODO: Forgot Password
                         },
-//                    textDecoration = TextDecoration.Underline,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.inversePrimary
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
@@ -169,9 +168,8 @@ fun LoginPage() {
                         .clickable {
                             safeNavigate("SignUp")
                         },
-//                    textDecoration = TextDecoration.Underline,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.inversePrimary
                 )
             }
         }

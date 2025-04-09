@@ -266,7 +266,7 @@ fun NewRolePage() {
                                     }
                                 },
                                 colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
                                     contentColor = Color.Black
                                 )
                             )
@@ -487,7 +487,7 @@ fun NewRolePage() {
                 onClick = {
                     Global.rolesList.add(
                         EventRole(
-                            eventRole = name,
+                            eventRole = name.trim(),
                             priority = priority,
                             color = colorToList(selectedColor),
                             prerequisites = HashMap(prerequisites)
@@ -497,9 +497,9 @@ fun NewRolePage() {
                     safeNavigate("RolesList")
                 },
                 colors = CardColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
                     contentColor = Color.Black,
-                    disabledContainerColor = MaterialTheme.colorScheme.primary,
+                    disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
                     disabledContentColor = Color.Black
                 )
             )
