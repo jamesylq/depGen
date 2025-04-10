@@ -15,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.depgen.Global
-import com.example.depgen.safeNavigate
+import com.example.depgen.utils.safeNavigate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -49,7 +49,7 @@ import com.example.depgen.Global
 import com.example.depgen.R
 import com.example.depgen.model.ComponentType
 import com.example.depgen.model.EventComponent
-import com.example.depgen.safeNavigate
+import com.example.depgen.utils.safeNavigate
 import com.example.depgen.view.components.EditEventComponent
 import com.example.depgen.view.components.EventRoleRender
 import com.example.depgen.view.components.ExpandableBar
@@ -85,10 +85,12 @@ fun EventPage(idx: Int) {
             }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                //TODO: Add Component
-            }) {
-                Icon(Icons.Filled.Add, "")
+            if (editingComponent == null) {
+                FloatingActionButton(onClick = {
+                    //TODO: Add Component
+                }) {
+                    Icon(Icons.Filled.Add, "")
+                }
             }
         }
     ) { innerPadding ->

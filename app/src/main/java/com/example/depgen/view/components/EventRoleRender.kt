@@ -16,7 +16,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.depgen.listToColor
+import com.example.depgen.utils.listToColor
 import com.example.depgen.model.EventRole
 
 @Composable

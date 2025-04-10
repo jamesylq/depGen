@@ -49,13 +49,13 @@ import com.example.depgen.AT_LEAST
 import com.example.depgen.AT_MOST
 import com.example.depgen.CONDITION_TYPES
 import com.example.depgen.Global
-import com.example.depgen.colorToList
-import com.example.depgen.isNotInt
+import com.example.depgen.utils.colorToList
+import com.example.depgen.utils.isNotInt
 import com.example.depgen.model.Condition
 import com.example.depgen.model.EventRole
 import com.example.depgen.model.Skill
-import com.example.depgen.safeNavigate
-import com.example.depgen.save
+import com.example.depgen.utils.safeNavigate
+import com.example.depgen.utils.save
 import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.ComboBox
 import com.example.depgen.view.components.ConfirmationScreen

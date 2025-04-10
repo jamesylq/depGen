@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
 import com.example.depgen.model.Navigation
-import com.example.depgen.safeNavigate
+import com.example.depgen.utils.safeNavigate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

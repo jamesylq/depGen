@@ -58,16 +58,16 @@ import androidx.compose.ui.unit.sp
 import com.example.depgen.EVENT_TYPES
 import com.example.depgen.Global
 import com.example.depgen.R
-import com.example.depgen.findRole
-import com.example.depgen.lazyTime
+import com.example.depgen.utils.findRole
+import com.example.depgen.utils.lazyTime
 import com.example.depgen.model.ComponentType
 import com.example.depgen.model.EventComponent
 import com.example.depgen.model.EventRole
 import com.example.depgen.model.InvalidEventTypeException
 import com.example.depgen.model.Profile
-import com.example.depgen.save
-import com.example.depgen.toHHMMTime
-import com.example.depgen.toNaturalDateTime
+import com.example.depgen.utils.save
+import com.example.depgen.utils.toHHMMTime
+import com.example.depgen.utils.toNaturalDateTime
 import com.example.depgen.toast
 import com.example.depgen.view.fragments.removeLetters
 import java.time.format.DateTimeParseException
@@ -336,8 +336,10 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
 
                     MemberSearchScreen(
                         onClickMember = {
+                            val member = Global.profileList[it]
                             screen = "addComponent-3"
-                            membersDeployed[appendingRole]!!.add(Global.profileList[it])
+                            membersDeployed[appendingRole]!!.add(member)
+                            member.addDeployment(eventComponent)
                             deployedMembersCount++
                         },
                         errorMessage = "No members found!",
@@ -537,151 +539,6 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                 }
 
                 "addComponent-2" -> {
-                    /*
-                    Text(
-                        text = "Deployment for Component",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 10.dp)
-                    )
-                    LazyColumn(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        item {
-                            if (eventComponent.deployment.isEmpty()) {
-                                Column(
-                                    modifier = Modifier.fillParentMaxHeight(0.5f)
-                                ) {
-                                    Spacer(modifier = Modifier.weight(0.5f))
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.Center
-                                    ) {
-                                        Text(
-                                            text = "No Members are Currently Deployed!",
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            modifier = Modifier.padding(bottom = 10.dp)
-                                        )
-                                    }
-                                }
-                            }
-
-                            Column {
-                                if (compile) {
-                                    for (entry in eventComponent.deployment) {
-                                        ElevatedCard(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .heightIn(114.dp)
-                                                .padding(vertical = 7.dp),
-                                            onClick = {
-                                                //TODO: Decide what to do here
-                                            }
-                                        ) {
-                                            Column {
-                                                Row(
-                                                    verticalAlignment = Alignment.CenterVertically,
-                                                    horizontalArrangement = Arrangement.spacedBy(
-                                                        10.dp
-                                                    )
-                                                ) {
-                                                    Image(
-                                                        //TODO: Profile Picture
-                                                        painter = painterResource(R.drawable.icon_512),
-                                                        contentDescription = "",
-                                                        modifier = Modifier
-                                                            .size(70.dp)
-                                                            .clip(RoundedCornerShape(13.dp))
-                                                    )
-                                                    Text(
-                                                        entry.key.username,
-                                                        fontWeight = FontWeight.Bold,
-                                                        fontSize = 19.sp
-                                                    )
-                                                    Spacer(modifier = Modifier.weight(1f))
-                                                    FilledIconButton(
-                                                        onClick = {
-                                                            compile = false
-                                                            eventComponent.deployment.remove(
-                                                                entry.key
-                                                            )
-                                                            compile = true
-                                                        },
-                                                        colors = IconButtonColors(
-                                                            contentColor = Color.Black,
-                                                            containerColor = MaterialTheme.colorScheme.secondary,
-                                                            disabledContentColor = Color.Black,
-                                                            disabledContainerColor = MaterialTheme.colorScheme.secondary
-                                                        )
-                                                    ) {
-                                                        Icon(Icons.Default.Delete, "")
-                                                    }
-                                                }
-                                                Spacer(modifier = Modifier.height(10.dp))
-                                                Column(
-                                                    modifier = Modifier.padding(8.dp),
-                                                    verticalArrangement = Arrangement.spacedBy(5.dp)
-                                                ) {
-                                                    Text(
-                                                        "Roles: ",
-                                                        fontWeight = FontWeight.SemiBold
-                                                    )
-                                                    if (entry.value.isEmpty()) {
-                                                        Text("No Roles Yet!")
-                                                    } else {
-                                                        FlowRow(
-                                                            horizontalArrangement = Arrangement.spacedBy(
-                                                                10.dp
-                                                            ),
-                                                            verticalArrangement = Arrangement.spacedBy(
-                                                                5.dp
-                                                            )
-                                                        ) {
-                                                            for (role in entry.value) {
-                                                                EventRoleRender(role)
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                Spacer(modifier = Modifier.weight(1f))
-                                                Row {
-                                                    Spacer(modifier = Modifier.weight(1f))
-                                                    FilledIconButton(
-                                                        onClick = {
-                                                            alertShowing = true
-                                                            roleProfile = entry.key
-                                                            for (i in Global.rolesList.indices) {
-                                                                selectedRoles[i] =
-                                                                    (Global.rolesList[i] in entry.value)
-                                                            }
-                                                        },
-                                                        colors = IconButtonColors(
-                                                            MaterialTheme.colorScheme.tertiary,
-                                                            Color.Black,
-                                                            MaterialTheme.colorScheme.secondary,
-                                                            Color.Black,
-                                                        )
-                                                    ) {
-                                                        Icon(Icons.Filled.NewLabel, "")
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(20.dp))
-                    CardButton(
-                        text = "Add Member to Deployment",
-                        onClick = {
-                            screen = "addMember"
-                        }
-                    )
-                    */
-
                     Text(
                         text = "Roles Required for Component",
                         fontSize = 20.sp,
@@ -843,6 +700,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                                     FilledIconButton(
                                                         onClick = {
                                                             membersDeployed[entry.key]!!.remove(member)
+                                                            member.removeDeployment(eventComponent)
                                                             deployedMembersCount--
                                                             recompile++
                                                         },

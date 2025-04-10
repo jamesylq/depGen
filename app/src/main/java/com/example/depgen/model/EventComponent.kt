@@ -1,9 +1,10 @@
 package com.example.depgen.model
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.depgen.Global
-import com.example.depgen.toNaturalDateTime
+import com.example.depgen.utils.toNaturalDateTime
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 import java.time.format.DateTimeParseException
@@ -47,6 +48,7 @@ data class EventComponent(
                 }
             }
         }
+        Log.w("depGen", "Mismatched Event!")
         return null
     }
 }

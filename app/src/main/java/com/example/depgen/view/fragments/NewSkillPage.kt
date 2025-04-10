@@ -32,11 +32,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
-import com.example.depgen.isInt
-import com.example.depgen.isNotInt
+import com.example.depgen.utils.isInt
+import com.example.depgen.utils.isNotInt
 import com.example.depgen.model.Skill
-import com.example.depgen.safeNavigate
-import com.example.depgen.save
+import com.example.depgen.utils.safeNavigate
+import com.example.depgen.utils.save
 import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.ConfirmationScreen
 

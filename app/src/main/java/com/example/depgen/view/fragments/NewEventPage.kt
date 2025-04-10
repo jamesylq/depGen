@@ -40,8 +40,8 @@ import com.example.depgen.EVENT_TYPES
 import com.example.depgen.Global
 import com.example.depgen.model.Event
 import com.example.depgen.model.EventComponent
-import com.example.depgen.safeNavigate
-import com.example.depgen.save
+import com.example.depgen.utils.safeNavigate
+import com.example.depgen.utils.save
 import com.example.depgen.toast
 import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.ConfirmationScreen

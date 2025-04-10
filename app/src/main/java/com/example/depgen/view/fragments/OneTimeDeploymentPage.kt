@@ -1,5 +1,8 @@
 package com.example.depgen.view.fragments
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,14 +32,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
-import com.example.depgen.findRole
+import com.example.depgen.NO_DATE
+import com.example.depgen.model.EventComponent
 import com.example.depgen.model.EventRole
 import com.example.depgen.model.Navigation
+import com.example.depgen.utils.OTDCompleteSearchHelper
+import com.example.depgen.utils.findRole
 import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.ComboBox
 import com.example.depgen.view.components.DefaultTopAppBar
 import com.example.depgen.view.components.QuantityPicker
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OneTimeDeploymentPage() {
@@ -189,7 +196,14 @@ fun OneTimeDeploymentPage() {
             CardButton(
                 text = "Generate!",
                 onClick = {
-                    // ...
+                    Log.wtf("depGen", OTDCompleteSearchHelper(
+                        EventComponent(
+                            HashMap(),
+                            HashMap(rolesNeeded),
+                            NO_DATE,
+                            NO_DATE
+                        )
+                    ).generate().toString())
                 },
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.secondary

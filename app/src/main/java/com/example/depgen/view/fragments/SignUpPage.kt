@@ -38,11 +38,11 @@ import com.example.depgen.EMAIL_REGEX
 import com.example.depgen.Global
 import com.example.depgen.LOGGED_OUT
 import com.example.depgen.R
-import com.example.depgen.encryptSHA256
-import com.example.depgen.findProfile
+import com.example.depgen.utils.encryptSHA256
+import com.example.depgen.utils.findProfile
 import com.example.depgen.model.Profile
-import com.example.depgen.safeNavigate
-import com.example.depgen.save
+import com.example.depgen.utils.safeNavigate
+import com.example.depgen.utils.save
 import com.example.depgen.toast
 import com.example.depgen.view.components.CardButton
 

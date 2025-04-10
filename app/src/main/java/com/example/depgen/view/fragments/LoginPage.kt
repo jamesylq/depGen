@@ -35,10 +35,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.LOGGED_OUT
 import com.example.depgen.R
-import com.example.depgen.encryptSHA256
-import com.example.depgen.findProfile
-import com.example.depgen.safeNavigate
-import com.example.depgen.switchProfile
+import com.example.depgen.utils.encryptSHA256
+import com.example.depgen.utils.findProfile
+import com.example.depgen.utils.safeNavigate
+import com.example.depgen.utils.switchProfile
 import com.example.depgen.view.components.CardButton
 
 @Composable

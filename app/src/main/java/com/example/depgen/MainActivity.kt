@@ -22,6 +22,7 @@ import com.example.depgen.model.Event
 import com.example.depgen.model.EventRole
 import com.example.depgen.model.Profile
 import com.example.depgen.model.Skill
+import com.example.depgen.utils.load
 import com.example.depgen.view.fragments.EventListPage
 import com.example.depgen.view.fragments.EventPage
 import com.example.depgen.view.fragments.LoginPage

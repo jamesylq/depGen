@@ -1,12 +1,18 @@
-package com.example.depgen
+package com.example.depgen.utils
 
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.graphics.Color
+import com.example.depgen.ADMIN
+import com.example.depgen.Global
+import com.example.depgen.LOGGED_OUT
+import com.example.depgen.ctxt
+import com.example.depgen.json
 import com.example.depgen.model.EventRole
 import com.example.depgen.model.Profile
 import com.example.depgen.model.Wrapper
+import com.example.depgen.navController
 import java.io.File
 import java.security.MessageDigest
 import java.time.LocalDateTime
@@ -63,7 +69,6 @@ fun save() {
     val wrapper = Wrapper(Global.profileList, Global.eventList, Global.skillsList, Global.rolesList)
 
     file.writeText(json.encodeToString(wrapper))
-    Log.d("FileIO", json.encodeToString(wrapper))
 }
 
 fun clear() {
@@ -80,7 +85,6 @@ fun load() {
         }
 
         val wrapper: Wrapper = json.decodeFromString(file.readText())
-        Log.d("FileIO", file.readText())
 
         Global.eventList.clear()
         Global.profileList.clear()
@@ -92,6 +96,14 @@ fun load() {
         Global.rolesList.addAll(wrapper.roles)
         LOGGED_OUT = Global.profileList[0]
         ADMIN = Global.profileList[1]
+
+        for (i in 1 ..< Global.profileList.size) {
+            for (skill in Global.skillsList) {
+                if (!Global.profileList[i].skills.containsKey(skill)) {
+                    Global.profileList[i].skills[skill] = skill.defaultLevel
+                }
+            }
+        }
 
     } catch (_: RuntimeException) {
         Log.d("ERROR", "Save file not found, created new save file!")

@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
 import com.example.depgen.model.Navigation
 import com.example.depgen.view.components.MemberSearchScreen
-import com.example.depgen.safeNavigate
+import com.example.depgen.utils.safeNavigate
 import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.DefaultTopAppBar
 

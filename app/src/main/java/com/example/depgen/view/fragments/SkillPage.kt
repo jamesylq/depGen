@@ -37,7 +37,7 @@ import com.example.depgen.Global
 import com.example.depgen.R
 import com.example.depgen.model.Navigation
 import com.example.depgen.model.Skill
-import com.example.depgen.save
+import com.example.depgen.utils.save
 import com.example.depgen.view.components.DefaultTopAppBar
 import com.example.depgen.view.components.QuantityPicker
 
