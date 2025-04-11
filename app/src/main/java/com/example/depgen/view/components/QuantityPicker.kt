@@ -57,7 +57,8 @@ fun QuantityPicker(onUpdate: (Int) -> Unit, initialQty: Int = 0, minQty: Int = 0
             onValueChange = {
                 tf = it
                 if (isInt(tf)) {
-                    onUpdate(maxOf(minOf(tf.toInt(), maxQty), minQty))
+                    qty = maxOf(minOf(tf.toInt(), maxQty), minQty)
+                    onUpdate(qty)
                 }
             },
             modifier = Modifier

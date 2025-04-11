@@ -48,7 +48,21 @@ data class EventComponent(
                 }
             }
         }
-        Log.w("depGen", "Mismatched Event!")
+        Log.w("depGen", "Warning: Mismatched Event!")
         return null
+    }
+
+    fun setDeployment(dep: HashMap<EventRole, List<Profile>>) {
+        if (deployment.isEmpty()) {
+            for (entry in dep) {
+                for (member in entry.value) {
+                    if (!deployment.contains(member)) deployment[member] = ArrayList()
+                    deployment[member]!!.add(entry.key)
+                }
+            }
+
+        } else {
+            Log.w("depGen", "Warning: Deployment Overridden!")
+        }
     }
 }

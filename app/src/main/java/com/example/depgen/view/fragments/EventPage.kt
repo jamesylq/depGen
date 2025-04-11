@@ -50,9 +50,11 @@ import com.example.depgen.R
 import com.example.depgen.model.ComponentType
 import com.example.depgen.model.EventComponent
 import com.example.depgen.utils.safeNavigate
+import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.EditEventComponent
 import com.example.depgen.view.components.EventRoleRender
 import com.example.depgen.view.components.ExpandableBar
+import com.example.depgen.view.components.GeneratingDeploymentScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -60,6 +62,7 @@ import com.example.depgen.view.components.ExpandableBar
 fun EventPage(idx: Int) {
     val event = Global.eventList[idx]
 
+    var generatingOTD: EventComponent? by remember { mutableStateOf(null) }
     var editingComponent: EventComponent? by remember { mutableStateOf(null) }
     var editingComponentType: ComponentType? by remember { mutableStateOf(null) }
 
@@ -121,6 +124,10 @@ fun EventPage(idx: Int) {
                     .padding(innerPadding)
                     .padding(16.dp)
             ) {
+                if (generatingOTD != null) {
+                    GeneratingDeploymentScreen(generatingOTD!!) { generatingOTD = null }
+                }
+
                 Text(
                     text = event.name,
                     fontSize = 20.sp,
@@ -212,7 +219,12 @@ fun EventPage(idx: Int) {
                                         }
                                         ExpandableBar("Members Deployed") {
                                             if (component.deployment.isEmpty()) {
-                                                Text("No Members Deployed!")
+                                                Text("No Members Deployed Yet!")
+                                                Spacer(modifier = Modifier.height(10.dp))
+                                                CardButton(
+                                                    text = "Auto Generate Deployment",
+                                                    onClick = { generatingOTD = component }
+                                                )
                                             }
                                             for (deploymentEntry in component.deployment) {
                                                 ElevatedCard (
@@ -248,6 +260,7 @@ fun EventPage(idx: Int) {
                                                         }
                                                     }
                                                 }
+                                                Spacer(modifier = Modifier.height(10.dp))
                                             }
                                         }
                                     }

@@ -44,6 +44,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -58,17 +59,17 @@ import androidx.compose.ui.unit.sp
 import com.example.depgen.EVENT_TYPES
 import com.example.depgen.Global
 import com.example.depgen.R
-import com.example.depgen.utils.findRole
-import com.example.depgen.utils.lazyTime
 import com.example.depgen.model.ComponentType
 import com.example.depgen.model.EventComponent
 import com.example.depgen.model.EventRole
 import com.example.depgen.model.InvalidEventTypeException
 import com.example.depgen.model.Profile
+import com.example.depgen.toast
+import com.example.depgen.utils.findRole
+import com.example.depgen.utils.lazyTime
 import com.example.depgen.utils.save
 import com.example.depgen.utils.toHHMMTime
 import com.example.depgen.utils.toNaturalDateTime
-import com.example.depgen.toast
 import com.example.depgen.view.fragments.removeLetters
 import java.time.format.DateTimeParseException
 
@@ -142,9 +143,10 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
     var recompile by remember { mutableIntStateOf(1) }
     var deployedMembersCount by remember { mutableIntStateOf(0) }
 
-    val rolesNeeded = remember { mutableMapOf<EventRole, Int>() }
-    val membersDeployed = remember { mutableMapOf<EventRole, ArrayList<Profile>>() }
+    val rolesNeeded = remember { mutableStateMapOf<EventRole, Int>() }
+    val membersDeployed = remember { mutableStateMapOf<EventRole, ArrayList<Profile>>() }
     val rolesNotSelected = remember { mutableStateListOf<String>() }
+    val delta = remember { mutableStateMapOf<Profile, Int>() }
     var searchingRole by remember { mutableStateOf(false) }
     var selectedRole by remember { mutableStateOf("") }
     var roleError by remember { mutableStateOf("") }
@@ -163,6 +165,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
             }
         }
     }
+
 
     Scaffold(
         topBar = {
@@ -339,7 +342,8 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                             val member = Global.profileList[it]
                             screen = "addComponent-3"
                             membersDeployed[appendingRole]!!.add(member)
-                            member.addDeployment(eventComponent)
+                            if (!delta.contains(member)) delta[member] = 1
+                            else delta[member] = delta[member]!! + 1
                             deployedMembersCount++
                         },
                         errorMessage = "No members found!",
@@ -555,34 +559,32 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                             .fillMaxWidth()
                             .weight(1f)
                     ) {
-                        if (recompile > 0) {
-                            for (entry in rolesNeeded) {
-                                item {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Text(entry.key.eventRole)
-                                        Spacer(modifier = Modifier.weight(1f))
-                                        QuantityPicker(
-                                            {
-                                                rolesNeeded[entry.key] = it
-                                                if (rolesNeeded[entry.key] == 0) {
-                                                    rolesNeeded.remove(entry.key)
-                                                    recompile++
-                                                }
-                                            },
-                                            initialQty = minOf(
-                                                maxOf(
-                                                    entry.key.minCount,
-                                                    rolesNeeded[entry.key]!!
-                                                ), entry.key.maxCount
-                                            ),
-                                            minQty = entry.key.minCount,
-                                            maxQty = entry.key.maxCount,
-                                            scale = 0.8f
-                                        )
-                                    }
+                        for (entry in rolesNeeded) {
+                            item {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text(entry.key.eventRole)
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    QuantityPicker(
+                                        {
+                                            rolesNeeded[entry.key] = it
+                                            if (rolesNeeded[entry.key] == 0) {
+                                                rolesNeeded.remove(entry.key)
+                                                recompile++
+                                            }
+                                        },
+                                        initialQty = minOf(
+                                            maxOf(
+                                                entry.key.minCount,
+                                                rolesNeeded[entry.key]!!
+                                            ), entry.key.maxCount
+                                        ),
+                                        minQty = entry.key.minCount,
+                                        maxQty = entry.key.maxCount,
+                                        scale = 0.8f
+                                    )
                                 }
                             }
                         }
@@ -699,10 +701,14 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                                     Spacer(modifier = Modifier.weight(1f))
                                                     FilledIconButton(
                                                         onClick = {
-                                                            membersDeployed[entry.key]!!.remove(member)
-                                                            member.removeDeployment(eventComponent)
+                                                            val updatedList = membersDeployed[entry.key]!!.toMutableList()
+                                                            updatedList.remove(member)
+                                                            membersDeployed[entry.key] = ArrayList(updatedList)
+                                                            eventComponent.deployment.remove(member)
+
+                                                            if (!delta.containsKey(member)) delta[member] = -1
+                                                            delta[member] = delta[member]!! - 1
                                                             deployedMembersCount--
-                                                            recompile++
                                                         },
                                                         colors = IconButtonColors(
                                                             contentColor = Color.Black,
@@ -723,7 +729,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                     }
                     Spacer(modifier = Modifier.height(20.dp))
                     CardButton(
-                        text = if (deployedMembersCount > 0) "Done" else "Skip",
+                        text = "Save",
                         onClick = {
                             try {
                                 val startString = "$year-$month-${day}T$startTime:00"
@@ -755,6 +761,12 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                             eventComponent.deployment[member] = ArrayList()
                                         }
                                         eventComponent.deployment[member]!!.add(entry.key)
+                                    }
+                                }
+                                for (entry in delta) {
+                                    when (entry.value) {
+                                        1 -> entry.key.addDeployment(eventComponent)
+                                        -1 -> entry.key.removeDeployment(eventComponent)
                                     }
                                 }
 

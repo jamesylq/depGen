@@ -13,6 +13,10 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -23,6 +27,9 @@ import com.example.depgen.model.EventRole
 import com.example.depgen.model.Profile
 import com.example.depgen.model.Skill
 import com.example.depgen.utils.load
+import com.example.depgen.utils.safeNavigate
+import com.example.depgen.utils.switchProfile
+import com.example.depgen.view.components.ConfirmationScreen
 import com.example.depgen.view.fragments.EventListPage
 import com.example.depgen.view.fragments.EventPage
 import com.example.depgen.view.fragments.LoginPage
@@ -112,8 +119,24 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                     composable("Master") {
+                        var confirming by remember { mutableStateOf(false) }
                         MasterPage()
-                        BackHandler(enabled = true) {}
+                        if (confirming) {
+                            ConfirmationScreen(
+                                onConfirm = {
+                                    switchProfile(LOGGED_OUT)
+                                    safeNavigate("Login")
+                                    confirming = false
+                                },
+                                onDecline = {
+                                    confirming = false
+                                },
+                                body = "You will be logged out of\nyour account!"
+                            )
+                        }
+                        BackHandler(enabled = true) {
+                            confirming = true
+                        }
                     }
                     composable("Profile/{idx}/{nxt}") {
                         ProfilePage(

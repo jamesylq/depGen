@@ -57,7 +57,9 @@ fun ConfirmationScreen(
                 Spacer(modifier = Modifier.height(20.dp))
                 Text(title, fontSize = 22.sp, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(60.dp))
-                Text(body, fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+                for (text in body.split("\n")) {
+                    Text(text, fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+                }
                 Spacer(modifier = Modifier.height(60.dp))
                 Row (
                     modifier = Modifier.fillMaxWidth(),
