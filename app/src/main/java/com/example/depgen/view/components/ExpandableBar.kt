@@ -25,9 +25,10 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ExpandableBar(
     title: String,
+    initiallyExpanded: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(initiallyExpanded) }
 
     Card(
         modifier = Modifier

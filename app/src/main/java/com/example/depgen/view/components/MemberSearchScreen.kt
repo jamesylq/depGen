@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
 import com.example.depgen.R
 import com.example.depgen.model.Profile
+import com.example.depgen.utils.clearFocusOnKeyboardDismiss
 
 @Composable
 fun MemberSearchScreen(onClickMember: (Int) -> Unit, errorMessage: String, exclude: Set<Int>? = null) {
@@ -75,7 +76,8 @@ fun MemberSearchScreen(onClickMember: (Int) -> Unit, errorMessage: String, exclu
             }
         },
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clearFocusOnKeyboardDismiss(),
         trailingIcon = {
             Icon(
                 Icons.Rounded.MoreVert,

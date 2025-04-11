@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.LOGGED_OUT
 import com.example.depgen.R
+import com.example.depgen.utils.clearFocusOnKeyboardDismiss
 import com.example.depgen.utils.encryptSHA256
 import com.example.depgen.utils.findProfile
 import com.example.depgen.utils.safeNavigate
@@ -81,7 +82,8 @@ fun LoginPage() {
                 },
                 label = { Text("Username") },
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .clearFocusOnKeyboardDismiss(),
                 supportingText = {
                     if (usernameError != "") {
                         Text(
@@ -103,7 +105,9 @@ fun LoginPage() {
             )
             OutlinedSecureTextField(
                 state = password,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clearFocusOnKeyboardDismiss(),
                 textObfuscationMode = TextObfuscationMode.RevealLastTyped,
                 label = {
                     Text("Password")

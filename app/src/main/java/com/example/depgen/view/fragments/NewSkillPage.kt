@@ -32,9 +32,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
+import com.example.depgen.model.Skill
+import com.example.depgen.utils.clearFocusOnKeyboardDismiss
 import com.example.depgen.utils.isInt
 import com.example.depgen.utils.isNotInt
-import com.example.depgen.model.Skill
 import com.example.depgen.utils.safeNavigate
 import com.example.depgen.utils.save
 import com.example.depgen.view.components.CardButton
@@ -107,7 +108,9 @@ fun NewSkillPage() {
                     nameError = false
                 },
                 placeholder = { Text("Enter Skill Name") },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clearFocusOnKeyboardDismiss(),
                 supportingText = {
                     if (nameError) {
                         Text(
@@ -152,7 +155,9 @@ fun NewSkillPage() {
                     maxLvl = it
                 },
                 placeholder = { Text("Enter Maximum Skill Level") },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clearFocusOnKeyboardDismiss(),
                 supportingText = {
                     if (isNotInt(maxLvl)) {
                         Text(
@@ -185,7 +190,9 @@ fun NewSkillPage() {
                     defLvl = it
                 },
                 placeholder = { Text("Enter Default Skill Level") },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clearFocusOnKeyboardDismiss(),
                 supportingText = {
                     if (isNotInt(defLvl)) {
                         Text(

@@ -27,7 +27,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
@@ -35,6 +34,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -65,6 +66,7 @@ import com.example.depgen.model.EventRole
 import com.example.depgen.model.InvalidEventTypeException
 import com.example.depgen.model.Profile
 import com.example.depgen.toast
+import com.example.depgen.utils.clearFocusOnKeyboardDismiss
 import com.example.depgen.utils.findRole
 import com.example.depgen.utils.lazyTime
 import com.example.depgen.utils.save
@@ -379,7 +381,8 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                             },
                             modifier = Modifier
                                 .padding(end = 8.dp)
-                                .weight(0.3f),
+                                .weight(0.3f)
+                                .clearFocusOnKeyboardDismiss(),
                             placeholder = {
                                 Text("DD")
                             }
@@ -395,7 +398,8 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                             },
                             modifier = Modifier
                                 .padding(end = 8.dp)
-                                .weight(0.3f),
+                                .weight(0.3f)
+                                .clearFocusOnKeyboardDismiss(),
                             placeholder = {
                                 Text("MM")
                             }
@@ -411,7 +415,8 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                             },
                             modifier = Modifier
                                 .padding(end = 8.dp)
-                                .weight(0.4f),
+                                .weight(0.4f)
+                                .clearFocusOnKeyboardDismiss(),
                             placeholder = {
                                 Text("YYYY")
                             }
@@ -436,7 +441,8 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                             onValueChange = { startTime = it },
                             modifier = Modifier
                                 .weight(1f)
-                                .padding(end = 8.dp),
+                                .padding(end = 8.dp)
+                                .clearFocusOnKeyboardDismiss(),
                             placeholder = {
                                 Text("Enter Start Time")
                             }
@@ -459,7 +465,8 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                             onValueChange = { endTime = it },
                             modifier = Modifier
                                 .weight(1f)
-                                .padding(end = 8.dp),
+                                .padding(end = 8.dp)
+                                .clearFocusOnKeyboardDismiss(),
                             placeholder = {
                                 Text("Enter End Time")
                             }
@@ -483,8 +490,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.clickable {
                                 selectedEventType[i] = !selectedEventType[i]
-                                if (currEventTypeSelection != -1) selectedEventType[currEventTypeSelection] =
-                                    false
+                                if (currEventTypeSelection != -1) selectedEventType[currEventTypeSelection] = false
 
                                 if (selectedEventType[i]) {
                                     currEventTypeSelection = i
@@ -495,12 +501,19 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                 }
                             }
                         ) {
-                            Checkbox(
-                                checked = selectedEventType[i],
-                                onCheckedChange = null,
+                            RadioButton(
+                                selected = selectedEventType[i],
+                                enabled = false,
+                                onClick = null,
                                 modifier = Modifier
                                     .padding(vertical = 8.dp)
-                                    .padding(end = 5.dp)
+                                    .padding(end = 5.dp),
+                                colors = RadioButtonColors(
+                                    selectedColor = MaterialTheme.colorScheme.primary,
+                                    disabledSelectedColor = MaterialTheme.colorScheme.primary,
+                                    unselectedColor = Color.Gray,
+                                    disabledUnselectedColor = Color.Gray
+                                )
                             )
                             Text(text = EVENT_TYPES[i].componentType)
                         }
@@ -530,7 +543,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                 toast("Invalid Date/Time!")
 
                             } catch (_: InvalidEventTypeException) {
-                                toast("Invalid Event Component Type")
+                                toast("Select an Event Component Type!")
 
                             } catch (e: Exception) {
                                 toast("An Error Occurred!")

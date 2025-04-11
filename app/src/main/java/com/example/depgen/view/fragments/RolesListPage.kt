@@ -98,7 +98,8 @@ fun RolesListPage() {
                             )
                         ) {
                             Column(
-                                modifier = Modifier.padding(8.dp)
+                                modifier = Modifier.padding(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 Row(
                                     modifier = Modifier
@@ -127,7 +128,7 @@ fun RolesListPage() {
                                         Text(
                                             text = "Prerequisites:",
                                             fontWeight = FontWeight.Bold,
-                                            modifier = Modifier.padding(vertical = 5.dp)
+                                            modifier = Modifier.padding(top = 5.dp)
                                         )
                                     }
                                     Spacer(modifier = Modifier.weight(1f))

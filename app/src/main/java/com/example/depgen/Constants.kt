@@ -6,6 +6,7 @@ import com.example.depgen.model.ComponentType
 import com.example.depgen.model.ConditionType
 import com.example.depgen.model.Profile
 import kotlinx.serialization.json.Json
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 val TECHRUN = ComponentType("Techrun", 0)
@@ -24,6 +25,9 @@ val CONDITION_TYPES = listOf(AT_LEAST.typeName, AT_MOST.typeName)
 const val DELTA = 1000L
 const val NO_DATE = "0001-01-01T00:00:00"
 
+@RequiresApi(Build.VERSION_CODES.O)
+val NO_DATE_OBJ: LocalDateTime = LocalDateTime.parse(NO_DATE)
+
 //val OIC = EventRole("Overall in-Charge", colorToList(Color(255, 237, 0, 255)), 1, maxCount = 1)
 //val IC = EventRole("In-Charge", colorToList(Color(255, 244, 179, 255)), 0, minCount = 1)
 //val SOUND = EventRole("Sound Engineer", colorToList(Color(0, 115, 255, 255)), 0)
@@ -38,10 +42,10 @@ const val NO_DATE = "0001-01-01T00:00:00"
 //val ROLES = listOf(OIC, IC, SOUND, FOH, SFX, LIGHTS, BACKSTAGE_IC, BACKSTAGE, LIVESTREAM_IC, LIVESTREAM)
 //val SORTED_ROLES = ROLES.sorted()
 
-val EMAIL_REGEX = Regex("^(?!.*\\.\\.)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$")
+val EMAIL_REGEX: Regex = Regex("^(?!.*\\.\\.)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$")
 
 @RequiresApi(Build.VERSION_CODES.O)
-val DATETIMEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+val DATETIMEFORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
 var ADMIN = Profile(
     "admin",

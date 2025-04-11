@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.example.depgen.utils.clearFocusOnKeyboardDismiss
 
 @Composable
 fun IntegerTextField(
@@ -52,7 +53,7 @@ fun IntegerTextField(
                 onError(true)
             }
         },
-        modifier = modifier,
+        modifier = modifier.clearFocusOnKeyboardDismiss(),
         supportingText = {
             if (error != "") {
                 Text(

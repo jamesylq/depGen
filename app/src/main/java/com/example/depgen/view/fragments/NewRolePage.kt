@@ -49,11 +49,12 @@ import com.example.depgen.AT_LEAST
 import com.example.depgen.AT_MOST
 import com.example.depgen.CONDITION_TYPES
 import com.example.depgen.Global
-import com.example.depgen.utils.colorToList
-import com.example.depgen.utils.isNotInt
 import com.example.depgen.model.Condition
 import com.example.depgen.model.EventRole
 import com.example.depgen.model.Skill
+import com.example.depgen.utils.clearFocusOnKeyboardDismiss
+import com.example.depgen.utils.colorToList
+import com.example.depgen.utils.isNotInt
 import com.example.depgen.utils.safeNavigate
 import com.example.depgen.utils.save
 import com.example.depgen.view.components.CardButton
@@ -181,7 +182,9 @@ fun NewRolePage() {
                                 skillLevel = it
                                 skillLevelError = if (isNotInt(skillLevel)) "Skill Level must be an Integer!" else ""
                             },
-                            modifier = Modifier.width(150.dp),
+                            modifier = Modifier
+                                .width(150.dp)
+                                .clearFocusOnKeyboardDismiss(),
                             supportingText = {
                                 if (skillLevelError != "") {
                                     Text(
@@ -349,7 +352,9 @@ fun NewRolePage() {
                             nameError = false
                         },
                         placeholder = { Text("Enter Role Name") },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clearFocusOnKeyboardDismiss(),
                         supportingText = {
                             if (nameError) {
                                 Text(
@@ -384,7 +389,9 @@ fun NewRolePage() {
                         fieldName = "Role Priority",
                         onFieldEdit = { priority = it },
                         onError = { priorityError = it },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clearFocusOnKeyboardDismiss(),
                         default = "0"
                     )
                     Text(
@@ -425,7 +432,8 @@ fun NewRolePage() {
                             )
                         ) {
                             Column(
-                                modifier = Modifier.padding(8.dp)
+                                modifier = Modifier.padding(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
                                 Row {
                                     Text(text = "Skill: ", fontWeight = FontWeight.Bold)

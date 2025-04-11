@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
+import com.example.depgen.utils.clearFocusOnKeyboardDismiss
 import com.example.depgen.utils.isInt
 
 
@@ -64,6 +65,7 @@ fun QuantityPicker(onUpdate: (Int) -> Unit, initialQty: Int = 0, minQty: Int = 0
             modifier = Modifier
                 .height(50.dp)
                 .width(100.dp)
+                .clearFocusOnKeyboardDismiss()
         )
         Spacer(modifier = Modifier.width(5.dp))
         IconButton(

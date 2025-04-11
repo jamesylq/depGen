@@ -38,12 +38,13 @@ import com.example.depgen.EMAIL_REGEX
 import com.example.depgen.Global
 import com.example.depgen.LOGGED_OUT
 import com.example.depgen.R
+import com.example.depgen.model.Profile
+import com.example.depgen.toast
+import com.example.depgen.utils.clearFocusOnKeyboardDismiss
 import com.example.depgen.utils.encryptSHA256
 import com.example.depgen.utils.findProfile
-import com.example.depgen.model.Profile
 import com.example.depgen.utils.safeNavigate
 import com.example.depgen.utils.save
-import com.example.depgen.toast
 import com.example.depgen.view.components.CardButton
 
 @Composable
@@ -88,7 +89,8 @@ fun SignUpPage() {
                 },
                 label = { Text("Username") },
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .clearFocusOnKeyboardDismiss(),
                 supportingText = {
                     if (usernameError != "") {
                         Text(
@@ -110,7 +112,9 @@ fun SignUpPage() {
             )
             OutlinedSecureTextField(
                 state = password,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clearFocusOnKeyboardDismiss(),
                 textObfuscationMode = TextObfuscationMode.RevealLastTyped,
                 label = {
                     Text("Password")
@@ -142,7 +146,8 @@ fun SignUpPage() {
                 },
                 label = { Text("Email Address") },
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .clearFocusOnKeyboardDismiss(),
                 supportingText = {
                     if (emailError != "") {
                         Text(

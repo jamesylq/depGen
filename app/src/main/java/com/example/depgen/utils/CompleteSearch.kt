@@ -18,7 +18,7 @@ class OTDCompleteSearchHelper(private val eventComponent: EventComponent) {
 
         val n = eventComponent.rolesRequired[roles[ind]]!!
         var ans = Pair(Double.MAX_VALUE, HashMap<EventRole, List<Profile>>())
-        for (possibility in Global.profileList.subList(2, Global.profileList.size).combinations(n)) {
+        for (possibility in Global.profileList.subList(2, Global.profileList.size).shuffled().combinations(n)) {
             val new = HashMap(curr)
             new[roles[ind]] = possibility
             val res = propose(ind + 1, new)
