@@ -2,8 +2,8 @@ package com.example.depgen.model
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.example.depgen.DATETIMEFORMATTER
 import com.example.depgen.Global
+import com.example.depgen.utils.DATETIMEFORMATTER
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit

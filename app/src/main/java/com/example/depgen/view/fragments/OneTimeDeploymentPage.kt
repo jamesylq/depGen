@@ -9,14 +9,23 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -32,16 +41,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
-import com.example.depgen.NO_DATE
 import com.example.depgen.model.EventComponent
 import com.example.depgen.model.EventRole
-import com.example.depgen.model.Navigation
 import com.example.depgen.model.Profile
+import com.example.depgen.utils.NO_DATE
 import com.example.depgen.utils.OTDCompleteSearchHelper
 import com.example.depgen.utils.findRole
+import com.example.depgen.utils.safeNavigate
 import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.ComboBox
-import com.example.depgen.view.components.DefaultTopAppBar
+import com.example.depgen.view.components.ConfirmationScreen
 import com.example.depgen.view.components.DisplayEventComponent
 import com.example.depgen.view.components.QuantityPicker
 
@@ -52,18 +61,59 @@ fun OneTimeDeploymentPage() {
     val roleNums = remember { mutableStateListOf<Int>() }
     val rolesNeeded = remember { mutableStateMapOf<EventRole, Int>() }
     val rolesNotSelected = remember { mutableStateListOf<String>() }
+    var confirmationShowing by remember { mutableStateOf(false) }
     var searchingRole by remember { mutableStateOf(false) }
     var selectedRole by remember { mutableStateOf("") }
     var roleError by remember { mutableStateOf("") }
     var recompile by remember { mutableIntStateOf(1) }
     var screen by remember { mutableStateOf("customise") }
-    var generatedDeployment = remember { mutableStateMapOf<EventRole, List<Profile>>() }
+    val generatedDeployment = remember { mutableStateMapOf<EventRole, List<Profile>>() }
 
     if (roleNums.isEmpty()) for (role in Global.rolesList) roleNums.add(role.minCount)
 
     Scaffold (
         topBar = {
-            DefaultTopAppBar("Master", Navigation.ONETIMEDEPLOYMENT)
+            TopAppBar(
+                title = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = {
+                                when (screen) {
+                                    "customise" -> {
+                                        confirmationShowing = true
+                                    }
+
+                                    "generated" -> {
+                                        screen = "customise"
+                                    }
+
+                                    else -> {}
+                                }
+                            },
+                            modifier = Modifier.height(30.dp)
+                        ) {
+                            Icon(
+                                imageVector = when (screen) {
+                                    "generated" -> Icons.AutoMirrored.Filled.ArrowBack
+                                    "customise" -> Icons.Default.Close
+                                    else -> Icons.Default.QuestionMark
+                                },
+                                contentDescription = ""
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "One-time Deployment",
+                            fontSize = 24.sp,
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    MaterialTheme.colorScheme.tertiary
+                )
+            )
         }
     ) { innerPadding ->
         Column (
@@ -71,6 +121,18 @@ fun OneTimeDeploymentPage() {
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
+            if (confirmationShowing) {
+                ConfirmationScreen(
+                    {
+                        confirmationShowing = false
+                        safeNavigate("Master")
+                    },
+                    {
+                        confirmationShowing = false
+                    }
+                )
+            }
+
             when (screen) {
                 "customise" -> {
                     if (searchingRole) {
@@ -214,9 +276,7 @@ fun OneTimeDeploymentPage() {
                             }
                             screen = "generated"
                         },
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.secondary
-                        )
+                        enabled = rolesNeeded.isNotEmpty()
                     )
                 }
 

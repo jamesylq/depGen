@@ -21,15 +21,18 @@ fun CardButton(
     text: String,
     onClick: () -> Unit,
     colors: CardColors = CardDefaults.cardColors(
-        MaterialTheme.colorScheme.secondary
-    )
+        containerColor = MaterialTheme.colorScheme.secondary,
+        disabledContainerColor = Color.LightGray
+    ),
+    enabled: Boolean = true
 ) {
     ElevatedCard(
         colors = colors,
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .height(40.dp)
+            .height(40.dp),
+        enabled = enabled
     ) {
         Row (
             horizontalArrangement = Arrangement.Center,

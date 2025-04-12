@@ -30,9 +30,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.depgen.NO_DATE_OBJ
 import com.example.depgen.R
 import com.example.depgen.model.EventComponent
+import com.example.depgen.utils.NO_DATE_OBJ
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalLayoutApi::class)

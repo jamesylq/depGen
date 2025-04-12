@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material3.BasicAlertDialog
@@ -72,7 +71,6 @@ import com.example.depgen.utils.lazyTime
 import com.example.depgen.utils.save
 import com.example.depgen.utils.toHHMMTime
 import com.example.depgen.utils.toNaturalDateTime
-import com.example.depgen.view.fragments.removeLetters
 import java.time.format.DateTimeParseException
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -135,7 +133,6 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
 
     var componentType: ComponentType? by remember { mutableStateOf(comType) }
 
-    var pickingDate by remember { mutableStateOf(false) }
     var confirmationShowing by remember { mutableStateOf(false) }
     val selectedRoles = remember { mutableStateListOf<Boolean>() }
     var recompile by remember { mutableIntStateOf(1) }
@@ -231,20 +228,6 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                     },
                     {
                         confirmationShowing = false
-                    }
-                )
-
-            }
-
-            if (pickingDate) {
-                DatePickerScreen (
-                    onDateSelected = {
-                        day = it.dayOfMonth.toString().padStart(2, '0')
-                        month = it.monthValue.toString().padStart(2, '0')
-                        year = it.year.toString().padStart(4, '0')
-                    },
-                    onDismiss = {
-                        pickingDate = false
                     }
                 )
             }
@@ -351,81 +334,20 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
 
                 "addComponent-1" -> {
                     title = "New Event Component"
+
                     Text(
                         text = "Date and Time of Component",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(bottom = 15.dp)
                     )
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Date: ",
-                            fontWeight = FontWeight.SemiBold,
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
-                        TextField(
-                            value = day,
-                            onValueChange = {
-                                day = removeLetters(it)
-                                if (day.length > 2) day = day.substring(0, 2)
 
-                                if (month.isNotBlank()) month = month.padStart(2, '0')
-                                if (year.isNotBlank()) year = year.padStart(4, '0')
-                            },
-                            modifier = Modifier
-                                .padding(end = 8.dp)
-                                .weight(0.3f)
-                                .clearFocusOnKeyboardDismiss(),
-                            placeholder = {
-                                Text("DD")
-                            }
-                        )
-                        TextField(
-                            value = month,
-                            onValueChange = {
-                                month = removeLetters(it)
-                                if (month.length > 2) month = month.substring(0, 2)
+                    DateInputRow(
+                        "Date",
+                        day, month, year,
+                        { day = it }, { month = it }, { year = it }
+                    )
 
-                                if (day.isNotBlank()) day = day.padStart(2, '0')
-                                if (year.isNotBlank()) year = year.padStart(4, '0')
-                            },
-                            modifier = Modifier
-                                .padding(end = 8.dp)
-                                .weight(0.3f)
-                                .clearFocusOnKeyboardDismiss(),
-                            placeholder = {
-                                Text("MM")
-                            }
-                        )
-                        TextField(
-                            value = year,
-                            onValueChange = {
-                                year = removeLetters(it)
-                                if (year.length > 4) year = year.substring(0, 4)
-
-                                if (day.isNotBlank()) day = day.padStart(2, '0')
-                                if (month.isNotBlank()) month = month.padStart(2, '0')
-                            },
-                            modifier = Modifier
-                                .padding(end = 8.dp)
-                                .weight(0.4f)
-                                .clearFocusOnKeyboardDismiss(),
-                            placeholder = {
-                                Text("YYYY")
-                            }
-                        )
-                        IconButton(
-                            onClick = {
-                                pickingDate = true
-                            },
-                            modifier = Modifier.width(50.dp)
-                        ) {
-                            Icon(Icons.Default.DateRange, "")
-                        }
-                    }
                     Row(
                         modifier = Modifier.padding(top = 12.dp),
                         verticalAlignment = Alignment.CenterVertically
