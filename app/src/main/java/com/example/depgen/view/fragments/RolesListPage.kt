@@ -54,7 +54,7 @@ fun RolesListPage() {
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                safeNavigate("NewRole")
+                safeNavigate("NewRole/-1")
             }) {
                 Icon(Icons.Filled.Add, "")
             }
@@ -134,7 +134,7 @@ fun RolesListPage() {
                                     Spacer(modifier = Modifier.weight(1f))
                                     IconButton(
                                         onClick = {
-                                            //TODO: Make Role Prerequisites Editable
+                                            safeNavigate("NewRole/$i")
                                         }
                                     ) {
                                         Icon(Icons.Default.Edit, "")

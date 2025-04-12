@@ -124,16 +124,12 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
 
     var startTime by remember {
         mutableStateOf(
-            if (eventComponent.start != "") toHHMMTime(
-                eventComponent.getStart()
-            ) else ""
+            if (eventComponent.start != "") eventComponent.getStart().toHHMMTime() else ""
         )
     }
     var endTime by remember {
         mutableStateOf(
-            if (eventComponent.end != "") toHHMMTime(
-                eventComponent.getEnd()
-            ) else ""
+            if (eventComponent.end != "") eventComponent.getEnd().toHHMMTime() else ""
         )
     }
 
@@ -527,8 +523,8 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                             val endString = "$year-$month-${day}T${lazyTime(endTime)}:00"
 
                             try {
-                                toNaturalDateTime(startString)
-                                toNaturalDateTime(endString)
+                                startString.toNaturalDateTime()
+                                endString.toNaturalDateTime()
 
                                 startTime = lazyTime(startTime)
                                 endTime = lazyTime(endTime)

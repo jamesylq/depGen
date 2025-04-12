@@ -38,12 +38,12 @@ fun switchProfile(newProfile: Profile) {
     Global.profile = newProfile
 }
 
-fun colorToList(color: Color): List<Int> {
-    return listOf((color.red * 255).toInt(), (color.green * 255).toInt(), (color.blue * 255).toInt())
+fun List<Int>.toColor() : Color{
+    return Color(this[0], this[1], this[2], 255)
 }
 
-fun listToColor(lst: List<Int>): Color {
-    return Color(lst[0], lst[1], lst[2], 255)
+fun Color.toList(): List<Int> {
+    return listOf((this.red * 255).toInt(), (this.green * 255).toInt(), (this.blue * 255).toInt())
 }
 
 fun findProfile(username: String) : Profile {
@@ -66,14 +66,14 @@ fun findRole(role: String): EventRole? {
 
 @Throws(DateTimeParseException::class)
 @RequiresApi(Build.VERSION_CODES.O)
-fun toNaturalDateTime(isoString: String): String {
-    return LocalDateTime.parse(isoString).format(DateTimeFormatter.ofPattern("MMMM d, yyyy 'at' h:mm a"))
+fun String.toNaturalDateTime(): String {
+    return LocalDateTime.parse(this).format(DateTimeFormatter.ofPattern("MMMM d, yyyy 'at' h:mm a"))
 }
 
 @Throws(DateTimeParseException::class)
 @RequiresApi(Build.VERSION_CODES.O)
-fun toHHMMTime(datetime: LocalDateTime): String {
-    return datetime.format(DateTimeFormatter.ofPattern("HH:mm"))
+fun LocalDateTime.toHHMMTime(): String {
+    return this.format(DateTimeFormatter.ofPattern("HH:mm"))
 }
 
 fun save() {
@@ -140,12 +140,12 @@ fun lazyTime(s: String): String {
     return s.substring(0, l - 2) + ":" + s.substring(l - 2, l)
 }
 
-fun isInt(s: String): Boolean {
-    return s.isNotBlank() && s.toIntOrNull() != null
+fun String.isInt(): Boolean {
+    return this.isNotBlank() && this.toIntOrNull() != null
 }
 
-fun isNotInt(s: String): Boolean {
-    return s.isNotBlank() && s.toIntOrNull() == null
+fun String.isNotInt(): Boolean {
+    return this.isNotBlank() && this.toIntOrNull() == null
 }
 
 fun safeNavigate(dest: String) {

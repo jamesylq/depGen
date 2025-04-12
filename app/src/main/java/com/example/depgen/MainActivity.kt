@@ -180,8 +180,8 @@ class MainActivity : ComponentActivity() {
                     composable("RolesList") {
                         RolesListPage()
                     }
-                    composable("NewRole") {
-                        NewRolePage()
+                    composable("NewRole/{idx}") {
+                        NewRolePage(it.arguments!!.getString("idx")!!.toInt())
                     }
                 }
             }

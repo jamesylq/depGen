@@ -159,7 +159,7 @@ fun NewSkillPage() {
                     .fillMaxWidth()
                     .clearFocusOnKeyboardDismiss(),
                 supportingText = {
-                    if (isNotInt(maxLvl)) {
+                    if (maxLvl.isNotInt()) {
                         Text(
                             modifier = Modifier.fillMaxWidth(),
                             text = "Maximum Skill Level must be an Integer!",
@@ -168,7 +168,7 @@ fun NewSkillPage() {
                     }
                 },
                 trailingIcon = {
-                    if (isNotInt(maxLvl)) {
+                    if (maxLvl.isNotInt()) {
                         Icon(
                             Icons.Rounded.Warning,
                             "",
@@ -194,7 +194,7 @@ fun NewSkillPage() {
                     .fillMaxWidth()
                     .clearFocusOnKeyboardDismiss(),
                 supportingText = {
-                    if (isNotInt(defLvl)) {
+                    if (defLvl.isNotInt()) {
                         Text(
                             modifier = Modifier.fillMaxWidth(),
                             text = "Default Skill Level must be an Integer!",
@@ -203,7 +203,7 @@ fun NewSkillPage() {
                     }
                 },
                 trailingIcon = {
-                    if (isNotInt(defLvl)) {
+                    if (defLvl.isNotInt()) {
                         Icon(
                             Icons.Rounded.Warning,
                             "",
@@ -219,7 +219,7 @@ fun NewSkillPage() {
                     //TODO: Blank Errors
                     if (name.isEmpty()) {
                         nameError = true
-                    } else if (isInt(maxLvl) && isInt(defLvl)) {
+                    } else if (maxLvl.isInt() && defLvl.isInt()) {
                         Global.skillsList.add(Skill(name, maxLvl.toInt(), defLvl.toInt()))
                         safeNavigate("SkillsTracker")
                     }

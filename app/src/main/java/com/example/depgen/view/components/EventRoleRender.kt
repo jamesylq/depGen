@@ -16,8 +16,8 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.depgen.utils.listToColor
 import com.example.depgen.model.EventRole
+import com.example.depgen.utils.toColor
 
 @Composable
 fun EventRoleRender(eventRole: EventRole, scale : Float = 1f) {
@@ -35,7 +35,7 @@ fun EventRoleRender(eventRole: EventRole, scale : Float = 1f) {
         ){
             Canvas(modifier = Modifier.size(16.dp)) {
                 drawCircle(
-                    color = listToColor(eventRole.color),
+                    color = eventRole.color.toColor(),
                     radius = size.minDimension / 2
                 )
             }

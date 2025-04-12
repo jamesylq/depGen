@@ -53,10 +53,11 @@ import com.example.depgen.model.Condition
 import com.example.depgen.model.EventRole
 import com.example.depgen.model.Skill
 import com.example.depgen.utils.clearFocusOnKeyboardDismiss
-import com.example.depgen.utils.colorToList
 import com.example.depgen.utils.isNotInt
 import com.example.depgen.utils.safeNavigate
 import com.example.depgen.utils.save
+import com.example.depgen.utils.toColor
+import com.example.depgen.utils.toList
 import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.ComboBox
 import com.example.depgen.view.components.ConfirmationScreen
@@ -66,7 +67,7 @@ import com.example.depgen.view.components.colorPicker.rememberColorPickerControl
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewRolePage() {
+fun NewRolePage(roleEditing: Int = -1) {
     var exitConfirmationShowing by remember { mutableStateOf(false) }
     var deleteRequirementConfirmationShowing by remember { mutableStateOf<Pair<Skill, Int>?>(null) }
     var name by remember { mutableStateOf("") }
@@ -78,11 +79,19 @@ fun NewRolePage() {
     var selectedCondition by remember { mutableStateOf("") }
     var selectedSkill by remember { mutableStateOf("") }
     var skillLevel by remember { mutableStateOf("") }
-    val prerequisites = remember { mutableMapOf<Skill, ArrayList<Condition?>>() }
+    var prerequisites = remember { mutableMapOf<Skill, ArrayList<Condition?>>() }
     var priority by remember { mutableIntStateOf(0) }
     var priorityError by remember { mutableStateOf(false) }
     var selectedColor by remember { mutableStateOf(Color.Black) }
     var selectingColor by remember { mutableStateOf(false) }
+
+    if (roleEditing != -1 && name != Global.rolesList[roleEditing].eventRole) {
+        val role = Global.rolesList[roleEditing]
+        name = role.eventRole
+        prerequisites = role.prerequisites
+        priority = role.priority
+        selectedColor = role.color.toColor()
+    }
 
     Scaffold(
         topBar = {
@@ -180,7 +189,7 @@ fun NewRolePage() {
                             skillLevel,
                             {
                                 skillLevel = it
-                                skillLevelError = if (isNotInt(skillLevel)) "Skill Level must be an Integer!" else ""
+                                skillLevelError = if (skillLevel.isNotInt()) "Skill Level must be an Integer!" else ""
                             },
                             modifier = Modifier
                                 .width(150.dp)
@@ -332,8 +341,9 @@ fun NewRolePage() {
 
         Column (
             modifier = Modifier
-                .padding(innerPadding)
                 .padding(16.dp)
+                .padding(innerPadding)
+                .fillMaxSize()
         ) {
             LazyColumn (
                 modifier = Modifier.weight(1f)
@@ -413,6 +423,8 @@ fun NewRolePage() {
                             }
                         )
                     }
+                }
+                item {
                     Text(
                         text = "Role Prerequisites",
                         fontSize = 20.sp,
@@ -421,9 +433,8 @@ fun NewRolePage() {
                             .padding(bottom = 5.dp, top = 25.dp)
                     )
                     Spacer(modifier = Modifier.height(10.dp))
-                }
-                for (entry in prerequisites) {
-                    item {
+
+                    for (entry in prerequisites) {
                         ElevatedCard(
                             modifier = Modifier.fillMaxWidth(),
                             colors = CardDefaults.cardColors(
@@ -450,9 +461,7 @@ fun NewRolePage() {
                             }
                         }
                     }
-                }
-                if (prerequisites.isEmpty()) {
-                    item {
+                    if (prerequisites.isEmpty()) {
                         ElevatedCard(
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.tertiary,
@@ -467,12 +476,10 @@ fun NewRolePage() {
                             ) {
                                 Text("No Prerequisites!")
                             }
-
                         }
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(30.dp))
             CardButton(
                 text = "Add Role Prerequisite",
                 onClick = {
@@ -493,14 +500,22 @@ fun NewRolePage() {
             CardButton(
                 text = "Done",
                 onClick = {
-                    Global.rolesList.add(
-                        EventRole(
-                            eventRole = name.trim(),
-                            priority = priority,
-                            color = colorToList(selectedColor),
-                            prerequisites = HashMap(prerequisites)
+                    if (roleEditing == -1) {
+                        Global.rolesList.add(
+                            EventRole(
+                                eventRole = name.trim(),
+                                priority = priority,
+                                color = selectedColor.toList(),
+                                prerequisites = HashMap(prerequisites)
+                            )
                         )
-                    )
+                    } else {
+                        val oldRole = Global.rolesList[roleEditing]
+                        oldRole.eventRole = name.trim()
+                        oldRole.priority = priority
+                        oldRole.color = selectedColor.toList()
+                        oldRole.prerequisites = HashMap(prerequisites)
+                    }
                     save()
                     safeNavigate("RolesList")
                 },

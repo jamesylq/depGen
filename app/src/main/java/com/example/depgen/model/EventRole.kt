@@ -5,11 +5,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class EventRole(
     var eventRole: String,
-    val color: List<Int> = listOf(0, 0, 0),
-    val priority: Int,
+    var color: List<Int> = listOf(0, 0, 0),
+    var priority: Int,
     val maxCount: Int = Int.MAX_VALUE,
     val minCount: Int = 0,
-    val prerequisites: HashMap<Skill, ArrayList<Condition?>> = hashMapOf()
+    var prerequisites: HashMap<Skill, ArrayList<Condition?>> = hashMapOf()
 ) : Comparable<EventRole> {
 
     fun satisfiedBy(profile: Profile) : Boolean{

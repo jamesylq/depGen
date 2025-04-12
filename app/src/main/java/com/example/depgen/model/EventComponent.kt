@@ -29,14 +29,14 @@ data class EventComponent(
     @Throws(DateTimeParseException::class)
     @RequiresApi(Build.VERSION_CODES.O)
     fun getNaturalStart(): String {
-        return try { toNaturalDateTime(start) }
+        return try { start.toNaturalDateTime() }
         catch (_: DateTimeParseException) { "" }
     }
 
     @Throws(DateTimeParseException::class)
     @RequiresApi(Build.VERSION_CODES.O)
     fun getNaturalEnd(): String {
-        return try { toNaturalDateTime(end) }
+        return try { end.toNaturalDateTime() }
         catch (_: DateTimeParseException) { "" }
     }
 
