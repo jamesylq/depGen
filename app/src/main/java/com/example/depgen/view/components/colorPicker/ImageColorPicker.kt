@@ -83,7 +83,6 @@ public fun ImageColorPicker(
         origPoint.x.coerceIn(0f, width - 1f),
         origPoint.y.coerceIn(0f, height - 1f),
       )
-      // TODO: transparent pixel handling
       val px = imageBitmap.getPixel(imPoint.roundToInt())
       val newPoint = imPoint * scale + offset
       px to newPoint
@@ -117,7 +116,6 @@ public fun ImageColorPicker(
           origPoint.x.coerceIn(0f, width - 1f),
           origPoint.y.coerceIn(0f, height - 1f),
         )
-        // TODO: transparent pixel handling
         val px = imageBitmap.getPixel(imPoint.roundToInt())
         val newPoint = imPoint * scale + offset
         px to newPoint

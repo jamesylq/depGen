@@ -59,7 +59,6 @@ import androidx.compose.ui.unit.sp
 import com.example.depgen.EVENT_TYPES
 import com.example.depgen.Global
 import com.example.depgen.R
-import com.example.depgen.exceptions.CompleteSearchInterruptedException
 import com.example.depgen.model.ComponentType
 import com.example.depgen.model.EventComponent
 import com.example.depgen.model.EventRole
@@ -71,6 +70,7 @@ import com.example.depgen.utils.lazyTime
 import com.example.depgen.utils.save
 import com.example.depgen.utils.toHHMMTime
 import com.example.depgen.utils.toNaturalDateTime
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeParseException
 
@@ -473,19 +473,18 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                 endTime = lazyTime(endTime)
 
                                 if (currEventTypeSelection == -1) {
-                                    throw CompleteSearchInterruptedException("")
+                                    toast("Select an Event Component Type!")
+                                } else if (LocalDateTime.parse(startString).isAfter(LocalDateTime.parse(endString))) {
+                                    toast("Start Time cannot be after End Time!")
+                                } else {
+                                    screen = "addComponent-2"
                                 }
 
-                                screen = "addComponent-2"
-
                             } catch (_: DateTimeParseException) {
-                                toast("Invalid Date/Time!")
-
-                            } catch (_: CompleteSearchInterruptedException) {
-                                toast("Select an Event Component Type!")
+                                toast("Invalid Date/Time Format!")
 
                             } catch (e: Exception) {
-                                toast("An Error Occurred!")
+                                toast("An Unexpected Error Occurred!")
                             }
                         },
                         colors = CardDefaults.cardColors(
@@ -625,10 +624,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .heightIn(114.dp)
-                                                .padding(vertical = 7.dp),
-                                            onClick = {
-                                                //TODO: Decide what to do here
-                                            }
+                                                .padding(vertical = 7.dp)
                                         ) {
                                             Column {
                                                 Row(

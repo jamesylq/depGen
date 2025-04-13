@@ -537,7 +537,6 @@ fun NewRolePage(roleEditing: Int = -1) {
 @Composable
 fun DisplayRequirement(conditions: ArrayList<Condition?>, idx: Int, onClick: () -> Unit = {}, deleteShowing: Boolean = true) {
     Row (verticalAlignment = Alignment.CenterVertically) {
-        //TODO: Replace with CircleShape
         Text(
             when (idx) {
                 conditions.size - 1 -> " • ${conditions[idx]}"

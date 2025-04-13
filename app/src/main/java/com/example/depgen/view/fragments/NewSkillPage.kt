@@ -1,5 +1,7 @@
 package com.example.depgen.view.fragments
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -41,6 +43,7 @@ import com.example.depgen.utils.save
 import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.ConfirmationScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewSkillPage() {
@@ -48,6 +51,8 @@ fun NewSkillPage() {
     var name by remember { mutableStateOf("") }
     var maxLvl by remember { mutableStateOf("") }
     var defLvl by remember { mutableStateOf("0") }
+    var maxLvlEmpty by remember { mutableStateOf(false) }
+    var defLvlEmpty by remember { mutableStateOf(false) }
     var nameError by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -153,6 +158,7 @@ fun NewSkillPage() {
                 value = maxLvl,
                 onValueChange = {
                     maxLvl = it
+                    maxLvlEmpty = maxLvl.isEmpty()
                 },
                 placeholder = { Text("Enter Maximum Skill Level") },
                 modifier = Modifier
@@ -165,10 +171,16 @@ fun NewSkillPage() {
                             text = "Maximum Skill Level must be an Integer!",
                             color = MaterialTheme.colorScheme.error
                         )
+                    } else if (maxLvlEmpty) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = "Maximum Skill Level cannot be Empty!",
+                            color = MaterialTheme.colorScheme.error
+                        )
                     }
                 },
                 trailingIcon = {
-                    if (maxLvl.isNotInt()) {
+                    if (maxLvl.isNotInt() || maxLvlEmpty) {
                         Icon(
                             Icons.Rounded.Warning,
                             "",
@@ -188,6 +200,7 @@ fun NewSkillPage() {
                 value = defLvl,
                 onValueChange = {
                     defLvl = it
+                    defLvlEmpty = defLvl.isEmpty()
                 },
                 placeholder = { Text("Enter Default Skill Level") },
                 modifier = Modifier
@@ -200,10 +213,16 @@ fun NewSkillPage() {
                             text = "Default Skill Level must be an Integer!",
                             color = MaterialTheme.colorScheme.error
                         )
+                    } else if (defLvlEmpty) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = "Default Skill Level cannot be Empty!",
+                            color = MaterialTheme.colorScheme.error
+                        )
                     }
                 },
                 trailingIcon = {
-                    if (defLvl.isNotInt()) {
+                    if (defLvl.isNotInt() || defLvlEmpty) {
                         Icon(
                             Icons.Rounded.Warning,
                             "",
@@ -216,7 +235,6 @@ fun NewSkillPage() {
             CardButton(
                 text = "Done",
                 onClick = {
-                    //TODO: Blank Errors
                     if (name.isEmpty()) {
                         nameError = true
                     } else if (maxLvl.isInt() && defLvl.isInt()) {

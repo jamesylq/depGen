@@ -30,9 +30,9 @@ val NATURAL_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("MMMM d, 
 @RequiresApi(Build.VERSION_CODES.O)
 fun getDays(start: LocalDate, end: LocalDate, daysOfWeek: List<Boolean>): ArrayList<LocalDate> {
     if (start.isAfter(end)) {
-        throw IllegalArgumentException("Start Date is after End Date!")
+        throw IllegalArgumentException("Start Date cannot be after End Date!")
     } else if (ChronoUnit.DAYS.between(start, end) > MAX_REPEATING_DEPLOYMENT_DAYS) {
-        throw IllegalArgumentException("Start Date and End Date Too Far Apart!")
+        throw IllegalArgumentException("Start Date and End Date are too far apart!")
     }
 
     val days = ArrayList<LocalDate>()

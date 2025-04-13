@@ -1,7 +1,6 @@
 package com.example.depgen.view.fragments
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -44,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
 import com.example.depgen.model.EventComponent
 import com.example.depgen.model.EventRole
+import com.example.depgen.toast
 import com.example.depgen.utils.NATURAL_FORMATTER
 import com.example.depgen.utils.NO_DATE
 import com.example.depgen.utils.RDCompleteSearchHelper
@@ -340,16 +340,17 @@ fun RepeatingDeploymentPage() {
                         selectedDOW.forEach { x = x || it }
                         days.clear()
                         days.addAll(getDays(start!!, end!!, selectedDOW))
-                        valid = x && !start!!.isAfter(end!!) && days.size > 0
+                        valid = x && days.size > 0
 
                     } catch (_: DateTimeException) {
                         valid = false
 
                     } catch (_: NumberFormatException) {
                         valid = false
-                    }
 
-                    Log.d("debug", "$valid")
+                    } catch (_: IllegalArgumentException) {
+                        valid = false
+                    }
 
                     if (valid) {
                         Spacer(modifier = Modifier.height(40.dp))
@@ -376,30 +377,53 @@ fun RepeatingDeploymentPage() {
                     CardButton(
                         text = "Generate!",
                         onClick = {
-                            generatedComponents.clear()
-                            generatedComponents.addAll(
-                                RDCompleteSearchHelper(
-                                    EventComponent(
-                                        HashMap(),
-                                        HashMap(rolesNeeded),
-                                        NO_DATE,
-                                        NO_DATE
-                                    ),
-                                    days
-                                ).generate()
-                            )
-                            expanded.apply{
-                                repeat(generatedComponents.size) {
-                                    add(false)
+                            if (valid) {
+                                generatedComponents.clear()
+                                generatedComponents.addAll(
+                                    RDCompleteSearchHelper(
+                                        EventComponent(
+                                            HashMap(),
+                                            HashMap(rolesNeeded),
+                                            NO_DATE,
+                                            NO_DATE
+                                        ),
+                                        days
+                                    ).generate()
+                                )
+                                expanded.apply {
+                                    repeat(generatedComponents.size) {
+                                        add(false)
+                                    }
+                                }
+
+                                screen = "generated"
+
+                            } else {
+                                try {
+                                    start = LocalDate.of(startYear.toInt(), startMonth.toInt(), startDay.toInt())
+                                    end = LocalDate.of(endYear.toInt(), endMonth.toInt(), endDay.toInt())
+                                    days.clear()
+                                    days.addAll(getDays(start!!, end!!, selectedDOW))
+                                    if (days.isEmpty()) {
+                                        toast("No Matching Deployment Dates!")
+                                    }
+
+                                } catch (_: DateTimeException) {
+                                    toast("Invalid Date Format!")
+
+                                } catch (_: NumberFormatException) {
+                                    toast("Invalid Date Format!")
+
+                                } catch (e: IllegalArgumentException) {
+                                    toast(e.message!!)
                                 }
                             }
-
-                            screen = "generated"
                         },
                         colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer
-                        ),
-                        enabled = valid
+                            containerColor =
+                                if (valid) MaterialTheme.colorScheme.primaryContainer
+                                else Color.LightGray
+                        )
                     )
                 }
 
