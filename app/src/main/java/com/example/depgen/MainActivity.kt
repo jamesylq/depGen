@@ -47,6 +47,7 @@ import com.example.depgen.view.fragments.SignUpPage
 import com.example.depgen.view.fragments.SkillPage
 import com.example.depgen.view.fragments.SkillsTrackerPage
 import com.example.depgen.view.theme.DepGenTheme
+import com.google.firebase.FirebaseApp
 import kotlinx.serialization.Serializable
 
 var active: Toast? = null
@@ -87,6 +88,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
         enableEdgeToEdge()
 
         setContent {

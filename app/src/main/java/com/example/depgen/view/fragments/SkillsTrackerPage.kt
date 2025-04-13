@@ -174,7 +174,7 @@ fun SkillsTrackerPage() {
                             if (Global.isAdmin()) {
                                 Text("Click \"+\" to create your first skill!")
                             } else {
-                                Text("Check back when your administrator has created skills!")
+                                Text("Check back when your admin creates skills!")
                             }
                         }
                     }

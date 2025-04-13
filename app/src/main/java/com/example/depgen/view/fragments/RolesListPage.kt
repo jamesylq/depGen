@@ -204,7 +204,11 @@ fun RolesListPage() {
                         fontSize = 18.sp,
                         modifier = Modifier.padding(bottom = 10.dp)
                     )
-                    Text("Click \"+\" to create your first role!")
+                    if (Global.isAdmin()) {
+                        Text("Click \"+\" to create your first role!")
+                    } else {
+                        Text("Check back when your admin creates roles!")
+                    }
                 }
             }
         }
