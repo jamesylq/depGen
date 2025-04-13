@@ -1,5 +1,7 @@
 package com.example.depgen.view.fragments
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,11 +16,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
 import com.example.depgen.model.Navigation
-import com.example.depgen.view.components.MemberSearchScreen
 import com.example.depgen.utils.safeNavigate
-import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.DefaultTopAppBar
+import com.example.depgen.view.components.MemberSearchScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MemberListPage() {
     Scaffold (
@@ -42,17 +44,10 @@ fun MemberListPage() {
                 onClickMember = {
                     safeNavigate("Profile/$it/${Navigation.MEMBERLIST}")
                 },
-                errorMessage = "Sorry, we didn't find any profiles matching your search query!"
+                errorMessage = "Sorry, we didn't find any profiles matching your search query!",
+                allowDelete = Global.isAdmin()
             )
             Spacer(modifier = Modifier.height(20.dp))
-            if (Global.isAdmin()) {
-                CardButton(
-                    text = "Add Member",
-                    onClick = {
-                        //TODO: Add Member
-                    }
-                )
-            }
         }
     }
 }

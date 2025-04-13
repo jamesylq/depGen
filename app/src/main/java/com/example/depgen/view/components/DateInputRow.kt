@@ -23,17 +23,29 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.depgen.utils.clearFocusOnKeyboardDismiss
 import com.example.depgen.view.fragments.removeLetters
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeParseException
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DateInputRow(
     title: String,
     day: String, month: String, year: String,
-    updateDay: (String) -> Unit, updateMonth: (String) -> Unit, updateYear: (String) -> Unit
+    updateDay: (String) -> Unit, updateMonth: (String) -> Unit, updateYear: (String) -> Unit,
+    defaultDate: LocalDate? = null
 ) {
     var pickingDate by remember { mutableStateOf(false) }
 
     if (pickingDate) {
+        var currentSelection = (defaultDate ?: LocalDate.now().plusDays(1))
+            .atTime(12, 0)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDate()
+        try { currentSelection = LocalDate.of(year.toInt(), month.toInt(), day.toInt()) }
+        catch (_: DateTimeParseException) { }
+        catch (_: NumberFormatException) { }
+
         DatePickerScreen (
             onDateSelected = {
                 updateDay(it.dayOfMonth.toString().padStart(2, '0'))
@@ -42,7 +54,12 @@ fun DateInputRow(
             },
             onDismiss = {
                 pickingDate = false
-            }
+            },
+            initialDateMillis = currentSelection
+                .atTime(12, 0)
+                .atZone(ZoneId.systemDefault())
+                .toInstant()!!
+                .toEpochMilli()
         )
     }
 

@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.depgen.model.EventComponent
 import com.example.depgen.utils.OTDCompleteSearchHelper
+import com.example.depgen.utils.save
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -19,6 +20,7 @@ fun GeneratingDeploymentScreen(component: EventComponent,  onExit: () -> Unit) {
         onConfirm = {
             canExit = false
             component.setDeployment(OTDCompleteSearchHelper(component).generate())
+            save()
             onExit()
         },
         onDecline = {

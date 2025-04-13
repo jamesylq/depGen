@@ -26,17 +26,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimePickerScreen(setPicking: (Int) -> Unit, setText: (String) -> Unit, title: String) {
-    val calendar = Calendar.getInstance()
-
+fun TimePickerScreen(
+    setPicking: (Int) -> Unit,
+    setText: (String) -> Unit,
+    title: String,
+    initialHour: Int = 0,
+    initialMinute: Int = 0
+) {
     val timePickerState = rememberTimePickerState(
-        initialHour = calendar.get(Calendar.HOUR_OF_DAY),
-        initialMinute = calendar.get(Calendar.MINUTE),
-        is24Hour = true
+        initialHour = initialHour,
+        initialMinute = initialMinute,
+        is24Hour = false
     )
 
     BasicAlertDialog(

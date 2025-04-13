@@ -47,6 +47,7 @@ fun ProfilePage(idx: Int, prev: Int) {
             Navigation.REPEATINGDEPLOYMENT -> "RepeatingDeployment"
             Navigation.SKILLSTRACKER -> "SkillsTracker"
             Navigation.SKILL -> "Skill/${prev / Navigation.M}"
+            Navigation.AVAILABILITIES -> "Availabilities/${prev / Navigation.M}"
             else -> ""
         }
     )

@@ -15,7 +15,7 @@ data class Profile (
     var password: String,
     var email: String,
     val skills: HashMap<Skill, Int> = HashMap(),
-    val unavailable: HashSet<String> = HashSet(),
+    var unavailable: HashSet<String> = HashSet(),
     val deployments: ArrayList<String> = ArrayList()
 ) {
     fun getIdx(): Int {

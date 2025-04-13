@@ -4,6 +4,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.depgen.ADMIN
+import com.example.depgen.FIREBASE_URL
 import com.example.depgen.Global
 import com.example.depgen.LOGGED_OUT
 import com.example.depgen.ctxt
@@ -17,9 +18,7 @@ import java.time.format.DateTimeParseException
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun save() {
-    val dbRef = FirebaseDatabase
-        .getInstance("https://depgen-a8040-default-rtdb.asia-southeast1.firebasedatabase.app")
-        .reference
+    val dbRef = FirebaseDatabase.getInstance(FIREBASE_URL).reference
 
     dbRef.child("lastUpdate").setValue(LocalDateTime.now().toString())
 
@@ -36,9 +35,7 @@ fun save() {
 }
 
 fun clear() {
-    val dbRef = FirebaseDatabase
-        .getInstance("https://depgen-a8040-default-rtdb.asia-southeast1.firebasedatabase.app")
-        .reference
+    val dbRef = FirebaseDatabase.getInstance(FIREBASE_URL).reference
 
     dbRef.child("save").setValue("")
         .addOnSuccessListener {
@@ -62,9 +59,7 @@ fun saveLocally() {
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun load() {
-    val dbRef = FirebaseDatabase
-        .getInstance("https://depgen-a8040-default-rtdb.asia-southeast1.firebasedatabase.app")
-        .reference
+    val dbRef = FirebaseDatabase.getInstance(FIREBASE_URL).reference
 
     var lastLocalUpdate = NO_DATE_OBJ
     var lastDBUpdate = NO_DATE_OBJ.plusDays(1L)

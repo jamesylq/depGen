@@ -40,3 +40,5 @@ var LOGGED_OUT = Profile(
 val json = Json {
     allowStructuredMapKeys = true
 }
+
+const val FIREBASE_URL = "https://depgen-a8040-default-rtdb.asia-southeast1.firebasedatabase.app"

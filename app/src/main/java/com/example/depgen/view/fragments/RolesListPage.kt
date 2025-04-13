@@ -1,5 +1,7 @@
 package com.example.depgen.view.fragments
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,11 +39,13 @@ import com.example.depgen.Global
 import com.example.depgen.model.EventRole
 import com.example.depgen.model.Navigation
 import com.example.depgen.utils.safeNavigate
+import com.example.depgen.utils.save
 import com.example.depgen.view.components.ConfirmationScreen
 import com.example.depgen.view.components.DefaultTopAppBar
 import com.example.depgen.view.components.EventRoleRender
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RolesListPage() {
     val remRolesList = remember { mutableStateListOf<EventRole>() }
@@ -68,6 +72,7 @@ fun RolesListPage() {
                     remRolesList.removeAt(deleting)
                     Global.rolesList.removeAt(deleting)
                     deleting = -1
+                    save()
                 },
                 onDecline = {
                     deleting = -1
@@ -111,7 +116,7 @@ fun RolesListPage() {
                                     Column {
                                         Row(verticalAlignment = Alignment.CenterVertically) {
                                             Text("Role: ", fontWeight = FontWeight.Bold)
-                                            EventRoleRender(role)
+                                            EventRoleRender(role, containerColor = MaterialTheme.colorScheme.onTertiary)
                                         }
                                     }
                                     Spacer(modifier = Modifier.weight(1f))

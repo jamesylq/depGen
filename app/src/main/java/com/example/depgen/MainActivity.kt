@@ -30,6 +30,7 @@ import com.example.depgen.utils.load
 import com.example.depgen.utils.safeNavigate
 import com.example.depgen.utils.switchProfile
 import com.example.depgen.view.components.ConfirmationScreen
+import com.example.depgen.view.fragments.AvailabilitiesPage
 import com.example.depgen.view.fragments.EventListPage
 import com.example.depgen.view.fragments.EventPage
 import com.example.depgen.view.fragments.LoginPage
@@ -148,6 +149,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("Event/{idx}") {
                         EventPage(it.arguments!!.getString("idx")!!.toInt())
+                    }
+                    composable("Availabilities/{idx}") {
+                        AvailabilitiesPage(it.arguments!!.getString("idx")!!.toInt())
                     }
                     composable("MemberList") {
                         MemberListPage()

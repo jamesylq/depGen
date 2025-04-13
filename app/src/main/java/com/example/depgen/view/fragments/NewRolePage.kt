@@ -1,5 +1,7 @@
 package com.example.depgen.view.fragments
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -65,6 +67,7 @@ import com.example.depgen.view.components.IntegerTextField
 import com.example.depgen.view.components.colorPicker.HsvColorPicker
 import com.example.depgen.view.components.colorPicker.rememberColorPickerController
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewRolePage(roleEditing: Int = -1) {
@@ -436,7 +439,7 @@ fun NewRolePage(roleEditing: Int = -1) {
 
                     for (entry in prerequisites) {
                         ElevatedCard(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.tertiary,
                                 contentColor = Color.Black
@@ -480,6 +483,7 @@ fun NewRolePage(roleEditing: Int = -1) {
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(20.dp))
             CardButton(
                 text = "Add Role Prerequisite",
                 onClick = {

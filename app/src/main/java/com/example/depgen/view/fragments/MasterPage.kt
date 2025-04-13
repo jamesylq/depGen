@@ -259,6 +259,43 @@ fun MasterPage() {
                     }
                 }
             }
+
+            if (!Global.isAdmin()) {
+                Spacer(modifier = Modifier.height(20.dp))
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    ElevatedCard(
+                        onClick = {
+                            safeNavigate("Availabilities/${Global.profile.getIdx()}")
+                        },
+                        modifier = Modifier
+                            .width(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp)
+                            .height(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp),
+                        colors = CardColors(
+                            containerColor = MaterialTheme.colorScheme.tertiary,
+                            contentColor = Color.Black,
+                            disabledContentColor = Color.Black,
+                            disabledContainerColor = MaterialTheme.colorScheme.tertiary
+                        )
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(bottom = 8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Bottom
+                        ) {
+
+                            Text(
+                                text = "Declare Availabilities",
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }

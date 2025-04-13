@@ -19,10 +19,14 @@ import com.example.depgen.model.EventRole
 import com.example.depgen.utils.toColor
 
 @Composable
-fun EventRoleRender(eventRole: EventRole, scale : Float = 1f) {
+fun EventRoleRender(
+    eventRole: EventRole,
+    scale : Float = 1f,
+    containerColor: Color = MaterialTheme.colorScheme.tertiary
+) {
     ElevatedCard (
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.tertiary,
+            containerColor = containerColor,
             contentColor = Color.Black
         ),
         modifier = Modifier.padding(top = 5.dp)

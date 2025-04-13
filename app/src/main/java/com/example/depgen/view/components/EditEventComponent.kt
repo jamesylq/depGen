@@ -71,6 +71,7 @@ import com.example.depgen.utils.lazyTime
 import com.example.depgen.utils.save
 import com.example.depgen.utils.toHHMMTime
 import com.example.depgen.utils.toNaturalDateTime
+import java.time.LocalTime
 import java.time.format.DateTimeParseException
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -295,18 +296,38 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
             }
 
             if (picking == 1) {
+                var initH = 0
+                var initM = 0
+
+                try {
+                    initH = LocalTime.parse(startTime).hour
+                    initM = LocalTime.parse(startTime).minute
+                } catch (_: DateTimeParseException) { }
+
                 TimePickerScreen(
                     setPicking = { picking = it },
                     setText = { startTime = it },
-                    "Select Starting Time"
+                    title = "Select Starting Time",
+                    initialHour = initH,
+                    initialMinute = initM
                 )
                 return@Column
 
             } else if (picking == 2) {
+                var initH = 0
+                var initM = 0
+
+                try {
+                    initH = LocalTime.parse(endTime).hour
+                    initM = LocalTime.parse(endTime).minute
+                } catch (_: DateTimeParseException) { }
+
                 TimePickerScreen(
                     setPicking = { picking = it },
                     setText = { endTime = it },
-                    "Select Ending Time"
+                    title = "Select Ending Time",
+                    initialHour = initH,
+                    initialMinute = initM
                 )
                 return@Column
             }

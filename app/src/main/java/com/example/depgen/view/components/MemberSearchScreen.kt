@@ -1,5 +1,7 @@
 package com.example.depgen.view.components
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,14 +15,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,12 +41,35 @@ import com.example.depgen.Global
 import com.example.depgen.R
 import com.example.depgen.model.Profile
 import com.example.depgen.utils.clearFocusOnKeyboardDismiss
+import com.example.depgen.utils.save
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MemberSearchScreen(onClickMember: (Int) -> Unit, errorMessage: String, exclude: Set<Int>? = null) {
+fun MemberSearchScreen(
+    onClickMember: (Int) -> Unit,
+    errorMessage: String,
+    exclude: Set<Int>? = null,
+    allowDelete: Boolean = false
+) {
     var searchQuery by remember { mutableStateOf("") }
+    var deleting by remember { mutableIntStateOf(-1) }
     val profileRem = remember { mutableStateListOf<Profile>() }
     val profilesFiltered = remember { mutableStateListOf<Int>() }
+
+    if (deleting != -1) {
+        ConfirmationScreen(
+            onConfirm = {
+                Global.profileList.removeAt(deleting)
+                profileRem.removeAt(deleting)
+                save()
+                deleting = -1
+            },
+            onDecline = {
+                deleting = -1
+            },
+            body = "This action is irreversible!"
+        )
+    }
 
     profileRem.clear()
     profilesFiltered.clear()
@@ -117,8 +145,19 @@ fun MemberSearchScreen(onClickMember: (Int) -> Unit, errorMessage: String, exclu
                                         Global.profileList[profilesFiltered[i]].username,
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 19.sp,
-                                        modifier = Modifier.padding(8.dp)
+                                        modifier = Modifier
+                                            .padding(8.dp)
+                                            .weight(1f)
                                     )
+                                    if (allowDelete) {
+                                        IconButton(
+                                            onClick = {
+                                                deleting = profilesFiltered[i]
+                                            }
+                                        ) {
+                                            Icon(Icons.Default.Delete, "")
+                                        }
+                                    }
                                 }
                             }
                         }

@@ -20,9 +20,10 @@ import java.time.ZoneId
 @Composable
 fun DatePickerScreen(
     onDateSelected: (LocalDate) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    initialDateMillis: Long
 ) {
-    val datePickerState = rememberDatePickerState()
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = initialDateMillis)
 
     DatePickerDialog(
         onDismissRequest = { onDismiss() },

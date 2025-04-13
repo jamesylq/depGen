@@ -1,5 +1,7 @@
 package com.example.depgen.view.fragments
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,9 +39,11 @@ import com.example.depgen.Global
 import com.example.depgen.model.Navigation
 import com.example.depgen.model.Skill
 import com.example.depgen.utils.safeNavigate
+import com.example.depgen.utils.save
 import com.example.depgen.view.components.ConfirmationScreen
 import com.example.depgen.view.components.DefaultTopAppBar
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SkillsTrackerPage() {
     val remSkills = remember { mutableStateListOf<Skill>() }
@@ -66,6 +70,7 @@ fun SkillsTrackerPage() {
                     remSkills.removeAt(deleting)
                     Global.skillsList.removeAt(deleting)
                     deleting = -1
+                    save()
                 },
                 onDecline = {
                     deleting = -1
