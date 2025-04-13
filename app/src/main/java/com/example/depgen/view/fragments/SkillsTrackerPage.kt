@@ -51,10 +51,12 @@ fun SkillsTrackerPage() {
             DefaultTopAppBar("Master", Navigation.SKILLSTRACKER)
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                safeNavigate("NewSkill")
-            }) {
-                Icon(Icons.Filled.Add, "")
+            if (Global.isAdmin()) {
+                FloatingActionButton(onClick = {
+                    safeNavigate("NewSkill")
+                }) {
+                    Icon(Icons.Filled.Add, "")
+                }
             }
         }
     ) {
@@ -116,18 +118,20 @@ fun SkillsTrackerPage() {
                                         modifier = Modifier.padding(start = 5.dp),
                                     )
                                     Spacer(modifier = Modifier.weight(1f))
-                                    IconButton(
-                                        onClick = {
-                                            deleting = i
-                                        },
-                                        colors = IconButtonColors(
-                                            containerColor = MaterialTheme.colorScheme.tertiary,
-                                            contentColor = Color.Black,
-                                            disabledContainerColor = MaterialTheme.colorScheme.tertiary,
-                                            disabledContentColor = Color.Black
-                                        )
-                                    ) {
-                                        Icon(Icons.Default.Delete, "")
+                                    if (Global.isAdmin()) {
+                                        IconButton(
+                                            onClick = {
+                                                deleting = i
+                                            },
+                                            colors = IconButtonColors(
+                                                containerColor = MaterialTheme.colorScheme.tertiary,
+                                                contentColor = Color.Black,
+                                                disabledContainerColor = MaterialTheme.colorScheme.tertiary,
+                                                disabledContentColor = Color.Black
+                                            )
+                                        ) {
+                                            Icon(Icons.Default.Delete, "")
+                                        }
                                     }
                                 }
                                 Row (
@@ -167,7 +171,11 @@ fun SkillsTrackerPage() {
                                 fontSize = 18.sp,
                                 modifier = Modifier.padding(bottom = 10.dp)
                             )
-                            Text("Click \"+\" to create your first skill!")
+                            if (Global.isAdmin()) {
+                                Text("Click \"+\" to create your first skill!")
+                            } else {
+                                Text("Check back when your administrator has created skills!")
+                            }
                         }
                     }
                 }

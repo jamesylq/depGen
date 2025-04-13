@@ -183,7 +183,9 @@ fun SkillPage(idx: Int) {
                                                 modifier = Modifier
                                                     .size(100.dp)
                                                     .clickable {
-                                                        confirmation = i
+                                                        if (Global.isAdmin()) {
+                                                            confirmation = i
+                                                        }
                                                     },
                                                 horizontalAlignment = Alignment.CenterHorizontally,
                                                 verticalArrangement = Arrangement.Center

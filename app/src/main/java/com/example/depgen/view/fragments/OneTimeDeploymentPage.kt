@@ -68,6 +68,7 @@ fun OneTimeDeploymentPage() {
     var recompile by remember { mutableIntStateOf(1) }
     var screen by remember { mutableStateOf("customise") }
     val generatedDeployment = remember { mutableStateMapOf<EventRole, List<Profile>>() }
+    var expanded by remember { mutableStateOf(false) }
 
     if (roleNums.isEmpty()) for (role in Global.rolesList) roleNums.add(role.minCount)
 
@@ -292,7 +293,9 @@ fun OneTimeDeploymentPage() {
                     DisplayEventComponent(
                         component = component,
                         onEdit = null,
-                        generateOTD = null
+                        generateOTD = null,
+                        expanded = expanded,
+                        onToggleExpand = { expanded = !expanded }
                     )
                 }
             }

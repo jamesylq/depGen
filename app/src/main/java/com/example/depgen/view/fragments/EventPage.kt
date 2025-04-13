@@ -3,7 +3,6 @@ package com.example.depgen.view.fragments
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,6 +21,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -34,12 +34,13 @@ import com.example.depgen.Global
 import com.example.depgen.model.ComponentType
 import com.example.depgen.model.EventComponent
 import com.example.depgen.utils.safeNavigate
+import com.example.depgen.view.components.ConfirmationScreen
 import com.example.depgen.view.components.DisplayEventComponent
 import com.example.depgen.view.components.EditEventComponent
 import com.example.depgen.view.components.GeneratingDeploymentScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventPage(idx: Int) {
     val event = Global.eventList[idx]
@@ -47,10 +48,21 @@ fun EventPage(idx: Int) {
     var generatingOTD: EventComponent? by remember { mutableStateOf(null) }
     var editingComponent: EventComponent? by remember { mutableStateOf(null) }
     var editingComponentType: ComponentType? by remember { mutableStateOf(null) }
+    var addingComponent: EventComponent? by remember { mutableStateOf(null) }
+    var deletingComponent: EventComponent? by remember { mutableStateOf(null) }
+
+    val expanded = remember { mutableStateMapOf<EventComponent, Boolean>() }
+    if (expanded.isEmpty()) {
+        for (entry in event.getComponents()) {
+            for (component in entry.value) {
+                expanded[component] = false
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
-            if (editingComponent == null) {
+            if (editingComponent == null && addingComponent == null) {
                 TopAppBar(
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.tertiary,
@@ -70,11 +82,14 @@ fun EventPage(idx: Int) {
             }
         },
         floatingActionButton = {
-            if (editingComponent == null) {
-                FloatingActionButton(onClick = {
-                    //TODO: Add Component
-                }) {
-                    Icon(Icons.Filled.Add, "")
+            if (Global.isAdmin()) {
+                if (editingComponent == null && addingComponent == null) {
+                    FloatingActionButton(onClick = {
+                        addingComponent = EventComponent(HashMap(), HashMap(), "", "")
+
+                    }) {
+                        Icon(Icons.Filled.Add, "")
+                    }
                 }
             }
         }
@@ -100,6 +115,22 @@ fun EventPage(idx: Int) {
                 editingComponentType!!
             )
 
+        } else if (addingComponent != null) {
+            EditEventComponent(
+                eventComponent = addingComponent!!,
+                onExit = {
+                    if (it != null) {
+                        if (event.components.containsKey(it)) {
+                            event.components[it]!!.add(addingComponent!!)
+                        } else {
+                            event.components[it] = arrayListOf(addingComponent!!)
+                        }
+                    }
+                    addingComponent = null
+                },
+                comType = null
+            )
+
         } else {
             Column(
                 modifier = Modifier
@@ -108,6 +139,25 @@ fun EventPage(idx: Int) {
             ) {
                 if (generatingOTD != null) {
                     GeneratingDeploymentScreen(generatingOTD!!) { generatingOTD = null }
+                }
+
+                if (deletingComponent != null) {
+                    ConfirmationScreen(
+                        onConfirm = {
+                            for (entry in event.components) {
+                                if (entry.value.contains(deletingComponent)) {
+                                    entry.value.remove(deletingComponent)
+                                    if (entry.value.isEmpty()) event.components.remove(entry.key)
+                                    break
+                                }
+                            }
+                            deletingComponent = null
+                        },
+                        onDecline = {
+                            deletingComponent = null
+                        },
+                        body = "This action is irreversible!"
+                    )
                 }
 
                 Text(
@@ -131,18 +181,40 @@ fun EventPage(idx: Int) {
                             )
 
                             entry.value.sortBy { it.getStart() }
-                            for (component in entry.value) {
-                                DisplayEventComponent(
-                                    component = component,
-                                    onEdit = {
-                                        editingComponent = component
-                                        editingComponentType = entry.key
-                                    },
-                                    generateOTD = {
-                                        generatingOTD = component
-                                    }
-                                )
-                                if (--rem > 0) Spacer(modifier = Modifier.height(15.dp))
+                            if (Global.isAdmin()) {
+                                for (component in entry.value) {
+                                    if (!expanded.containsKey(component)) expanded[component] = false
+
+                                    DisplayEventComponent(
+                                        component = component,
+                                        onEdit = {
+                                            editingComponent = component
+                                            editingComponentType = entry.key
+                                        },
+                                        generateOTD = {
+                                            generatingOTD = component
+                                        },
+                                        expanded = expanded[component]!!,
+                                        onToggleExpand = {
+                                            expanded[component] = !expanded[component]!!
+                                        },
+                                        onDelete = {
+                                            deletingComponent = component
+                                        }
+                                    )
+                                    if (--rem > 0) Spacer(modifier = Modifier.height(15.dp))
+                                }
+                            } else {
+                                for (component in entry.value) {
+                                    DisplayEventComponent(
+                                        component = component,
+                                        expanded = expanded[component]!!,
+                                        onToggleExpand = {
+                                            expanded[component] = !expanded[component]!!
+                                        }
+                                    )
+                                    if (--rem > 0) Spacer(modifier = Modifier.height(15.dp))
+                                }
                             }
                         }
                     }

@@ -59,10 +59,10 @@ import androidx.compose.ui.unit.sp
 import com.example.depgen.EVENT_TYPES
 import com.example.depgen.Global
 import com.example.depgen.R
+import com.example.depgen.exceptions.CompleteSearchInterruptedException
 import com.example.depgen.model.ComponentType
 import com.example.depgen.model.EventComponent
 import com.example.depgen.model.EventRole
-import com.example.depgen.model.InvalidEventTypeException
 import com.example.depgen.model.Profile
 import com.example.depgen.toast
 import com.example.depgen.utils.clearFocusOnKeyboardDismiss
@@ -452,7 +452,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                 endTime = lazyTime(endTime)
 
                                 if (currEventTypeSelection == -1) {
-                                    throw InvalidEventTypeException("")
+                                    throw CompleteSearchInterruptedException("")
                                 }
 
                                 screen = "addComponent-2"
@@ -460,7 +460,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                             } catch (_: DateTimeParseException) {
                                 toast("Invalid Date/Time!")
 
-                            } catch (_: InvalidEventTypeException) {
+                            } catch (_: CompleteSearchInterruptedException) {
                                 toast("Select an Event Component Type!")
 
                             } catch (e: Exception) {

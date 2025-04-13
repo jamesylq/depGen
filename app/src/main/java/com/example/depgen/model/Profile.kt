@@ -3,7 +3,7 @@ package com.example.depgen.model
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.depgen.Global
-import com.example.depgen.utils.DATETIMEFORMATTER
+import com.example.depgen.utils.STANDARD_FORMATTER
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -15,6 +15,7 @@ data class Profile (
     var password: String,
     var email: String,
     val skills: HashMap<Skill, Int> = HashMap(),
+    val unavailable: HashSet<String> = HashSet(),
     val deployments: ArrayList<String> = ArrayList()
 ) {
     fun getIdx(): Int {
@@ -26,15 +27,19 @@ data class Profile (
         return -1
     }
 
+    fun isAvailable(date: LocalDate) : Boolean {
+        return !unavailable.contains(date.toString())
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun addDeployment(component: EventComponent) {
-        this.deployments.add(component.getStart().toLocalDate().format(DATETIMEFORMATTER))
-        this.deployments.sortBy { LocalDate.parse(it, DATETIMEFORMATTER) }
+        this.deployments.add(component.getStart().toLocalDate().format(STANDARD_FORMATTER))
+        this.deployments.sortBy { LocalDate.parse(it, STANDARD_FORMATTER) }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun removeDeployment(component: EventComponent) {
-        this.deployments.remove(component.getStart().toLocalDate().format(DATETIMEFORMATTER))
+        this.deployments.remove(component.getStart().toLocalDate().format(STANDARD_FORMATTER))
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -67,6 +72,6 @@ data class Profile (
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getDeploymentList() : ArrayList<LocalDate> {
-        return ArrayList(this.deployments.map { LocalDate.parse(it, DATETIMEFORMATTER) }.sorted())
+        return ArrayList(this.deployments.map { LocalDate.parse(it, STANDARD_FORMATTER) }.sorted())
     }
 }

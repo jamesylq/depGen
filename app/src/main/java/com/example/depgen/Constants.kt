@@ -20,6 +20,8 @@ val CONDITION_TYPES = listOf(AT_LEAST.typeName, AT_MOST.typeName)
 
 const val DELTA = 1000L
 const val MAX_REPEATING_DEPLOYMENT_DAYS = 366
+const val MAX_COMPLETE_SEARCH_DURATION = 60000L
+const val MAX_COMPLETE_CHECK_TIME_STATE_COUNT = 1000L
 
 val EMAIL_REGEX: Regex = Regex("^(?!.*\\.\\.)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$")
 

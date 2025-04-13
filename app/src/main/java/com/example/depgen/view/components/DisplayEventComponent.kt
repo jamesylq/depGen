@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -30,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.depgen.Global
 import com.example.depgen.R
 import com.example.depgen.model.EventComponent
 import com.example.depgen.utils.NO_DATE_OBJ
@@ -37,7 +39,14 @@ import com.example.depgen.utils.NO_DATE_OBJ
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun DisplayEventComponent(component: EventComponent, onEdit: (() -> Unit)? = null, generateOTD: (() -> Unit)? = null) {
+fun DisplayEventComponent(
+    component: EventComponent,
+    expanded: Boolean,
+    onToggleExpand: () -> Unit,
+    onEdit: (() -> Unit)? = null,
+    generateOTD: (() -> Unit)? = null,
+    onDelete: (() -> Unit)? = null
+) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -49,11 +58,19 @@ fun DisplayEventComponent(component: EventComponent, onEdit: (() -> Unit)? = nul
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
-                text = "Event Details",
-                modifier = Modifier.padding(8.dp),
-                fontWeight = FontWeight.SemiBold
-            )
+            Row {
+                Text(
+                    text = "Event Details",
+                    modifier = Modifier.padding(8.dp),
+                    fontWeight = FontWeight.SemiBold
+                )
+                if (onDelete != null && Global.isAdmin()) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    IconButton(onClick = onDelete) {
+                        Icon(Icons.Default.Delete, "")
+                    }
+                }
+            }
             Row {
                 Column(
                     modifier = Modifier
@@ -102,29 +119,31 @@ fun DisplayEventComponent(component: EventComponent, onEdit: (() -> Unit)? = nul
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Spacer(modifier = Modifier.weight(1f))
-                    IconButton(
-                        onClick = {
-                            if (onEdit != null) {
-                                onEdit()
-                            }
+
+                    if (onEdit != null) {
+                        IconButton(
+                            onClick = onEdit
+                        ) {
+                            Icon(Icons.Default.Edit, "")
                         }
-                    ) {
-                        Icon(Icons.Default.Edit, "")
                     }
                 }
             }
-            ExpandableBar("Members Deployed", true) {
+            ExpandableBar(
+                "Members Deployed",
+                expanded,
+                onToggleExpand
+            ) {
                 if (component.deployment.isEmpty()) {
                     Text("No Members Deployed Yet!")
                     Spacer(modifier = Modifier.height(10.dp))
-                    CardButton(
-                        text = "Auto Generate Deployment",
-                        onClick = {
-                            if (generateOTD != null) {
-                                generateOTD()
-                            }
-                        }
-                    )
+
+                    if (generateOTD != null) {
+                        CardButton(
+                            text = "Auto Generate Deployment",
+                            onClick = generateOTD
+                        )
+                    }
                 }
                 for (deploymentEntry in component.deployment) {
                     ElevatedCard (

@@ -47,8 +47,6 @@ import com.example.depgen.view.components.DefaultTopAppBar
 fun EventListPage() {
     val eventRem = remember { mutableStateListOf<Event>() }
     var confirmationShowing by remember { mutableIntStateOf(-1) }
-//    var editingComponent: EventComponent? by remember { mutableStateOf(null) }
-//    var editingComponentType: ComponentType? by remember { mutableStateOf(null) }
 
     eventRem.clear()
     for (event in Global.eventList) eventRem.add(event)
@@ -58,10 +56,12 @@ fun EventListPage() {
             DefaultTopAppBar("Master", Navigation.EVENTLIST)
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                safeNavigate("NewEvent")
-            }) {
-                Icon(Icons.Filled.Add, "")
+            if (Global.isAdmin()) {
+                FloatingActionButton(onClick = {
+                    safeNavigate("NewEvent")
+                }) {
+                    Icon(Icons.Filled.Add, "")
+                }
             }
         }
     ) { innerPadding ->

@@ -1,10 +1,10 @@
 package com.example.depgen.view.fragments
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,8 +42,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
+import com.example.depgen.model.EventComponent
 import com.example.depgen.model.EventRole
 import com.example.depgen.utils.NATURAL_FORMATTER
+import com.example.depgen.utils.NO_DATE
+import com.example.depgen.utils.RDCompleteSearchHelper
 import com.example.depgen.utils.daysOfWeekToString
 import com.example.depgen.utils.findRole
 import com.example.depgen.utils.getDays
@@ -53,13 +56,14 @@ import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.ComboBox
 import com.example.depgen.view.components.ConfirmationScreen
 import com.example.depgen.view.components.DateInputRow
+import com.example.depgen.view.components.DisplayEventComponent
 import com.example.depgen.view.components.QuantityPicker
 import com.example.depgen.view.components.RepeatDaySelector
 import java.time.DateTimeException
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RepeatingDeploymentPage() {
     val roleNums = remember { mutableStateListOf<Int>() }
@@ -88,6 +92,10 @@ fun RepeatingDeploymentPage() {
     var valid by remember { mutableStateOf(false) }
     var start by remember { mutableStateOf<LocalDate?>(null) }
     var end by remember { mutableStateOf<LocalDate?>(null) }
+
+    val generatedComponents = remember { mutableStateListOf<EventComponent>() }
+    val expanded = remember { mutableStateListOf<Boolean>() }
+    val days = remember { mutableStateListOf<LocalDate>() }
 
     if (roleNums.isEmpty()) for (role in Global.rolesList) roleNums.add(role.minCount)
 
@@ -308,7 +316,10 @@ fun RepeatingDeploymentPage() {
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.padding(end = 8.dp)
                     )
-                    RepeatDaySelector { selectedDOW[it] = !selectedDOW[it] }
+                    RepeatDaySelector (
+                        onUpdate = { selectedDOW[it] = !selectedDOW[it] },
+                        selected = ArrayList(selectedDOW)
+                    )
                     Spacer(modifier = Modifier.height(10.dp))
                     DateInputRow(
                         "From",
@@ -322,14 +333,14 @@ fun RepeatingDeploymentPage() {
                         { endDay = it }, { endMonth = it }, { endYear = it }
                     )
 
-                    var dayNum = 0
                     try {
                         start = LocalDate.of(startYear.toInt(), startMonth.toInt(), startDay.toInt())
                         end = LocalDate.of(endYear.toInt(), endMonth.toInt(), endDay.toInt())
                         var x = false
                         selectedDOW.forEach { x = x || it }
-                        dayNum = getDays(start!!, end!!, selectedDOW).size
-                        valid = x && !start!!.isAfter(end!!) && dayNum > 0
+                        days.clear()
+                        days.addAll(getDays(start!!, end!!, selectedDOW))
+                        valid = x && !start!!.isAfter(end!!) && days.size > 0
 
                     } catch (_: DateTimeException) {
                         valid = false
@@ -337,6 +348,8 @@ fun RepeatingDeploymentPage() {
                     } catch (_: NumberFormatException) {
                         valid = false
                     }
+
+                    Log.d("debug", "$valid")
 
                     if (valid) {
                         Spacer(modifier = Modifier.height(40.dp))
@@ -346,23 +359,62 @@ fun RepeatingDeploymentPage() {
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(bottom = 15.dp)
                         )
-                        BoldTextParser("This will generate deployment **${daysOfWeekToString(selectedDOW)}** between **${NATURAL_FORMATTER.format(start)}** and **${NATURAL_FORMATTER.format(end)}** for a total of **$dayNum ${if (dayNum == 1) "day" else "days"}** of deployment.")
+                        BoldTextParser(
+                            text = "This will generate deployment **${
+                                daysOfWeekToString(selectedDOW)
+                            }** between **${
+                                NATURAL_FORMATTER.format(start)
+                            }** and **${
+                                NATURAL_FORMATTER.format(end)
+                            }** for a total of **${days.size} ${
+                                if (days.size == 1) "day" else "days"
+                            }** of deployment."
+                        )
                     }
 
                     Spacer(modifier = Modifier.weight(1f))
                     CardButton(
                         text = "Generate!",
                         onClick = {
-                            // TODO: Generate...
+                            generatedComponents.clear()
+                            generatedComponents.addAll(
+                                RDCompleteSearchHelper(
+                                    EventComponent(
+                                        HashMap(),
+                                        HashMap(rolesNeeded),
+                                        NO_DATE,
+                                        NO_DATE
+                                    ),
+                                    days
+                                ).generate()
+                            )
+                            expanded.apply{
+                                repeat(generatedComponents.size) {
+                                    add(false)
+                                }
+                            }
+
+                            screen = "generated"
                         },
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer
-                        )
+                        ),
+                        enabled = valid
                     )
                 }
 
                 "generated" -> {
-
+                    LazyColumn {
+                        for (i in generatedComponents.indices) {
+                            item {
+                                DisplayEventComponent(
+                                    component = generatedComponents[i],
+                                    onToggleExpand = { expanded[i] = !expanded[i] },
+                                    expanded = expanded[i]
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }

@@ -12,7 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,14 +25,16 @@ fun EventRoleRender(eventRole: EventRole, scale : Float = 1f) {
             containerColor = MaterialTheme.colorScheme.tertiary,
             contentColor = Color.Black
         ),
-        modifier = Modifier.scale(scale)
+        modifier = Modifier.padding(top = 5.dp)
     ) {
-        Row (
+        Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(7.dp),
-            modifier = Modifier.padding(vertical = 5.dp).padding(start = 4.dp, end = 8.dp)
-        ){
-            Canvas(modifier = Modifier.size(16.dp)) {
+            modifier = Modifier
+                .padding(vertical = 2.dp)
+                .padding(start = 6.dp, end = 8.dp)
+        ) {
+            Canvas(modifier = Modifier.size((16 * scale).dp)) {
                 drawCircle(
                     color = eventRole.color.toColor(),
                     radius = size.minDimension / 2
@@ -41,7 +42,7 @@ fun EventRoleRender(eventRole: EventRole, scale : Float = 1f) {
             }
             Text(
                 eventRole.eventRole,
-                fontSize = 16.sp
+                fontSize = (16 * scale).sp
             )
         }
     }

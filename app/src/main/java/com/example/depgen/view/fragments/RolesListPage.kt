@@ -53,10 +53,12 @@ fun RolesListPage() {
             DefaultTopAppBar("Master", Navigation.EVENTLIST)
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                safeNavigate("NewRole/-1")
-            }) {
-                Icon(Icons.Filled.Add, "")
+            if (Global.isAdmin()) {
+                FloatingActionButton(onClick = {
+                    safeNavigate("NewRole/-1")
+                }) {
+                    Icon(Icons.Filled.Add, "")
+                }
             }
         }
     ) {
@@ -113,10 +115,12 @@ fun RolesListPage() {
                                         }
                                     }
                                     Spacer(modifier = Modifier.weight(1f))
-                                    IconButton(
-                                        onClick = { deleting = i }
-                                    ) {
-                                        Icon(Icons.Default.Delete, "")
+                                    if (Global.isAdmin()) {
+                                        IconButton(
+                                            onClick = { deleting = i }
+                                        ) {
+                                            Icon(Icons.Default.Delete, "")
+                                        }
                                     }
                                 }
                                 Row(
@@ -132,12 +136,14 @@ fun RolesListPage() {
                                         )
                                     }
                                     Spacer(modifier = Modifier.weight(1f))
-                                    IconButton(
-                                        onClick = {
-                                            safeNavigate("NewRole/$i")
+                                    if (Global.isAdmin()) {
+                                        IconButton(
+                                            onClick = {
+                                                safeNavigate("NewRole/$i")
+                                            }
+                                        ) {
+                                            Icon(Icons.Default.Edit, "")
                                         }
-                                    ) {
-                                        Icon(Icons.Default.Edit, "")
                                     }
                                 }
                                 for (entry in role.prerequisites) {
