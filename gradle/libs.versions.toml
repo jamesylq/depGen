@@ -1,5 +1,8 @@
 [versions]
 agp = "8.8.0"
+cameraLifecycle = "1.4.2"
+coilCompose = "2.5.0"
+coreSplashscreen = "1.0.1"
 firebaseBom = "33.12.0"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
@@ -16,8 +19,14 @@ navigationCompose = "2.8.7"
 firebaseDatabaseKtx = "21.0.0"
 
 [libraries]
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraLifecycle" }
+androidx-camera-extensions = { module = "androidx.camera:camera-extensions", version.ref = "cameraLifecycle" }
+androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraLifecycle" }
+androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraLifecycle" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

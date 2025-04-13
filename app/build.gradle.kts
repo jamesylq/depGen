@@ -62,6 +62,13 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.material3)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.coil.compose)
+    implementation(libs.androidx.core.splashscreen)
+
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
+    implementation(libs.androidx.camera.extensions)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
