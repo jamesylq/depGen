@@ -62,7 +62,7 @@ fun saveLocally() {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun saveLuxuries(profile: Profile? = null, isNew: Boolean = false) {
+fun saveLuxuries(profile: Profile? = null) {
     Log.d("LocalFileIO", "Initiated Luxury Save.")
     val saveFile = File(ctxt.filesDir, "luxuries.json")
     saveFile.writeText(json.encodeToString(luxuryManager))
@@ -70,13 +70,13 @@ fun saveLuxuries(profile: Profile? = null, isNew: Boolean = false) {
     if (profile != null) {
         val dbRef = FirebaseDatabase.getInstance(FIREBASE_URL).reference
 
-        if (isNew) {
-            val now = LocalDateTime.now()
-            val ref = dbRef.child("luxuryProfiles").push()
-            ref.child("username").setValue(profile.username)
-            ref.child("lastUpdate").setValue(now.toString())
-            luxuryProfiles[profile.username] = now
-        }
+        val now = LocalDateTime.now()
+        dbRef
+            .child("luxuryProfiles")
+            .child(profile.username)
+            .child("lastUpdate")
+            .setValue(now.toString())
+        luxuryProfiles[profile.username] = now
 
         dbRef.child("profilePicture").child(profile.username).setValue(
             luxuryManager.getLuxury(profile).profilePicture!!
@@ -102,13 +102,20 @@ fun loadLuxuries() {
         Log.w("depGen", "Warning (Local Luxury Save Not Found): ", e)
     }
 
-    dbRef.child("luxuryProfiles").get()
+    dbRef.child("luxuryProfiles")
+        .get()
         .addOnSuccessListener { snapshot ->
             if (snapshot.exists()) {
-                luxuryProfiles.clear()
-                snapshot.children.forEach {
-                    luxuryProfiles[it.child("username").getValue(String::class.java)!!] =
-                        LocalDateTime.parse(it.child("lastUpdate").getValue(String::class.java)!!)
+                for (userSnapshot in snapshot.children) {
+                    val username = userSnapshot.key
+                    val lastUpdateStr = userSnapshot.child("lastUpdate").getValue(String::class.java)
+
+                    if (username != null && lastUpdateStr != null) {
+                        try {
+                            val dateTime = LocalDateTime.parse(lastUpdateStr)
+                            luxuryProfiles[username] = dateTime
+                        } catch (_: Exception) { }
+                    }
                 }
             }
         }

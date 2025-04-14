@@ -57,6 +57,7 @@ import com.example.depgen.model.LuxuryManager
 import com.example.depgen.model.Profile
 import com.example.depgen.model.Skill
 import com.example.depgen.utils.load
+import com.example.depgen.utils.loadLuxuries
 import com.example.depgen.utils.safeNavigate
 import com.example.depgen.utils.switchProfile
 import com.example.depgen.view.components.ConfirmationScreen
@@ -79,6 +80,7 @@ import com.example.depgen.view.fragments.SkillPage
 import com.example.depgen.view.fragments.SkillsTrackerPage
 import com.example.depgen.view.theme.DepGenTheme
 import com.google.firebase.FirebaseApp
+import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
@@ -153,6 +155,14 @@ class MainActivity : ComponentActivity() {
                 if (!permissionsRequested) {
                     permissionLauncher.launch(permissions)
                     permissionsRequested = true
+                }
+            }
+
+            LaunchedEffect(Unit) {
+                while (true) {
+                    load()
+                    loadLuxuries()
+                    delay(1000)
                 }
             }
 

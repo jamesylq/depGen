@@ -43,7 +43,6 @@ import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
 import com.example.depgen.LOGGED_OUT
 import com.example.depgen.luxuryManager
-import com.example.depgen.luxuryProfiles
 import com.example.depgen.model.Navigation
 import com.example.depgen.model.ProfileLuxury
 import com.example.depgen.utils.safeNavigate
@@ -100,16 +99,16 @@ fun ProfilePage(idx: Int, prev: String) {
         if (cameraActive) {
             UriFromCamera(
                 onImageUriReady = {
-                    luxuryManager.getLuxury(profile).profilePicture = it.uriToBase64(quality = 40)
-                    saveLuxuries(profile, !luxuryProfiles.containsKey(profile.username))
+                    luxuryManager.getLuxury(profile).updateProfilePicture(it.uriToBase64(quality = 40)!!)
+                    saveLuxuries(profile)
                     profileLuxury = null
                 }
             )
         } else if (galleryActive) {
             UriFromGallery(
                 onImageUriReady = {
-                    luxuryManager.getLuxury(profile).profilePicture = it.uriToBase64(quality = 40)
-                    saveLuxuries(profile, !luxuryProfiles.containsKey(profile.username))
+                    luxuryManager.getLuxury(profile).updateProfilePicture(it.uriToBase64(quality = 40)!!)
+                    saveLuxuries(profile)
                     profileLuxury = null
                 }
             )
