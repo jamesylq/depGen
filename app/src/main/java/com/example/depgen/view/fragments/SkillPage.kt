@@ -2,7 +2,6 @@ package com.example.depgen.view.fragments
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -30,13 +30,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
-import com.example.depgen.R
+import com.example.depgen.model.LuxuryManager
 import com.example.depgen.model.Navigation
 import com.example.depgen.model.Skill
 import com.example.depgen.utils.save
@@ -166,11 +165,9 @@ fun SkillPage(idx: Int) {
                                 ) {
                                     Column {
                                         Row {
-                                            Image(
-                                                //TODO: Profile Picture
-                                                painter = painterResource(R.drawable.icon_512),
-                                                contentDescription = "",
-                                                modifier = Modifier.size(100.dp)
+                                            LuxuryManager.getLuxury(profile).ProfilePicture(
+                                                clip = RoundedCornerShape(13.dp),
+                                                size = 100.dp
                                             )
                                             Text(
                                                 profile.username,

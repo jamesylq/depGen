@@ -2,7 +2,6 @@ package com.example.depgen.view.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,8 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.rounded.MoreVert
@@ -32,13 +31,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
-import com.example.depgen.R
+import com.example.depgen.model.LuxuryManager
 import com.example.depgen.model.Profile
 import com.example.depgen.utils.clearFocusOnKeyboardDismiss
 import com.example.depgen.utils.save
@@ -135,12 +133,13 @@ fun MemberSearchScreen(
                         ) {
                             Column {
                                 Row {
-                                    Image(
-                                        //TODO: Profile Picture
-                                        painter = painterResource(R.drawable.icon_512),
-                                        contentDescription = "",
-                                        modifier = Modifier.size(100.dp)
+                                    LuxuryManager.getLuxury(
+                                        Global.profileList[profilesFiltered[i]]
+                                    ).ProfilePicture(
+                                        clip = RoundedCornerShape(13.dp),
+                                        size = 100.dp
                                     )
+
                                     Text(
                                         Global.profileList[profilesFiltered[i]].username,
                                         fontWeight = FontWeight.Bold,

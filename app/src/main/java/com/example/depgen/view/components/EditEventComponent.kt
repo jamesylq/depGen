@@ -2,7 +2,6 @@ package com.example.depgen.view.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -50,18 +48,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.EVENT_TYPES
 import com.example.depgen.Global
-import com.example.depgen.R
 import com.example.depgen.model.ComponentType
 import com.example.depgen.model.EventComponent
 import com.example.depgen.model.EventRole
+import com.example.depgen.model.LuxuryManager
 import com.example.depgen.model.Profile
 import com.example.depgen.toast
 import com.example.depgen.utils.clearFocusOnKeyboardDismiss
@@ -633,13 +629,9 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                                         10.dp
                                                     )
                                                 ) {
-                                                    Image(
-                                                        //TODO: Profile Picture
-                                                        painter = painterResource(R.drawable.icon_512),
-                                                        contentDescription = "",
-                                                        modifier = Modifier
-                                                            .size(70.dp)
-                                                            .clip(RoundedCornerShape(13.dp))
+                                                    LuxuryManager.getLuxury(member).ProfilePicture(
+                                                        clip = RoundedCornerShape(13.dp),
+                                                        size = 70.dp
                                                     )
                                                     Text(
                                                         member.username,

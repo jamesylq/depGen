@@ -2,7 +2,6 @@ package com.example.depgen.view.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -26,14 +24,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
-import com.example.depgen.R
 import com.example.depgen.model.EventComponent
+import com.example.depgen.model.LuxuryManager
 import com.example.depgen.utils.NO_DATE_OBJ
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -153,13 +149,9 @@ fun DisplayEventComponent(
                         Row (
                             modifier = Modifier.padding(10.dp)
                         ) {
-                            Image(
-                                //TODO: Profile Picture
-                                painter = painterResource(R.drawable.icon_512),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .size(60.dp)
-                                    .clip(RoundedCornerShape(13.dp))
+                            LuxuryManager.getLuxury(deploymentEntry.key).ProfilePicture(
+                                clip = RoundedCornerShape(13.dp),
+                                size = 60.dp
                             )
                             Column {
                                 Text(

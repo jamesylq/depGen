@@ -9,6 +9,8 @@ import com.example.depgen.Global
 import com.example.depgen.LOGGED_OUT
 import com.example.depgen.ctxt
 import com.example.depgen.json
+import com.example.depgen.luxuryManager
+import com.example.depgen.model.LuxuryManager
 import com.example.depgen.model.Wrapper
 import com.google.firebase.database.FirebaseDatabase
 import java.io.File
@@ -117,6 +119,9 @@ fun load() {
 
                 } catch (e: RuntimeException) {
                     Log.wtf("depGen", "Critical Error With Local Save File, Falling Back on Firebase: ", e)
+
+                } finally {
+                    luxuryManager = LuxuryManager()
                 }
             }
 
@@ -156,6 +161,9 @@ fun load() {
                             Global.rolesList.clear()
                             Global.profileList.add(LOGGED_OUT)
                             Global.profileList.add(ADMIN)
+
+                        } finally {
+                            luxuryManager = LuxuryManager()
                         }
                     }
                     .addOnFailureListener {

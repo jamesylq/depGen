@@ -53,6 +53,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.depgen.model.Event
 import com.example.depgen.model.EventRole
+import com.example.depgen.model.LuxuryManager
 import com.example.depgen.model.Profile
 import com.example.depgen.model.Skill
 import com.example.depgen.utils.load
@@ -83,6 +84,7 @@ import kotlinx.serialization.Serializable
 var active: Toast? = null
 var lastBack: Long = 0
 lateinit var ctxt : Context
+lateinit var luxuryManager: LuxuryManager
 lateinit var navController : NavHostController
 
 @Serializable
