@@ -80,7 +80,10 @@ import com.example.depgen.view.fragments.SkillPage
 import com.example.depgen.view.fragments.SkillsTrackerPage
 import com.example.depgen.view.theme.DepGenTheme
 import com.google.firebase.FirebaseApp
-import kotlinx.coroutines.delay
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
@@ -156,14 +159,29 @@ class MainActivity : ComponentActivity() {
                     permissionLauncher.launch(permissions)
                     permissionsRequested = true
                 }
-            }
+                val dbRef = FirebaseDatabase.getInstance(FIREBASE_URL).reference
 
-            LaunchedEffect(Unit) {
-                while (true) {
-                    load()
-                    loadLuxuries()
-                    delay(1000)
-                }
+                dbRef.child("lastUpdate").addValueEventListener(
+                    object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            load()
+                            loadLuxuries()
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {}
+                    }
+                )
+
+                dbRef.child("luxuryProfiles").addValueEventListener(
+                    object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            load()
+                            loadLuxuries()
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {}
+                    }
+                )
             }
 
             val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
