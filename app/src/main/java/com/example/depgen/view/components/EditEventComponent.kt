@@ -54,10 +54,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.EVENT_TYPES
 import com.example.depgen.Global
+import com.example.depgen.luxuryManager
 import com.example.depgen.model.ComponentType
 import com.example.depgen.model.EventComponent
 import com.example.depgen.model.EventRole
-import com.example.depgen.model.LuxuryManager
 import com.example.depgen.model.Profile
 import com.example.depgen.toast
 import com.example.depgen.utils.clearFocusOnKeyboardDismiss
@@ -629,7 +629,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                                         10.dp
                                                     )
                                                 ) {
-                                                    LuxuryManager.getLuxury(member).ProfilePicture(
+                                                    luxuryManager.getLuxury(member).ProfilePicture(
                                                         clip = RoundedCornerShape(13.dp),
                                                         size = 70.dp
                                                     )

@@ -10,7 +10,9 @@ import com.example.depgen.LOGGED_OUT
 import com.example.depgen.ctxt
 import com.example.depgen.json
 import com.example.depgen.luxuryManager
+import com.example.depgen.luxuryProfiles
 import com.example.depgen.model.LuxuryManager
+import com.example.depgen.model.Profile
 import com.example.depgen.model.Wrapper
 import com.google.firebase.database.FirebaseDatabase
 import java.io.File
@@ -60,6 +62,81 @@ fun saveLocally() {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
+fun saveLuxuries(profile: Profile? = null, isNew: Boolean = false) {
+    Log.d("LocalFileIO", "Initiated Luxury Save.")
+    val saveFile = File(ctxt.filesDir, "luxuries.json")
+    saveFile.writeText(json.encodeToString(luxuryManager))
+
+    if (profile != null) {
+        val dbRef = FirebaseDatabase.getInstance(FIREBASE_URL).reference
+
+        if (isNew) {
+            val now = LocalDateTime.now()
+            val ref = dbRef.child("luxuryProfiles").push()
+            ref.child("username").setValue(profile.username)
+            ref.child("lastUpdate").setValue(now.toString())
+            luxuryProfiles[profile.username] = now
+        }
+
+        dbRef.child("profilePicture").child(profile.username).setValue(
+            luxuryManager.getLuxury(profile).profilePicture!!
+        )
+            .addOnFailureListener {
+                Log.wtf("FirebaseIO", "Saving Failed: ", it)
+            }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun loadLuxuries() {
+    val dbRef = FirebaseDatabase.getInstance(FIREBASE_URL).reference
+
+    try {
+        val timeFile = File(ctxt.filesDir, "luxuries.json")
+        if (!timeFile.exists()) throw RuntimeException()
+        luxuryManager = json.decodeFromString(timeFile.readText())!!
+
+    } catch (e: DateTimeParseException) {
+        Log.w("depGen", "Warning (Local Luxury Save Not Found): ", e)
+    } catch (e: RuntimeException) {
+        Log.w("depGen", "Warning (Local Luxury Save Not Found): ", e)
+    }
+
+    dbRef.child("luxuryProfiles").get()
+        .addOnSuccessListener { snapshot ->
+            if (snapshot.exists()) {
+                luxuryProfiles.clear()
+                snapshot.children.forEach {
+                    luxuryProfiles[it.child("username").getValue(String::class.java)!!] =
+                        LocalDateTime.parse(it.child("lastUpdate").getValue(String::class.java)!!)
+                }
+            }
+        }
+        .addOnCompleteListener {
+            for (profile in Global.profileList) {
+                if (luxuryProfiles.contains(profile.username)) {
+                    val profileLuxury = luxuryManager.getLuxury(profile)
+
+                    if (luxuryProfiles[profile.username]!!.isAfter(profileLuxury.getLastUpdate())) {
+                        Log.d("depGen", "Using Database Data, Local Luxury Save Outdated for Profile ${profile.username}")
+                        dbRef.child("profilePicture").child(profile.username).get()
+                            .addOnSuccessListener {
+                                profileLuxury.updateProfilePicture(
+                                    it.getValue(String::class.java)!!
+                                )
+                            }
+                            .addOnCompleteListener{
+                                saveLuxuries()
+                            }
+                    } else {
+                        Log.d("depGen", "Using Local Luxury Save for Profile ${profile.username}")
+                    }
+                }
+            }
+        }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
 fun load() {
     val dbRef = FirebaseDatabase.getInstance(FIREBASE_URL).reference
 
@@ -67,13 +144,15 @@ fun load() {
     var lastDBUpdate = NO_DATE_OBJ.plusDays(1L)
 
     try {
-        val file = File(ctxt.filesDir, "lastUpdate.json")
-        if (!file.exists()) throw RuntimeException()
-        lastLocalUpdate = LocalDateTime.parse(json.decodeFromString<String>(file.readText()))
+        val timeFile = File(ctxt.filesDir, "lastUpdate.json")
+        if (!timeFile.exists()) throw RuntimeException()
+        lastLocalUpdate = LocalDateTime.parse(json.decodeFromString<String>(timeFile.readText()))
 
     } catch (e: DateTimeParseException) {
         Log.w("depGen", "Warning (Local Save Not Found): ", e)
-    } catch (_: RuntimeException) { }
+    } catch (e: RuntimeException) {
+        Log.w("depGen", "Warning (Local Save Not Found): ", e)
+    }
 
     dbRef.child("lastUpdate").get()
         .addOnSuccessListener {
@@ -122,6 +201,7 @@ fun load() {
 
                 } finally {
                     luxuryManager = LuxuryManager()
+                    loadLuxuries()
                 }
             }
 
@@ -164,6 +244,7 @@ fun load() {
 
                         } finally {
                             luxuryManager = LuxuryManager()
+                            loadLuxuries()
                         }
                     }
                     .addOnFailureListener {

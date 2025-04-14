@@ -6,6 +6,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class LuxuryManager {
+    private val luxuries: HashMap<String, ProfileLuxury> = HashMap()
+
     init {
         for (profile in Global.profileList) {
             if (luxuries[profile.username] == null) {
@@ -15,11 +17,7 @@ class LuxuryManager {
         Log.d("depGen", "LuxuryManager initialised: $luxuries")
     }
 
-    companion object {
-        private val luxuries: HashMap<String, ProfileLuxury> = HashMap()
-
-        fun getLuxury(profile: Profile): ProfileLuxury {
-            return luxuries[profile.username]!!
-        }
+    fun getLuxury(profile: Profile): ProfileLuxury {
+        return luxuries[profile.username]!!
     }
 }

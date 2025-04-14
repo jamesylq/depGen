@@ -80,9 +80,12 @@ import com.example.depgen.view.fragments.SkillsTrackerPage
 import com.example.depgen.view.theme.DepGenTheme
 import com.google.firebase.FirebaseApp
 import kotlinx.serialization.Serializable
+import java.time.LocalDateTime
 
 var active: Toast? = null
 var lastBack: Long = 0
+val luxuryProfiles = HashMap<String, LocalDateTime>()
+
 lateinit var ctxt : Context
 lateinit var luxuryManager: LuxuryManager
 lateinit var navController : NavHostController

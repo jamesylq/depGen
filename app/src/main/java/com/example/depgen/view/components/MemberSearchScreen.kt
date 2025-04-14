@@ -36,7 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
-import com.example.depgen.model.LuxuryManager
+import com.example.depgen.luxuryManager
 import com.example.depgen.model.Profile
 import com.example.depgen.utils.clearFocusOnKeyboardDismiss
 import com.example.depgen.utils.save
@@ -133,7 +133,7 @@ fun MemberSearchScreen(
                         ) {
                             Column {
                                 Row {
-                                    LuxuryManager.getLuxury(
+                                    luxuryManager.getLuxury(
                                         Global.profileList[profilesFiltered[i]]
                                     ).ProfilePicture(
                                         clip = RoundedCornerShape(13.dp),

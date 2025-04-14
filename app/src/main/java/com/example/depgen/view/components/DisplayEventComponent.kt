@@ -28,8 +28,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
+import com.example.depgen.luxuryManager
 import com.example.depgen.model.EventComponent
-import com.example.depgen.model.LuxuryManager
 import com.example.depgen.utils.NO_DATE_OBJ
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -149,7 +149,7 @@ fun DisplayEventComponent(
                         Row (
                             modifier = Modifier.padding(10.dp)
                         ) {
-                            LuxuryManager.getLuxury(deploymentEntry.key).ProfilePicture(
+                            luxuryManager.getLuxury(deploymentEntry.key).ProfilePicture(
                                 clip = RoundedCornerShape(13.dp),
                                 size = 60.dp
                             )

@@ -35,7 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
-import com.example.depgen.model.LuxuryManager
+import com.example.depgen.luxuryManager
 import com.example.depgen.model.Navigation
 import com.example.depgen.model.Skill
 import com.example.depgen.utils.save
@@ -165,7 +165,7 @@ fun SkillPage(idx: Int) {
                                 ) {
                                     Column {
                                         Row {
-                                            LuxuryManager.getLuxury(profile).ProfilePicture(
+                                            luxuryManager.getLuxury(profile).ProfilePicture(
                                                 clip = RoundedCornerShape(13.dp),
                                                 size = 100.dp
                                             )

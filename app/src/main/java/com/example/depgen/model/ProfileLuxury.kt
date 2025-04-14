@@ -1,5 +1,7 @@
 package com.example.depgen.model
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -11,15 +13,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.depgen.R
+import com.example.depgen.utils.NO_DATE
 import com.example.depgen.utils.toImageBitmap
 import com.example.depgen.utils.toSquare
 import kotlinx.serialization.Serializable
+import java.time.LocalDateTime
 
 
 @Serializable
 data class ProfileLuxury(
     var profilePicture: String? = null,
-    var preferences: HashMap<String, Int> = HashMap()
+    var preferences: HashMap<String, Int> = HashMap(),
+    private var lastUpdate: String? = NO_DATE
 ) {
     @Composable
     fun ProfilePicture(clip: Shape = RectangleShape, size: Dp = 256.dp) {
@@ -40,5 +45,16 @@ data class ProfileLuxury(
                     .size(size)
             )
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getLastUpdate(): LocalDateTime {
+        return LocalDateTime.parse(lastUpdate)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun updateProfilePicture(newPicture: String) {
+        profilePicture = newPicture
+        lastUpdate = LocalDateTime.now().toString()
     }
 }

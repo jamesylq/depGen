@@ -2,6 +2,8 @@ package com.example.depgen.view.fragments
 
 import UriFromCamera
 import UriFromGallery
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,7 +17,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.DropdownMenu
@@ -34,21 +36,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
 import com.example.depgen.LOGGED_OUT
-import com.example.depgen.model.LuxuryManager
+import com.example.depgen.luxuryManager
+import com.example.depgen.luxuryProfiles
 import com.example.depgen.model.Navigation
 import com.example.depgen.model.ProfileLuxury
 import com.example.depgen.utils.safeNavigate
+import com.example.depgen.utils.saveLuxuries
 import com.example.depgen.utils.switchProfile
 import com.example.depgen.utils.uriToBase64
 import com.example.depgen.view.components.CardButton
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfilePage(idx: Int, prev: Int) {
     ProfilePage(idx,
@@ -68,6 +72,7 @@ fun ProfilePage(idx: Int, prev: Int) {
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfilePage(idx: Int, prev: String) {
@@ -75,7 +80,7 @@ fun ProfilePage(idx: Int, prev: String) {
     var pfpDropdown by remember { mutableStateOf(false) }
     var cameraActive by remember { mutableStateOf(false) }
     var galleryActive by remember { mutableStateOf(false) }
-    var profileLuxury by remember { mutableStateOf<ProfileLuxury?>(LuxuryManager.getLuxury(profile)) }
+    var profileLuxury by remember { mutableStateOf<ProfileLuxury?>(luxuryManager.getLuxury(profile)) }
 
     Scaffold (
         topBar = {
@@ -95,21 +100,23 @@ fun ProfilePage(idx: Int, prev: String) {
         if (cameraActive) {
             UriFromCamera(
                 onImageUriReady = {
-                    LuxuryManager.getLuxury(profile).profilePicture = it.uriToBase64(quality = 40)
+                    luxuryManager.getLuxury(profile).profilePicture = it.uriToBase64(quality = 40)
+                    saveLuxuries(profile, !luxuryProfiles.containsKey(profile.username))
                     profileLuxury = null
                 }
             )
         } else if (galleryActive) {
             UriFromGallery(
                 onImageUriReady = {
-                    LuxuryManager.getLuxury(profile).profilePicture = it.uriToBase64(quality = 40)
+                    luxuryManager.getLuxury(profile).profilePicture = it.uriToBase64(quality = 40)
+                    saveLuxuries(profile, !luxuryProfiles.containsKey(profile.username))
                     profileLuxury = null
                 }
             )
         }
 
         LaunchedEffect (profileLuxury) {
-            profileLuxury = LuxuryManager.getLuxury(profile)
+            profileLuxury = luxuryManager.getLuxury(profile)
         }
 
         Column (
@@ -128,10 +135,11 @@ fun ProfilePage(idx: Int, prev: String) {
                 ) {
                     Box(
                         modifier = Modifier
-                            .clip(CircleShape)
-                            .clickable { pfpDropdown = true }
+                            .clickable {
+                                pfpDropdown = true
+                            }
                     ) {
-                        profileLuxury?.ProfilePicture(CircleShape, 256.dp)
+                        profileLuxury?.ProfilePicture(RoundedCornerShape(25.dp), 256.dp)
 
                         DropdownMenu(
                             expanded = pfpDropdown,
