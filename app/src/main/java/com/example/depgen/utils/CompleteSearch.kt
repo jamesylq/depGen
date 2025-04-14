@@ -13,6 +13,7 @@ import com.example.depgen.model.EventComponent
 import com.example.depgen.model.EventRole
 import com.example.depgen.model.Profile
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 
 private var states = 0L
@@ -95,16 +96,21 @@ class RDCompleteSearchHelper(
             date = curGenerating,
             filter = { profile, date -> profile.isAvailable(date) }
         )
-        Log.d("debug", available.toString())
 
         for (start in 0 .. minOf(available.size - 1, 4)) {
             val proposal = HashMap<Profile, ArrayList<EventRole>>()
-            val rem = ArrayList(available.map{ it.second })
 
             try {
                 val newProfileData = ArrayList(profileData)
 
                 for (role in roles) {
+                    val roleAvail = newProfileData.shuffledToDeployOn(
+                        date = curGenerating,
+                        role = role,
+                        filter = { profile, date -> profile.isAvailable(date) }
+                    )
+                    val rem = ArrayList(roleAvail.map{ it.second })
+
                     for (i in 0..< dummyComponent.rolesRequired[role]!!) {
                         var found = false
                         for (profile in rem) {
@@ -159,30 +165,38 @@ fun <T> List<T>.combinations(size: Int): List<List<T>> {
     }
 }
 
-fun <A, B> List<Pair<A, B>>.shuffledToDeployOn(
+@RequiresApi(Build.VERSION_CODES.O)
+fun List<Pair<LocalDate, Profile>>.shuffledToDeployOn(
     date: LocalDate? = null,
-    filter: ((B, LocalDate) -> Boolean)? = null
-): List<Pair<A, B>> {
-    var cur = this[0].first
-    val ans = ArrayList<Pair<A, B>>()
-    val equiv: ArrayList<Pair<A, B>> = ArrayList()
+    role: EventRole? = null,
+    filter: ((Profile, LocalDate) -> Boolean)? = null
+): List<Pair<LocalDate, Profile>> {
+    val penalties = ArrayList(this.map{ Pair(0.0, it) })
 
-    for (ind in this.indices) {
-        if (this[ind].first != cur) {
-            cur = this[ind].first
-            equiv.shuffle()
-            for (x in equiv) ans.add(x)
-            equiv.clear()
-        }
-        if (filter == null || filter(this[ind].second, date!!)) {
-            equiv.add(this[ind])
+    if (date != null) {
+        for (ind in this.indices) {
+            penalties[ind] = Pair(
+                penalties[ind].first + DeploymentProposal.overworkedMetric(
+                    ChronoUnit.DAYS.between(this[ind].first, date).toDouble()
+                ),
+                penalties[ind].second
+            )
         }
     }
 
-    equiv.shuffle()
-    for (x in equiv) ans.add(x)
+    if (role != null) {
+        for (ind in this.indices) {
+            penalties[ind] = Pair(
+                penalties[ind].first + DeploymentProposal.skillPenalty(this[ind].second, role),
+                penalties[ind].second
+            )
+        }
+    }
 
-    return ans
+    penalties.sortBy { it.first }
+
+    if (filter == null) return penalties.map { it.second }
+    return penalties.mapNotNull { if (filter(it.second.second, date!!)) it.second else null }
 }
 
 fun <A, B> ArrayList<Pair<A, B>>.remove(arg: B): Boolean {

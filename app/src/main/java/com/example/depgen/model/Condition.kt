@@ -22,11 +22,11 @@ data class Condition(
         return when (type.id) {
             AT_LEAST.id -> {
                 val r = (level + 1.0) / (args[0] + 1.0)
-                return (if (r <= 1) 100.0 else 0.0) * (r - 1).pow(2)
+                return (if (r <= 1) 100.0 else 1.0) * (r - 1).pow(2)
             }
             AT_MOST.id -> {
                 val r = (level + 1.0) / (args[0] + 1.0)
-                return (if (r <= 1) 0.01 else 0.0) * (r - 1).pow(2)
+                return (if (r <= 1) 1.0 else 100.0) * (r - 1).pow(2)
             }
             else -> 0.0
         }

@@ -28,15 +28,8 @@ class DeploymentProposal (
     private fun skillIndex() : Double {
         var sum = 0.0
         for (roleEntry in proposal) {
-            for (skillEntry in roleEntry.key.prerequisites) {
-                for (condition in skillEntry.value) {
-                    sum += deploymentByMember.keys.toList().sumOf {
-                        if (!it.skills.containsKey(skillEntry.key)) {
-                            it.skills[skillEntry.key] = skillEntry.key.defaultLevel
-                        }
-                        return@sumOf condition!!.penaltyOf(it.skills[skillEntry.key]!!)
-                    }
-                }
+            sum += deploymentByMember.keys.toList().sumOf{
+                skillPenalty(it, roleEntry.key)
             }
         }
         return sum
@@ -54,6 +47,19 @@ class DeploymentProposal (
         fun multiRoleMetric(d: Int): Double {
             if (d == 0) return 0.0
             return (d.toDouble().pow(d) - 1) / 10
+        }
+
+        fun skillPenalty(profile: Profile, role: EventRole): Double {
+            var sum = 0.0
+            for (skillEntry in role.prerequisites) {
+                for (condition in skillEntry.value) {
+                    if (!profile.skills.containsKey(skillEntry.key)) {
+                        profile.skills[skillEntry.key] = skillEntry.key.defaultLevel
+                    }
+                    sum += condition!!.penaltyOf(profile.skills[skillEntry.key]!!)
+                }
+            }
+            return sum
         }
     }
 }
