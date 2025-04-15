@@ -1,8 +1,6 @@
 package com.example.depgen.view.components
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -45,7 +43,7 @@ import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun MultiDateSelector(
     selectedDates: Set<LocalDate>,

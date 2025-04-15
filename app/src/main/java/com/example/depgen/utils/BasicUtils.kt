@@ -3,8 +3,6 @@ package com.example.depgen.utils
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.isImeVisible
@@ -64,13 +62,11 @@ fun findRole(role: String): EventRole? {
 }
 
 @Throws(DateTimeParseException::class)
-@RequiresApi(Build.VERSION_CODES.O)
 fun String.toNaturalDateTime(): String {
     return LocalDateTime.parse(this).format(DateTimeFormatter.ofPattern("MMMM d, yyyy 'at' h:mm a"))
 }
 
 @Throws(DateTimeParseException::class)
-@RequiresApi(Build.VERSION_CODES.O)
 fun LocalDateTime.toHHMMTime(): String {
     return this.format(DateTimeFormatter.ofPattern("HH:mm"))
 }

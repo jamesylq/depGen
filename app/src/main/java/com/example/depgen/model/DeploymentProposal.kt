@@ -1,10 +1,9 @@
 package com.example.depgen.model
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+import kotlin.math.exp
 import kotlin.math.pow
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 class DeploymentProposal (
     private val eventComponent: EventComponent,
     private val proposal: Map<EventRole, List<Profile>>
@@ -41,7 +40,9 @@ class DeploymentProposal (
 
     companion object {
         fun overworkedMetric(d: Double): Double {
-            return if (d >= 14) 0.0 else ((14 - d) / 14).pow(4)
+            return 3 * (maxOf(0.0, minOf(1.0,
+                1.1 / (1.0 + exp(0.6 * (d - 18.0)))
+            )) + 1 / (d + 0.1) - 5.0 / (1 + exp(-0.1 * (d - 70.0))))
         }
 
         fun multiRoleMetric(d: Int): Double {

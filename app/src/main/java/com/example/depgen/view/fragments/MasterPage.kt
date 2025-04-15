@@ -11,13 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -54,13 +50,6 @@ fun MasterPage() {
                             safeNavigate("Profile/${Global.idx}/${Navigation.MASTER}")
                         }
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        //TODO: Menu
-                    }) {
-                        Icon(Icons.Default.Menu, "")
-                    }
                 },
                 actions = {
                     TopBarProfileIcon("Profile/${Global.idx}/${Navigation.MASTER}")

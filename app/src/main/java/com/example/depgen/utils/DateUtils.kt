@@ -1,7 +1,5 @@
 package com.example.depgen.utils
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.ui.util.fastJoinToString
 import com.example.depgen.MAX_REPEATING_DEPLOYMENT_DAYS
 import java.time.LocalDate
@@ -15,19 +13,17 @@ val DAYS = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Satur
 
 const val NO_DATE = "0001-01-01T00:00:00"
 
-@RequiresApi(Build.VERSION_CODES.O)
 val NO_DATE_OBJ: LocalDateTime = LocalDateTime.parse(NO_DATE)
 
-@RequiresApi(Build.VERSION_CODES.O)
 val END_OF_DAY: LocalTime = LocalTime.of(23, 59, 59)
 
-@RequiresApi(Build.VERSION_CODES.O)
 val STANDARD_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
-@RequiresApi(Build.VERSION_CODES.O)
 val NATURAL_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH)
 
-@RequiresApi(Build.VERSION_CODES.O)
+val DATE_MONTH_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM", Locale.ENGLISH)
+
+
 fun getDays(start: LocalDate, end: LocalDate, daysOfWeek: List<Boolean>): ArrayList<LocalDate> {
     if (start.isAfter(end)) {
         throw IllegalArgumentException("Start Date cannot be after End Date!")

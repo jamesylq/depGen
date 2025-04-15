@@ -1,7 +1,5 @@
 package com.example.depgen.view.fragments
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,7 +18,7 @@ import com.example.depgen.utils.safeNavigate
 import com.example.depgen.view.components.DefaultTopAppBar
 import com.example.depgen.view.components.MemberSearchScreen
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun MemberListPage() {
     Scaffold (

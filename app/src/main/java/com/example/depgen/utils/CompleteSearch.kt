@@ -1,8 +1,6 @@
 package com.example.depgen.utils
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.example.depgen.Global
 import com.example.depgen.MAX_COMPLETE_CHECK_TIME_STATE_COUNT
 import com.example.depgen.MAX_COMPLETE_SEARCH_DURATION
@@ -21,7 +19,6 @@ private var states = 0L
 private var executionStart = -1L
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 class OTDCompleteSearchHelper(
     private val eventComponent: EventComponent
 ) {
@@ -48,7 +45,6 @@ class OTDCompleteSearchHelper(
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 class RDCompleteSearchHelper(
     private val dummyComponent: EventComponent,
     private val dates: List<LocalDate>
@@ -166,7 +162,6 @@ fun <T> List<T>.combinations(size: Int): List<List<T>> {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun List<Pair<LocalDate, Profile>>.shuffledToDeployOn(
     date: LocalDate? = null,
     role: EventRole? = null,
@@ -175,7 +170,7 @@ fun List<Pair<LocalDate, Profile>>.shuffledToDeployOn(
 
     val penalties = ArrayList(
         this.map{
-            Pair(Random().nextGaussian(), it)
+            Pair(0.5 * Random().nextGaussian(), it)
         }
     )
 

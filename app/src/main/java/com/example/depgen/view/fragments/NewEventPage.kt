@@ -1,7 +1,5 @@
 package com.example.depgen.view.fragments
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -59,7 +57,7 @@ fun removeLetters(str: String): String {
     return removed
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewEventPage() {

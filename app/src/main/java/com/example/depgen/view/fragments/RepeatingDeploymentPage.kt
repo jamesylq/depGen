@@ -1,7 +1,7 @@
 package com.example.depgen.view.fragments
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -51,8 +51,10 @@ import com.example.depgen.utils.NO_DATE
 import com.example.depgen.utils.RDCompleteSearchHelper
 import com.example.depgen.utils.daysOfWeekToString
 import com.example.depgen.utils.findRole
+import com.example.depgen.utils.generateDeploymentExcel
 import com.example.depgen.utils.getDays
 import com.example.depgen.utils.safeNavigate
+import com.example.depgen.utils.saveExcelFile
 import com.example.depgen.view.components.BoldTextParser
 import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.ComboBox
@@ -61,10 +63,11 @@ import com.example.depgen.view.components.DateInputRow
 import com.example.depgen.view.components.DisplayEventComponent
 import com.example.depgen.view.components.QuantityPicker
 import com.example.depgen.view.components.RepeatDaySelector
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.time.DateTimeException
 import java.time.LocalDate
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RepeatingDeploymentPage() {
@@ -101,6 +104,12 @@ fun RepeatingDeploymentPage() {
 
     if (roleNums.isEmpty()) for (role in Global.rolesList) roleNums.add(role.minCount)
 
+    var workbook by remember { mutableStateOf<XSSFWorkbook?>(null) }
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
+        onResult = { if (it != null) { saveExcelFile(it, workbook!!) } }
+    )
+
     Scaffold (
         topBar = {
             TopAppBar(
@@ -120,7 +129,7 @@ fun RepeatingDeploymentPage() {
                                     }
 
                                     "generated" -> {
-                                        screen = "customisation-2"
+                                        safeNavigate("Master")
                                     }
 
                                     else -> {}
@@ -130,8 +139,8 @@ fun RepeatingDeploymentPage() {
                         ) {
                             Icon(
                                 imageVector = when (screen) {
-                                    "customisation-2", "generated" -> Icons.AutoMirrored.Filled.ArrowBack
-                                    "customisation-1" -> Icons.Default.Close
+                                    "customisation-2" -> Icons.AutoMirrored.Filled.ArrowBack
+                                    "customisation-1", "generated" -> Icons.Default.Close
                                     else -> Icons.Default.QuestionMark
                                 },
                                 contentDescription = ""
@@ -485,7 +494,8 @@ fun RepeatingDeploymentPage() {
                         CardButton(
                             text = "Export as .xlsx",
                             onClick = {
-
+                                workbook = generateDeploymentExcel(generatedComponents, rolesNeeded)
+                                filePickerLauncher.launch("depGen-${System.currentTimeMillis()}.xlsx")
                             }
                         )
                     }

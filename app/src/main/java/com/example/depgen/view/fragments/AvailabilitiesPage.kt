@@ -1,7 +1,5 @@
 package com.example.depgen.view.fragments
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -44,7 +42,7 @@ import java.time.LocalDate
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun AvailabilitiesPage(idx: Int) {
     var selectedDates by remember {

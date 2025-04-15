@@ -1,7 +1,5 @@
 package com.example.depgen.view.fragments
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -56,7 +54,7 @@ import com.example.depgen.view.components.ConfirmationScreen
 import com.example.depgen.view.components.DisplayEventComponent
 import com.example.depgen.view.components.QuantityPicker
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OneTimeDeploymentPage() {

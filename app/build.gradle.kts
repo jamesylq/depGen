@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.depgen"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -66,7 +66,6 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.coil.compose)
     implementation(libs.androidx.core.splashscreen)
-//    implementation(libs.androidx.x.x.x)
 
     implementation(libs.androidx.camera.camera2)
     implementation(libs.androidx.camera.lifecycle)
@@ -75,4 +74,7 @@ dependencies {
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+
+    implementation(libs.poi)
+    implementation(libs.poi.ooxml)
 }

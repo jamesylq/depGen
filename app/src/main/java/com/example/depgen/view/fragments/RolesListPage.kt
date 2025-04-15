@@ -1,7 +1,5 @@
 package com.example.depgen.view.fragments
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,7 +43,7 @@ import com.example.depgen.view.components.DefaultTopAppBar
 import com.example.depgen.view.components.EventRoleRender
 
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun RolesListPage() {
     val remRolesList = remember { mutableStateListOf<EventRole>() }

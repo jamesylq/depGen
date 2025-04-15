@@ -1,8 +1,6 @@
 package com.example.depgen.model
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.ui.util.fastJoinToString
 import com.example.depgen.Global
 import com.example.depgen.utils.toNaturalDateTime
@@ -17,25 +15,21 @@ data class EventComponent(
     var start: String,
     var end: String
 ) {
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getStart(): LocalDateTime {
         return LocalDateTime.parse(start)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getEnd(): LocalDateTime {
         return LocalDateTime.parse(end)
     }
 
     @Throws(DateTimeParseException::class)
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getNaturalStart(): String {
         return try { start.toNaturalDateTime() }
         catch (_: DateTimeParseException) { "" }
     }
 
     @Throws(DateTimeParseException::class)
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getNaturalEnd(): String {
         return try { end.toNaturalDateTime() }
         catch (_: DateTimeParseException) { "" }
@@ -78,7 +72,7 @@ data class EventComponent(
         return toReturn
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+
     fun toString(displayTime: Boolean = false, preamble: String = ""): String {
         return if (displayTime) """
             ${preamble}Start: ${start.toNaturalDateTime()}

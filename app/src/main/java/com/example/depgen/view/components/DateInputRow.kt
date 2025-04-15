@@ -1,7 +1,5 @@
 package com.example.depgen.view.components
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,7 +25,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeParseException
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun DateInputRow(
     title: String,

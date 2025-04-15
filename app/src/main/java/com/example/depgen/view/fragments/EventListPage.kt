@@ -1,7 +1,5 @@
 package com.example.depgen.view.fragments
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -42,7 +40,7 @@ import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.ConfirmationScreen
 import com.example.depgen.view.components.DefaultTopAppBar
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun EventListPage() {
     val eventRem = remember { mutableStateListOf<Event>() }

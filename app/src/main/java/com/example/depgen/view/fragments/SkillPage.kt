@@ -1,7 +1,5 @@
 package com.example.depgen.view.fragments
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -55,7 +53,7 @@ fun refreshSkillsSorted(sortedMembers: MutableList<Pair<Int, Int>>, skill: Skill
     sortedMembers.sortByDescending { it.first }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SkillPage(idx: Int) {

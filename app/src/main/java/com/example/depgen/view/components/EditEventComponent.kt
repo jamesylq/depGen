@@ -1,7 +1,5 @@
 package com.example.depgen.view.components
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -70,7 +68,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeParseException
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) -> Unit, comType: ComponentType?) {

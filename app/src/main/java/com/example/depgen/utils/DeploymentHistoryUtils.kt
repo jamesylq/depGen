@@ -1,7 +1,5 @@
 package com.example.depgen.utils
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.example.depgen.Global
 import com.example.depgen.model.DeploymentRecord
 import com.example.depgen.model.Profile
@@ -9,7 +7,6 @@ import java.time.LocalDate
 
 var deploymentRecordMemo = HashMap<Profile, ArrayList<DeploymentRecord>>()
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun getDeployments(profile: Profile) : ArrayList<DeploymentRecord> {
     if (deploymentRecordMemo.containsKey(profile)) return deploymentRecordMemo[profile]!!
     deploymentRecordMemo[profile] = ArrayList()
@@ -34,7 +31,7 @@ fun getDeployments(profile: Profile) : ArrayList<DeploymentRecord> {
     return deploymentRecordMemo[profile]!!
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 fun ArrayList<DeploymentRecord>.getDate(date: LocalDate): ArrayList<DeploymentRecord> {
     return ArrayList(
         this.mapNotNull{

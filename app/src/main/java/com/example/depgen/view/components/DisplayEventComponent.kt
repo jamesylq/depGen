@@ -1,9 +1,6 @@
 package com.example.depgen.view.components
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,8 +24,7 @@ import com.example.depgen.Global
 import com.example.depgen.model.EventComponent
 import com.example.depgen.utils.NO_DATE_OBJ
 
-@RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalLayoutApi::class)
+
 @Composable
 fun DisplayEventComponent(
     component: EventComponent,

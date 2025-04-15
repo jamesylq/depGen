@@ -3,9 +3,7 @@ package com.example.depgen.utils
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.example.depgen.ADMIN
 import com.example.depgen.FIREBASE_URL
 import com.example.depgen.Global
@@ -23,7 +21,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeParseException
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun save() {
     val dbRef = FirebaseDatabase.getInstance(FIREBASE_URL).reference
 
@@ -53,7 +50,7 @@ fun clear() {
         }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 fun saveLocally() {
     Log.d("LocalFileIO", "Initiated Save ${Global.profileList}")
     val saveFile = File(ctxt.filesDir, "save.json")
@@ -64,7 +61,7 @@ fun saveLocally() {
     timeFile.writeText(json.encodeToString(LocalDateTime.now().toString()))
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 fun saveLuxuries(profile: Profile? = null, writeToDB: Boolean = true) {
     Log.d("LocalFileIO", "Initiated Luxury Save.")
     val saveFile = File(ctxt.filesDir, "luxuries.json")
@@ -95,7 +92,7 @@ fun saveLuxuries(profile: Profile? = null, writeToDB: Boolean = true) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 fun loadLuxuries() {
     val dbRef = FirebaseDatabase.getInstance(FIREBASE_URL).reference
 
@@ -151,7 +148,7 @@ fun loadLuxuries() {
         }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 fun load() {
     val dbRef = FirebaseDatabase.getInstance(FIREBASE_URL).reference
 
@@ -272,7 +269,6 @@ fun load() {
         }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun deletePFP(profile: Profile) {
     luxuryManager.getLuxury(profile).updateProfilePicture("")
     saveLuxuries(profile)

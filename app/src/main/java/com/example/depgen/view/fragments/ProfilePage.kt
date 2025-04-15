@@ -2,8 +2,6 @@ package com.example.depgen.view.fragments
 
 import UriFromCamera
 import UriFromGallery
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -53,7 +51,7 @@ import com.example.depgen.utils.switchProfile
 import com.example.depgen.utils.uriToBase64
 import com.example.depgen.view.components.CardButton
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun ProfilePage(idx: Int, prev: Int) {
     ProfilePage(idx,
@@ -74,7 +72,7 @@ fun ProfilePage(idx: Int, prev: Int) {
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfilePage(idx: Int, prev: String) {

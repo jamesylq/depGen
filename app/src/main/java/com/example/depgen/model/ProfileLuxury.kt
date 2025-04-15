@@ -1,7 +1,5 @@
 package com.example.depgen.model
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -47,12 +45,10 @@ data class ProfileLuxury(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getLastUpdate(): LocalDateTime {
         return LocalDateTime.parse(lastUpdate)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun updateProfilePicture(newPicture: String?) {
         profilePicture = newPicture
         lastUpdate = LocalDateTime.now().toString()

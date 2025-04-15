@@ -1,7 +1,5 @@
 package com.example.depgen.view.components
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
@@ -15,7 +13,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerScreen(

@@ -1,7 +1,5 @@
 package com.example.depgen.model
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.example.depgen.Global
 import com.example.depgen.utils.STANDARD_FORMATTER
 import kotlinx.serialization.Serializable
@@ -31,18 +29,15 @@ data class Profile (
         return !unavailable.contains(date.toString())
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun addDeployment(component: EventComponent) {
         this.deployments.add(component.getStart().toLocalDate().format(STANDARD_FORMATTER))
         this.deployments.sortBy { LocalDate.parse(it, STANDARD_FORMATTER) }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun removeDeployment(component: EventComponent) {
         this.deployments.remove(component.getStart().toLocalDate().format(STANDARD_FORMATTER))
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun overworkedness(start: LocalDate? = null, end: LocalDate? = null) : Double {
         var sum = 0.0
         var prev: LocalDate? = null
@@ -62,7 +57,6 @@ data class Profile (
         return sum
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun overworkedness(eventComponent: EventComponent): Double {
         return overworkedness(
             eventComponent.getStart().toLocalDate().minusDays(14L),
@@ -70,7 +64,7 @@ data class Profile (
         )
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    
     fun getDeploymentList() : ArrayList<LocalDate> {
         return ArrayList(this.deployments.map { LocalDate.parse(it, STANDARD_FORMATTER) }.sorted())
     }

@@ -1,7 +1,5 @@
 package com.example.depgen.view.components
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,7 +38,7 @@ import com.example.depgen.utils.clearFocusOnKeyboardDismiss
 import com.example.depgen.utils.deletePFP
 import com.example.depgen.utils.save
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun MemberSearchScreen(
     onClickMember: (Int) -> Unit,

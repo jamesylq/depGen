@@ -1,7 +1,5 @@
 package com.example.depgen.view.fragments
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,6 +32,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -67,7 +66,7 @@ import com.example.depgen.view.components.IntegerTextField
 import com.example.depgen.view.components.colorPicker.HsvColorPicker
 import com.example.depgen.view.components.colorPicker.rememberColorPickerController
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewRolePage(roleEditing: Int = -1) {
@@ -88,12 +87,14 @@ fun NewRolePage(roleEditing: Int = -1) {
     var selectedColor by remember { mutableStateOf(Color.Black) }
     var selectingColor by remember { mutableStateOf(false) }
 
-    if (roleEditing != -1 && name != Global.rolesList[roleEditing].eventRole) {
-        val role = Global.rolesList[roleEditing]
-        name = role.eventRole
-        prerequisites = role.prerequisites
-        priority = role.priority
-        selectedColor = role.color.toColor()
+    LaunchedEffect(Unit) {
+        if (roleEditing != -1 && name != Global.rolesList[roleEditing].eventRole) {
+            val role = Global.rolesList[roleEditing]
+            name = role.eventRole
+            prerequisites = role.prerequisites
+            priority = role.priority
+            selectedColor = role.color.toColor()
+        }
     }
 
     Scaffold(

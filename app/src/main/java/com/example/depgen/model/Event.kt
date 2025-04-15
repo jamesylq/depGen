@@ -1,7 +1,5 @@
 package com.example.depgen.model
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import kotlinx.serialization.Serializable
 import java.util.TreeMap
 
@@ -26,7 +24,6 @@ data class Event (
         return null
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun toString(): String {
         return "${name.uppercase()}\n\n\n${
             getComponents().map {
