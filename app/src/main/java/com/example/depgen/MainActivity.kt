@@ -6,10 +6,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -56,6 +52,7 @@ import com.example.depgen.model.EventRole
 import com.example.depgen.model.LuxuryManager
 import com.example.depgen.model.Profile
 import com.example.depgen.model.Skill
+import com.example.depgen.utils.isConnected
 import com.example.depgen.utils.load
 import com.example.depgen.utils.loadLuxuries
 import com.example.depgen.utils.safeNavigate
@@ -74,6 +71,7 @@ import com.example.depgen.view.fragments.OneTimeDeploymentPage
 import com.example.depgen.view.fragments.ProfilePage
 import com.example.depgen.view.fragments.RepeatingDeploymentPage
 import com.example.depgen.view.fragments.RolesListPage
+import com.example.depgen.view.fragments.SchedulePage
 import com.example.depgen.view.fragments.SettingsPage
 import com.example.depgen.view.fragments.SignUpPage
 import com.example.depgen.view.fragments.SkillPage
@@ -84,6 +82,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
@@ -147,7 +146,6 @@ class MainActivity : ComponentActivity() {
 
             var permissionsRequested by remember { mutableStateOf(false) }
             var connected by remember { mutableStateOf(true) }
-            var loaded by remember { mutableStateOf(false) }
 
             val permissionLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.RequestMultiplePermissions(),
@@ -184,36 +182,21 @@ class MainActivity : ComponentActivity() {
                 )
             }
 
-            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-            val networkRequest = NetworkRequest.Builder()
-                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                .build()
-
-            connectivityManager.registerNetworkCallback(networkRequest, object : ConnectivityManager.NetworkCallback() {
-                override fun onLost(network: Network) {
-                    runOnUiThread {
-                        connected = false
-                    }
+            LaunchedEffect (Unit) {
+                while (true) {
+                    connected = isConnected()
+                    delay(100)
                 }
-
-                override fun onAvailable(network: Network) {
-                    runOnUiThread {
-                        if (!loaded) {
-                            load()
-                            loaded = true
-                        }
-                        connected = true
-                    }
-                }
-            })
+            }
 
             DepGenTheme {
                 navController = rememberNavController()
 
                 if (!connected) {
                     BasicAlertDialog(
-                        onDismissRequest = {}
+                        onDismissRequest = {
+                            connected = isConnected()
+                        }
                     ) {
                         ElevatedCard (
                             modifier = Modifier
@@ -304,6 +287,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("Availabilities/{idx}") {
                         AvailabilitiesPage(it.arguments!!.getString("idx")!!.toInt())
+                    }
+                    composable("Schedule/{idx}") {
+                        SchedulePage(it.arguments!!.getString("idx")!!.toInt())
                     }
                     composable("MemberList") {
                         MemberListPage()

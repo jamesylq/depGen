@@ -2,16 +2,13 @@ package com.example.depgen.view.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -26,9 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
-import com.example.depgen.luxuryManager
 import com.example.depgen.model.EventComponent
 import com.example.depgen.utils.NO_DATE_OBJ
 
@@ -142,35 +137,7 @@ fun DisplayEventComponent(
                     }
                 }
                 for (deploymentEntry in component.deployment) {
-                    ElevatedCard (
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Row (
-                            modifier = Modifier.padding(10.dp)
-                        ) {
-                            luxuryManager.getLuxury(deploymentEntry.key).ProfilePicture(
-                                clip = RoundedCornerShape(13.dp),
-                                size = 60.dp
-                            )
-                            Column {
-                                Text(
-                                    text = deploymentEntry.key.username,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 16.sp,
-                                    modifier = Modifier.padding(horizontal = 8.dp)
-                                )
-                                FlowRow (
-                                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                    modifier = Modifier.padding(start = 5.dp)
-                                ) {
-                                    for (role in deploymentEntry.value) {
-                                        EventRoleRender(role, 0.8f)
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    DisplayProfileDeployment(deploymentEntry.key, deploymentEntry.value)
                     Spacer(modifier = Modifier.height(10.dp))
                 }
             }

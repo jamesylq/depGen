@@ -1,5 +1,8 @@
 package com.example.depgen.utils
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -18,9 +21,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import com.example.depgen.Global
 import com.example.depgen.LOGGED_OUT
+import com.example.depgen.ctxt
 import com.example.depgen.model.EventRole
 import com.example.depgen.model.Profile
 import com.example.depgen.navController
+import com.example.depgen.toast
 import java.security.MessageDigest
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -91,6 +96,13 @@ fun String.isNotInt(): Boolean {
 
 fun safeNavigate(dest: String) {
     navController.navigate(dest) { popUpTo(dest) }
+}
+
+fun copyToClipboard(text: String, label: String = "depGen", context: Context = ctxt) {
+    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clip = ClipData.newPlainText(label, text)
+    clipboard.setPrimaryClip(clip)
+    toast("Copied to Clipboard!")
 }
 
 @OptIn(ExperimentalLayoutApi::class)

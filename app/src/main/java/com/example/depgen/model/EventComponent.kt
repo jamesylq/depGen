@@ -3,6 +3,7 @@ package com.example.depgen.model
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.util.fastJoinToString
 import com.example.depgen.Global
 import com.example.depgen.utils.toNaturalDateTime
 import kotlinx.serialization.Serializable
@@ -64,5 +65,38 @@ data class EventComponent(
         } else {
             Log.w("depGen", "Warning: Deployment Overridden!")
         }
+    }
+
+    private fun toNaturalDeployments() : Map<EventRole, ArrayList<Profile>> {
+        val toReturn = HashMap<EventRole, ArrayList<Profile>>()
+        for (entry in deployment) {
+            for (role in entry.value) {
+                if (!toReturn.containsKey(role)) toReturn[role] = ArrayList()
+                toReturn[role]!!.add(entry.key)
+            }
+        }
+        return toReturn
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun toString(displayTime: Boolean = false, preamble: String = ""): String {
+        return if (displayTime) """
+            ${preamble}Start: ${start.toNaturalDateTime()}
+            End: ${end.toNaturalDateTime()}
+            
+            Deployments
+            $this
+        """.trimIndent().trimMargin() else """
+            ${preamble}Deployment
+            $this
+        """.trimIndent().trimMargin()
+    }
+
+    override fun toString(): String {
+        return toNaturalDeployments().map {
+            "   •   ${it.key.eventRole}: ${it.value.map{
+                profile -> profile.username
+            }.fastJoinToString(", ")}"
+        }.fastJoinToString("\n")
     }
 }

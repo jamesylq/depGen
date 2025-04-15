@@ -45,6 +45,8 @@ import com.example.depgen.LOGGED_OUT
 import com.example.depgen.luxuryManager
 import com.example.depgen.model.Navigation
 import com.example.depgen.model.ProfileLuxury
+import com.example.depgen.toast
+import com.example.depgen.utils.deletePFP
 import com.example.depgen.utils.safeNavigate
 import com.example.depgen.utils.saveLuxuries
 import com.example.depgen.utils.switchProfile
@@ -66,6 +68,7 @@ fun ProfilePage(idx: Int, prev: Int) {
             Navigation.SKILLSTRACKER -> "SkillsTracker"
             Navigation.SKILL -> "Skill/${prev / Navigation.M}"
             Navigation.AVAILABILITIES -> "Availabilities/${prev / Navigation.M}"
+            Navigation.SCHEDULE -> "Schedule/${prev / Navigation.M}"
             else -> ""
         }
     )
@@ -135,7 +138,11 @@ fun ProfilePage(idx: Int, prev: String) {
                     Box(
                         modifier = Modifier
                             .clickable {
-                                pfpDropdown = true
+                                if (Global.profile.getIdx() == idx || Global.isAdmin()) {
+                                    pfpDropdown = true
+                                } else {
+                                    toast("You cannot change someone else\'s Profile Picture!")
+                                }
                             }
                     ) {
                         profileLuxury?.ProfilePicture(RoundedCornerShape(25.dp), 256.dp)
@@ -159,6 +166,15 @@ fun ProfilePage(idx: Int, prev: String) {
                                     galleryActive = true
                                 }
                             )
+                            if (profileLuxury?.hasProfilePicture() == true) {
+                                DropdownMenuItem(
+                                    text = { Text("Delete Profile Picture") },
+                                    onClick = {
+                                        deletePFP(profile)
+                                        profileLuxury = null
+                                    }
+                                )
+                            }
                         }
                     }
                 }

@@ -2,7 +2,6 @@ package com.example.depgen.view.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
@@ -39,6 +37,7 @@ import com.example.depgen.Global
 import com.example.depgen.luxuryManager
 import com.example.depgen.model.Profile
 import com.example.depgen.utils.clearFocusOnKeyboardDismiss
+import com.example.depgen.utils.deletePFP
 import com.example.depgen.utils.save
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -57,6 +56,7 @@ fun MemberSearchScreen(
     if (deleting != -1) {
         ConfirmationScreen(
             onConfirm = {
+                deletePFP(Global.profileList[deleting])
                 Global.profileList.removeAt(deleting)
                 profileRem.removeAt(deleting)
                 save()
@@ -104,15 +104,6 @@ fun MemberSearchScreen(
         modifier = Modifier
             .fillMaxWidth()
             .clearFocusOnKeyboardDismiss(),
-        trailingIcon = {
-            Icon(
-                Icons.Rounded.MoreVert,
-                "",
-                modifier = Modifier.clickable {
-                    //TODO: Advanced Search
-                }
-            )
-        }
     )
     Spacer(modifier = Modifier.height(20.dp))
     Column(modifier = Modifier.fillMaxSize()) {

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.ElevatedCard
@@ -36,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
 import com.example.depgen.model.Navigation
 import com.example.depgen.utils.safeNavigate
+import com.example.depgen.view.components.TopBarProfileIcon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,11 +63,7 @@ fun MasterPage() {
                     }
                 },
                 actions = {
-                    IconButton(onClick = {
-                        safeNavigate("Profile/${Global.idx}/${Navigation.MASTER}")
-                    }) {
-                        Icon(Icons.Default.AccountCircle, "")
-                    }
+                    TopBarProfileIcon("Profile/${Global.idx}/${Navigation.MASTER}")
                 }
             )
         }
@@ -290,6 +286,34 @@ fun MasterPage() {
 
                             Text(
                                 text = "Declare Availabilities",
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+                    ElevatedCard(
+                        onClick = {
+                            safeNavigate("Schedule/${Global.profile.getIdx()}")
+                        },
+                        modifier = Modifier
+                            .width(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp)
+                            .height(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp),
+                        colors = CardColors(
+                            containerColor = MaterialTheme.colorScheme.tertiary,
+                            contentColor = Color.Black,
+                            disabledContentColor = Color.Black,
+                            disabledContainerColor = MaterialTheme.colorScheme.tertiary
+                        )
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(bottom = 8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Bottom
+                        ) {
+
+                            Text(
+                                text = "View Schedule",
                                 textAlign = TextAlign.Center
                             )
                         }

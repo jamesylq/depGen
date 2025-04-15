@@ -1,5 +1,8 @@
 package com.example.depgen.utils
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -62,28 +65,33 @@ fun saveLocally() {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun saveLuxuries(profile: Profile? = null) {
+fun saveLuxuries(profile: Profile? = null, writeToDB: Boolean = true) {
     Log.d("LocalFileIO", "Initiated Luxury Save.")
     val saveFile = File(ctxt.filesDir, "luxuries.json")
     saveFile.writeText(json.encodeToString(luxuryManager))
 
     if (profile != null) {
-        val dbRef = FirebaseDatabase.getInstance(FIREBASE_URL).reference
+        if (writeToDB) {
+            val now = LocalDateTime.now()
+            luxuryProfiles[profile.username] = now
+            val dbRef = FirebaseDatabase.getInstance(FIREBASE_URL).reference
 
-        val now = LocalDateTime.now()
-        dbRef
-            .child("luxuryProfiles")
-            .child(profile.username)
-            .child("lastUpdate")
-            .setValue(now.toString())
-        luxuryProfiles[profile.username] = now
-
-        dbRef.child("profilePicture").child(profile.username).setValue(
-            luxuryManager.getLuxury(profile).profilePicture!!
-        )
-            .addOnFailureListener {
-                Log.wtf("FirebaseIO", "Saving Failed: ", it)
-            }
+            dbRef
+                .child("profilePicture")
+                .child(profile.username).setValue(
+                    luxuryManager.getLuxury(profile).profilePicture
+                )
+                .addOnFailureListener {
+                    Log.wtf("FirebaseIO", "Saving Failed: ", it)
+                }
+                .addOnCompleteListener {
+                    dbRef
+                        .child("luxuryProfiles")
+                        .child(profile.username)
+                        .child("lastUpdate")
+                        .setValue(now.toString())
+                }
+        }
     }
 }
 
@@ -262,4 +270,19 @@ fun load() {
                 Log.d("LocalFileIO", "Operating on Local Save File. (DB: $lastDBUpdate, Local: $lastLocalUpdate)")
             }
         }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun deletePFP(profile: Profile) {
+    luxuryManager.getLuxury(profile).updateProfilePicture("")
+    saveLuxuries(profile)
+}
+
+fun isConnected(context: Context = ctxt): Boolean {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val network = connectivityManager.activeNetwork ?: return false
+    val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+
+    return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+            capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
 }

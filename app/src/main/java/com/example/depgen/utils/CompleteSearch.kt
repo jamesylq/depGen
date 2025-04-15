@@ -14,6 +14,7 @@ import com.example.depgen.model.EventRole
 import com.example.depgen.model.Profile
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
+import java.util.Random
 
 
 private var states = 0L
@@ -171,7 +172,12 @@ fun List<Pair<LocalDate, Profile>>.shuffledToDeployOn(
     role: EventRole? = null,
     filter: ((Profile, LocalDate) -> Boolean)? = null
 ): List<Pair<LocalDate, Profile>> {
-    val penalties = ArrayList(this.map{ Pair(0.0, it) })
+
+    val penalties = ArrayList(
+        this.map{
+            Pair(Random().nextGaussian(), it)
+        }
+    )
 
     if (date != null) {
         for (ind in this.indices) {

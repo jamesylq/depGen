@@ -12,6 +12,7 @@ class Navigation {
         const val SKILLSTRACKER = 7
         const val SKILL = 8
         const val AVAILABILITIES = 9
-        const val M = 10
+        const val SCHEDULE = 10
+        const val M = 100
     }
 }

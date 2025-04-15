@@ -28,9 +28,9 @@ data class ProfileLuxury(
 ) {
     @Composable
     fun ProfilePicture(clip: Shape = RectangleShape, size: Dp = 256.dp) {
-        if (profilePicture == null) {
+        if (hasProfilePicture()) {
             Image(
-                painter = painterResource(R.drawable.icon_512),
+                bitmap = profilePicture!!.toImageBitmap()!!.toSquare(),
                 contentDescription = "",
                 modifier = Modifier
                     .clip(clip)
@@ -38,7 +38,7 @@ data class ProfileLuxury(
             )
         } else {
             Image(
-                bitmap = profilePicture!!.toImageBitmap()!!.toSquare(),
+                painter = painterResource(R.drawable.icon_512),
                 contentDescription = "",
                 modifier = Modifier
                     .clip(clip)
@@ -53,8 +53,12 @@ data class ProfileLuxury(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun updateProfilePicture(newPicture: String) {
+    fun updateProfilePicture(newPicture: String?) {
         profilePicture = newPicture
         lastUpdate = LocalDateTime.now().toString()
+    }
+
+    fun hasProfilePicture() : Boolean {
+        return profilePicture != null && profilePicture != ""
     }
 }

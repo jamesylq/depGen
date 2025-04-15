@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,6 +39,7 @@ import com.example.depgen.utils.safeNavigate
 import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.ConfirmationScreen
 import com.example.depgen.view.components.MultiDateSelector
+import com.example.depgen.view.components.TopBarProfileIcon
 import java.time.LocalDate
 
 
@@ -79,11 +79,7 @@ fun AvailabilitiesPage(idx: Int) {
                     }
                 },
                 actions = {
-                    IconButton(onClick = {
-                        safeNavigate("Profile/${idx}/${Navigation.AVAILABILITIES + Navigation.M * idx}")
-                    }) {
-                        Icon(Icons.Default.AccountCircle, "")
-                    }
+                    TopBarProfileIcon("Profile/${idx}/${Navigation.AVAILABILITIES + Navigation.M * idx}")
                 }
             )
         }

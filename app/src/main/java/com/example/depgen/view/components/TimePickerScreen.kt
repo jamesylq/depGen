@@ -73,7 +73,7 @@ fun TimePickerScreen(
                         clockDialColor = MaterialTheme.colorScheme.secondaryContainer,
                         selectorColor = MaterialTheme.colorScheme.tertiary,
                         containerColor = Color.White,
-                        periodSelectorBorderColor = Color.Black,
+                        periodSelectorBorderColor = Color.Transparent,
                         clockDialSelectedContentColor = Color.Black,
                         clockDialUnselectedContentColor = Color.Black,
                         periodSelectorSelectedContentColor = Color.Black,

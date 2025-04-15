@@ -38,6 +38,7 @@ import com.example.depgen.Global
 import com.example.depgen.luxuryManager
 import com.example.depgen.model.Navigation
 import com.example.depgen.model.Skill
+import com.example.depgen.toast
 import com.example.depgen.utils.save
 import com.example.depgen.view.components.DefaultTopAppBar
 import com.example.depgen.view.components.QuantityPicker
@@ -182,6 +183,8 @@ fun SkillPage(idx: Int) {
                                                     .clickable {
                                                         if (Global.isAdmin()) {
                                                             confirmation = i
+                                                        } else {
+                                                            toast("You must be an admin to do this!")
                                                         }
                                                     },
                                                 horizontalAlignment = Alignment.CenterHorizontally,

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material3.BasicAlertDialog
@@ -27,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -37,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,6 +47,7 @@ import com.example.depgen.model.EventRole
 import com.example.depgen.model.Profile
 import com.example.depgen.utils.NO_DATE
 import com.example.depgen.utils.OTDCompleteSearchHelper
+import com.example.depgen.utils.copyToClipboard
 import com.example.depgen.utils.findRole
 import com.example.depgen.utils.safeNavigate
 import com.example.depgen.view.components.CardButton
@@ -68,7 +70,7 @@ fun OneTimeDeploymentPage() {
     var recompile by remember { mutableIntStateOf(1) }
     var screen by remember { mutableStateOf("customise") }
     val generatedDeployment = remember { mutableStateMapOf<EventRole, List<Profile>>() }
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(true) }
 
     if (roleNums.isEmpty()) for (role in Global.rolesList) roleNums.add(role.minCount)
 
@@ -87,7 +89,7 @@ fun OneTimeDeploymentPage() {
                                     }
 
                                     "generated" -> {
-                                        screen = "customise"
+                                        confirmationShowing = true
                                     }
 
                                     else -> {}
@@ -97,8 +99,7 @@ fun OneTimeDeploymentPage() {
                         ) {
                             Icon(
                                 imageVector = when (screen) {
-                                    "generated" -> Icons.AutoMirrored.Filled.ArrowBack
-                                    "customise" -> Icons.Default.Close
+                                    "generated", "customise" -> Icons.Default.Close
                                     else -> Icons.Default.QuestionMark
                                 },
                                 contentDescription = ""
@@ -117,6 +118,22 @@ fun OneTimeDeploymentPage() {
             )
         }
     ) { innerPadding ->
+        LaunchedEffect (screen) {
+            if (screen == "regenerate") {
+                OTDCompleteSearchHelper(
+                    EventComponent(
+                        HashMap(),
+                        HashMap(rolesNeeded),
+                        NO_DATE,
+                        NO_DATE
+                    )
+                ).generate().forEach {
+                    generatedDeployment[it.key] = it.value
+                }
+                screen = "generated"
+            }
+        }
+
         Column (
             modifier = Modifier
                 .padding(innerPadding)
@@ -244,8 +261,34 @@ fun OneTimeDeploymentPage() {
                                     }
                                 }
                             }
+
+                            if (rolesNeeded.isEmpty()) {
+                                item {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Spacer(
+                                            modifier = Modifier.height(
+                                                maxOf(
+                                                    0,
+                                                    LocalConfiguration.current.screenHeightDp / 2 - 180
+                                                ).dp
+                                            )
+                                        )
+                                        Text(
+                                            "No Roles Yet!",
+                                            fontWeight = FontWeight.SemiBold,
+                                            fontSize = 18.sp,
+                                            modifier = Modifier.padding(bottom = 10.dp)
+                                        )
+                                        Text("Add the roles required using the button below!")
+                                    }
+                                }
+                            }
                         }
                     }
+
                     CardButton(
                         text = "Add Role Needed",
                         onClick = {
@@ -265,17 +308,7 @@ fun OneTimeDeploymentPage() {
                     CardButton(
                         text = "Generate!",
                         onClick = {
-                            OTDCompleteSearchHelper(
-                                EventComponent(
-                                    HashMap(),
-                                    HashMap(rolesNeeded),
-                                    NO_DATE,
-                                    NO_DATE
-                                )
-                            ).generate().forEach {
-                                generatedDeployment[it.key] = it.value
-                            }
-                            screen = "generated"
+                            screen = "regenerate"
                         },
                         enabled = rolesNeeded.isNotEmpty()
                     )
@@ -289,14 +322,35 @@ fun OneTimeDeploymentPage() {
                         NO_DATE
                     )
                     component.setDeployment(HashMap(generatedDeployment))
-
-                    DisplayEventComponent(
-                        component = component,
-                        onEdit = null,
-                        generateOTD = null,
-                        expanded = expanded,
-                        onToggleExpand = { expanded = !expanded }
-                    )
+                    Column {
+                        LazyColumn (
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            item {
+                                DisplayEventComponent(
+                                    component = component,
+                                    onEdit = null,
+                                    generateOTD = null,
+                                    expanded = expanded,
+                                    onToggleExpand = { expanded = !expanded }
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(20.dp))
+                        CardButton(
+                            text = "Regenerate!",
+                            onClick = {
+                                screen = "regenerate"
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        CardButton(
+                            text = "Copy Deployment to Clipboard",
+                            onClick = {
+                                copyToClipboard(component.toString(false))
+                            }
+                        )
+                    }
                 }
             }
         }

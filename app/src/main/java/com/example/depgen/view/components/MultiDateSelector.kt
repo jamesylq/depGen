@@ -1,7 +1,9 @@
 package com.example.depgen.view.components
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -30,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -47,19 +51,27 @@ fun MultiDateSelector(
     selectedDates: Set<LocalDate>,
     onDateToggle: (LocalDate) -> Unit,
     modifier: Modifier = Modifier,
+    highlightedDate: LocalDate? = null,
     selectedColor: Color = Color.LightGray,
-    unselectedColor: Color = MaterialTheme.colorScheme.secondary,
-    editable: Boolean = true
+    unselectedColor: Color = MaterialTheme.colorScheme.secondary
 ) {
     var currentMonth by remember { mutableStateOf(YearMonth.now()) }
+    if (highlightedDate != null) Log.d("DEPGENDEBUG", highlightedDate.toString())
+    else Log.d("DEPGENDEBUG", "null")
 
-    Column(modifier = modifier.padding(16.dp)) {
+    Column(
+        modifier = modifier.padding(16.dp)
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = { currentMonth = currentMonth.minusMonths(1) }) {
+            IconButton(
+                onClick = {
+                    currentMonth = currentMonth.minusMonths(1)
+                }
+            ) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Previous")
             }
             Text(
@@ -68,14 +80,21 @@ fun MultiDateSelector(
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold
             )
-            IconButton(onClick = { currentMonth = currentMonth.plusMonths(1) }) {
+            IconButton(
+                onClick = {
+                    currentMonth = currentMonth.plusMonths(1)
+                }
+            ) {
                 Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next")
             }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             DayOfWeek.entries.forEach {
                 Text(
                     text = it.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
@@ -114,7 +133,15 @@ fun MultiDateSelector(
                         color = if (isSelected) selectedColor else unselectedColor,
                         modifier = Modifier
                             .aspectRatio(1f)
-                            .clickable { if (editable) onDateToggle(date) }
+                            .clip(RoundedCornerShape(5.dp))
+                            .clickable { onDateToggle(date) }
+                            .let {
+                                if (date == highlightedDate) {
+                                    it.border(3.dp, Color.Black, RoundedCornerShape(5.dp))
+                                } else {
+                                    it
+                                }
+                            }
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Text(

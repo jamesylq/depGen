@@ -2,7 +2,9 @@ package com.example.depgen.view.fragments
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -10,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -33,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.example.depgen.Global
 import com.example.depgen.model.ComponentType
 import com.example.depgen.model.EventComponent
+import com.example.depgen.utils.copyToClipboard
 import com.example.depgen.utils.safeNavigate
 import com.example.depgen.view.components.ConfirmationScreen
 import com.example.depgen.view.components.DisplayEventComponent
@@ -82,13 +86,25 @@ fun EventPage(idx: Int) {
             }
         },
         floatingActionButton = {
-            if (Global.isAdmin()) {
-                if (editingComponent == null && addingComponent == null) {
-                    FloatingActionButton(onClick = {
-                        addingComponent = EventComponent(HashMap(), HashMap(), "", "")
-
-                    }) {
-                        Icon(Icons.Filled.Add, "")
+            Row (
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                FloatingActionButton(
+                    onClick = {
+                        copyToClipboard(event.toString())
+                    }
+                ) {
+                    Icon(Icons.Default.ContentCopy, "")
+                }
+                if (Global.isAdmin()) {
+                    if (editingComponent == null && addingComponent == null) {
+                        FloatingActionButton(
+                            onClick = {
+                                addingComponent = EventComponent(HashMap(), HashMap(), "", "")
+                            }
+                        ) {
+                            Icon(Icons.Filled.Add, "")
+                        }
                     }
                 }
             }
@@ -138,7 +154,9 @@ fun EventPage(idx: Int) {
                     .padding(16.dp)
             ) {
                 if (generatingOTD != null) {
-                    GeneratingDeploymentScreen(generatingOTD!!) { generatingOTD = null }
+                    GeneratingDeploymentScreen(generatingOTD!!) {
+                        generatingOTD = null
+                    }
                 }
 
                 if (deletingComponent != null) {
@@ -166,7 +184,9 @@ fun EventPage(idx: Int) {
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 15.dp)
                 )
-                LazyColumn {
+                LazyColumn (
+                    modifier = Modifier.weight(1f)
+                ) {
                     item {
                         var rem = event.getComponents().size
                         for (entry in event.getComponents()) {

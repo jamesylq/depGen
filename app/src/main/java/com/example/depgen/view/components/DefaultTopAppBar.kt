@@ -3,7 +3,6 @@ package com.example.depgen.view.components
 import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,11 +40,7 @@ fun DefaultTopAppBar(prev: String, curr: Int) {
             }
         },
         actions = {
-            IconButton(onClick = {
-                safeNavigate("Profile/${Global.idx}/$curr")
-            }) {
-                Icon(Icons.Default.AccountCircle, "")
-            }
+            TopBarProfileIcon("Profile/${Global.idx}/$curr")
         }
     )
 }

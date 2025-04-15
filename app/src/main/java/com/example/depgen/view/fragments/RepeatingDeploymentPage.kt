@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -37,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -148,6 +150,29 @@ fun RepeatingDeploymentPage() {
             )
         }
     ) { innerPadding ->
+        LaunchedEffect (screen) {
+            if (screen == "regenerate") {
+                generatedComponents.clear()
+                generatedComponents.addAll(
+                    RDCompleteSearchHelper(
+                        EventComponent(
+                            HashMap(),
+                            HashMap(rolesNeeded),
+                            NO_DATE,
+                            NO_DATE
+                        ),
+                        days
+                    ).generate()
+                )
+                expanded.apply {
+                    repeat(generatedComponents.size) {
+                        add(false)
+                    }
+                }
+                screen = "generated"
+            }
+        }
+
         Column (
             modifier = Modifier
                 .padding(innerPadding)
@@ -275,6 +300,31 @@ fun RepeatingDeploymentPage() {
                                     }
                                 }
                             }
+
+                            if (rolesNeeded.isEmpty()) {
+                                item {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Spacer(
+                                            modifier = Modifier.height(
+                                                maxOf(
+                                                    0,
+                                                    LocalConfiguration.current.screenHeightDp / 2 - 180
+                                                ).dp
+                                            )
+                                        )
+                                        Text(
+                                            "No Roles Yet!",
+                                            fontWeight = FontWeight.SemiBold,
+                                            fontSize = 18.sp,
+                                            modifier = Modifier.padding(bottom = 10.dp)
+                                        )
+                                        Text("Add the roles required using the button below!")
+                                    }
+                                }
+                            }
                         }
                     }
                     CardButton(
@@ -378,25 +428,7 @@ fun RepeatingDeploymentPage() {
                         text = "Generate!",
                         onClick = {
                             if (valid) {
-                                generatedComponents.clear()
-                                generatedComponents.addAll(
-                                    RDCompleteSearchHelper(
-                                        EventComponent(
-                                            HashMap(),
-                                            HashMap(rolesNeeded),
-                                            NO_DATE,
-                                            NO_DATE
-                                        ),
-                                        days
-                                    ).generate()
-                                )
-                                expanded.apply {
-                                    repeat(generatedComponents.size) {
-                                        add(false)
-                                    }
-                                }
-
-                                screen = "generated"
+                                screen = "regenerate"
 
                             } else {
                                 try {
@@ -428,16 +460,34 @@ fun RepeatingDeploymentPage() {
                 }
 
                 "generated" -> {
-                    LazyColumn {
-                        for (i in generatedComponents.indices) {
-                            item {
-                                DisplayEventComponent(
-                                    component = generatedComponents[i],
-                                    onToggleExpand = { expanded[i] = !expanded[i] },
-                                    expanded = expanded[i]
-                                )
+                    Column {
+                        LazyColumn (
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            for (i in generatedComponents.indices) {
+                                item {
+                                    DisplayEventComponent(
+                                        component = generatedComponents[i],
+                                        onToggleExpand = { expanded[i] = !expanded[i] },
+                                        expanded = expanded[i]
+                                    )
+                                }
                             }
                         }
+                        Spacer(modifier = Modifier.height(20.dp))
+                        CardButton(
+                            text = "Regenerate!",
+                            onClick = {
+                                screen = "regenerate"
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        CardButton(
+                            text = "Export as .xlsx",
+                            onClick = {
+
+                            }
+                        )
                     }
                 }
             }
