@@ -1,5 +1,6 @@
 package com.example.depgen.view.fragments
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -70,6 +71,14 @@ fun OneTimeDeploymentPage() {
 
     if (roleNums.isEmpty()) for (role in Global.rolesList) roleNums.add(role.minCount)
 
+    BackHandler {
+        when (screen) {
+            "customise", "generated" -> {
+                confirmationShowing = true
+            }
+        }
+    }
+
     Scaffold (
         topBar = {
             TopAppBar(
@@ -80,10 +89,7 @@ fun OneTimeDeploymentPage() {
                         IconButton(
                             onClick = {
                                 when (screen) {
-                                    "customise" -> {
-                                        confirmationShowing = true
-                                    }
-                                    "generated" -> {
+                                    "customise", "generated" -> {
                                         confirmationShowing = true
                                     }
                                     else -> {}
@@ -238,6 +244,7 @@ fun OneTimeDeploymentPage() {
                                                 rolesNeeded[entry.key] = it
                                                 if (rolesNeeded[entry.key] == 0) {
                                                     rolesNeeded.remove(entry.key)
+                                                    selectedRoles -= entry.key.eventRole
                                                     recompile++
                                                 }
                                             },

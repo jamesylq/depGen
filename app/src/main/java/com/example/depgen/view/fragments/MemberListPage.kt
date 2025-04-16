@@ -1,5 +1,6 @@
 package com.example.depgen.view.fragments
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +22,10 @@ import com.example.depgen.view.components.MemberSearchScreen
 
 @Composable
 fun MemberListPage() {
+    BackHandler {
+        safeNavigate("Master")
+    }
+
     Scaffold (
         topBar = {
             DefaultTopAppBar("Master", Navigation.MEMBERLIST)
@@ -38,7 +43,7 @@ fun MemberListPage() {
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 5.dp)
             )
-            Text("here, you can view the list of members in your database!")
+            Text("Here, you can view the list of members in your database!")
             Spacer(modifier = Modifier.height(15.dp))
             MemberSearchScreen(
                 onClickMember = {

@@ -1,5 +1,6 @@
 package com.example.depgen.view.fragments
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -48,6 +49,10 @@ fun RolesListPage() {
     val remRolesList = remember { mutableStateListOf<EventRole>() }
     var deleting by remember { mutableIntStateOf(-1) }
     if (remRolesList.isEmpty()) for (role in Global.rolesList) remRolesList.add(role)
+
+    BackHandler {
+        safeNavigate("Master")
+    }
 
     Scaffold(
         topBar = {

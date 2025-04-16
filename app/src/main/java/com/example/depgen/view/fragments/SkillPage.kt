@@ -1,5 +1,6 @@
 package com.example.depgen.view.fragments
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,6 +39,7 @@ import com.example.depgen.luxuryManager
 import com.example.depgen.model.Navigation
 import com.example.depgen.model.Skill
 import com.example.depgen.toast
+import com.example.depgen.utils.safeNavigate
 import com.example.depgen.utils.save
 import com.example.depgen.view.components.DefaultTopAppBar
 import com.example.depgen.view.components.QuantityPicker
@@ -64,6 +66,10 @@ fun SkillPage(idx: Int) {
 
     if (sortedMembers.isEmpty()) {
         refreshSkillsSorted(sortedMembers, skill)
+    }
+
+    BackHandler {
+        safeNavigate("SkillsTracker")
     }
 
     Scaffold(

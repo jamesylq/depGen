@@ -5,15 +5,26 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Construction
+import androidx.compose.material.icons.filled.Engineering
+import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.EventAvailable
+import androidx.compose.material.icons.filled.PeopleAlt
+import androidx.compose.material.icons.filled.Repeat
+import androidx.compose.material.icons.filled.RepeatOne
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -84,13 +95,23 @@ fun MasterPage() {
                     )
                 ) {
                     Column (
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(bottom = 8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Bottom
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("View Members")
+                        Spacer(modifier = Modifier.weight(0.7f))
+                        Icon(
+                            imageVector = Icons.Default.PeopleAlt,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth(0.5f)
+                                .aspectRatio(1f)
+                        )
+                        Spacer(modifier = Modifier.weight(0.3f))
+                        Text(
+                            text = "View Members",
+                            modifier = Modifier
+                                .padding(bottom = 8.dp)
+                        )
                     }
                 }
                 ElevatedCard (
@@ -106,13 +127,23 @@ fun MasterPage() {
                     )
                 ) {
                     Column (
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(bottom = 8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Bottom
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("View Events")
+                        Spacer(modifier = Modifier.weight(0.7f))
+                        Icon(
+                            imageVector = Icons.Default.Event,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth(0.5f)
+                                .aspectRatio(1f)
+                        )
+                        Spacer(modifier = Modifier.weight(0.3f))
+                        Text(
+                            text = "View Events",
+                            modifier = Modifier
+                                .padding(bottom = 8.dp)
+                        )
                     }
                 }
             }
@@ -134,16 +165,23 @@ fun MasterPage() {
                             contentColor = MaterialTheme.colorScheme.onSurface
                         )
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(bottom = 8.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Bottom
+                        Column (
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-
+                            Spacer(modifier = Modifier.weight(0.7f))
+                            Icon(
+                                imageVector = Icons.Default.RepeatOne,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.5f)
+                                    .aspectRatio(1f)
+                            )
+                            Spacer(modifier = Modifier.weight(0.3f))
                             Text(
-                                text = "Generate One-time Deployment",
+                                text = "Generate One-Time Deployment",
+                                modifier = Modifier
+                                    .padding(bottom = 8.dp),
                                 textAlign = TextAlign.Center
                             )
                         }
@@ -160,15 +198,23 @@ fun MasterPage() {
                             contentColor = MaterialTheme.colorScheme.onSurface
                         )
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(bottom = 8.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Bottom
+                        Column (
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            Spacer(modifier = Modifier.weight(0.7f))
+                            Icon(
+                                imageVector = Icons.Default.Repeat,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.5f)
+                                    .aspectRatio(1f)
+                            )
+                            Spacer(modifier = Modifier.weight(0.3f))
                             Text(
                                 text = "Generate Repeating Deployment",
+                                modifier = Modifier
+                                    .padding(bottom = 8.dp),
                                 textAlign = TextAlign.Center
                             )
                         }
@@ -193,15 +239,22 @@ fun MasterPage() {
                     )
                 ) {
                     Column (
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(bottom = 8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Bottom
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-
+                        Spacer(modifier = Modifier.weight(0.7f))
+                        Icon(
+                            imageVector = Icons.Default.Construction,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth(0.5f)
+                                .aspectRatio(1f)
+                        )
+                        Spacer(modifier = Modifier.weight(0.3f))
                         Text(
                             text = "View Skills Tracker",
+                            modifier = Modifier
+                                .padding(bottom = 8.dp),
                             textAlign = TextAlign.Center
                         )
                     }
@@ -219,14 +272,22 @@ fun MasterPage() {
                     )
                 ) {
                     Column (
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(bottom = 8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Bottom
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        Spacer(modifier = Modifier.weight(0.7f))
+                        Icon(
+                            imageVector = Icons.Default.Engineering,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth(0.5f)
+                                .aspectRatio(1f)
+                        )
+                        Spacer(modifier = Modifier.weight(0.3f))
                         Text(
                             text = "View Roles",
+                            modifier = Modifier
+                                .padding(bottom = 8.dp),
                             textAlign = TextAlign.Center
                         )
                     }
@@ -251,16 +312,23 @@ fun MasterPage() {
                             contentColor = MaterialTheme.colorScheme.onSurface
                         )
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(bottom = 8.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Bottom
+                        Column (
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-
+                            Spacer(modifier = Modifier.weight(0.7f))
+                            Icon(
+                                imageVector = Icons.Default.EventAvailable,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.5f)
+                                    .aspectRatio(1f)
+                            )
+                            Spacer(modifier = Modifier.weight(0.3f))
                             Text(
                                 text = "Declare Availabilities",
+                                modifier = Modifier
+                                    .padding(bottom = 8.dp),
                                 textAlign = TextAlign.Center
                             )
                         }
@@ -277,16 +345,23 @@ fun MasterPage() {
                             contentColor = MaterialTheme.colorScheme.onSurface
                         )
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(bottom = 8.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Bottom
+                        Column (
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-
+                            Spacer(modifier = Modifier.weight(0.7f))
+                            Icon(
+                                imageVector = Icons.Default.CalendarMonth,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.5f)
+                                    .aspectRatio(1f)
+                            )
+                            Spacer(modifier = Modifier.weight(0.3f))
                             Text(
                                 text = "View Schedule",
+                                modifier = Modifier
+                                    .padding(bottom = 8.dp),
                                 textAlign = TextAlign.Center
                             )
                         }

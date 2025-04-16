@@ -14,7 +14,9 @@ import com.example.depgen.luxuryManager
 import com.example.depgen.luxuryProfiles
 import com.example.depgen.model.LuxuryManager
 import com.example.depgen.model.Profile
+import com.example.depgen.model.ProfilePreferences
 import com.example.depgen.model.Wrapper
+import com.example.depgen.profilePreferenceManager
 import com.google.firebase.database.FirebaseDatabase
 import java.io.File
 import java.time.LocalDateTime
@@ -36,6 +38,26 @@ fun save() {
         }
 
     saveLocally()
+}
+
+fun savePreferences() {
+    val dbRef = FirebaseDatabase.getInstance(FIREBASE_URL).reference
+    dbRef.child("preferences").setValue(json.encodeToString(profilePreferenceManager))
+}
+
+fun loadPreferences() {
+    val dbRef = FirebaseDatabase.getInstance(FIREBASE_URL).reference
+    dbRef.child("preferences").get()
+        .addOnSuccessListener {
+            profilePreferenceManager = try {
+                ProfilePreferences(json.decodeFromString<ProfilePreferences>(it.getValue(String::class.java)!!))
+            } catch (e: NullPointerException) {
+                ProfilePreferences(HashMap())
+            }
+        }
+        .addOnFailureListener {
+            profilePreferenceManager = ProfilePreferences(HashMap())
+        }
 }
 
 fun clear() {
@@ -150,6 +172,7 @@ fun loadLuxuries() {
 
 
 fun load() {
+    Log.d("LOADED", "loaded")
     val dbRef = FirebaseDatabase.getInstance(FIREBASE_URL).reference
 
     var lastLocalUpdate = NO_DATE_OBJ

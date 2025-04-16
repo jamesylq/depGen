@@ -526,6 +526,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                             rolesNeeded[entry.key] = it
                                             if (rolesNeeded[entry.key] == 0) {
                                                 rolesNeeded.remove(entry.key)
+                                                selectedRoles -= entry.key.eventRole
                                                 recompile++
                                             }
                                         },

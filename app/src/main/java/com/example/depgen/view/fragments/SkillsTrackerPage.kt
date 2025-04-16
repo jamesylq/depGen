@@ -1,5 +1,6 @@
 package com.example.depgen.view.fragments
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -47,6 +48,10 @@ fun SkillsTrackerPage() {
     val remSkills = remember { mutableStateListOf<Skill>() }
     var deleting by remember { mutableIntStateOf(-1) }
     if (remSkills.isEmpty()) for (skill in Global.skillsList) remSkills.add(skill)
+
+    BackHandler {
+        safeNavigate("Master")
+    }
 
     Scaffold (
         topBar = {

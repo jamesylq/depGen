@@ -1,5 +1,6 @@
 package com.example.depgen.view.fragments
 
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -60,6 +61,7 @@ import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.ConfirmationScreen
 import com.example.depgen.view.components.DateInputRow
 import com.example.depgen.view.components.DisplayEventComponent
+import com.example.depgen.view.components.FadedLazyColumn
 import com.example.depgen.view.components.MultiSelectComboBox
 import com.example.depgen.view.components.QuantityPicker
 import com.example.depgen.view.components.RepeatDaySelector
@@ -109,6 +111,17 @@ fun RepeatingDeploymentPage() {
         onResult = { if (it != null) { saveExcelFile(it, workbook!!) } }
     )
 
+    BackHandler {
+        when (screen) {
+            "customisation-1", "generated" -> {
+                confirmationShowing = true
+            }
+            "customisation-2" -> {
+                screen = "customisation-1"
+            }
+        }
+    }
+
     Scaffold (
         topBar = {
             TopAppBar(
@@ -126,7 +139,7 @@ fun RepeatingDeploymentPage() {
                                         screen = "customisation-1"
                                     }
                                     "generated" -> {
-                                        safeNavigate("Master")
+                                        confirmationShowing = true
                                     }
                                     else -> {}
                                 }
@@ -288,6 +301,7 @@ fun RepeatingDeploymentPage() {
                                                 rolesNeeded[entry.key] = it
                                                 if (rolesNeeded[entry.key] == 0) {
                                                     rolesNeeded.remove(entry.key)
+                                                    selectedRoles -= entry.key.eventRole
                                                     recompile++
                                                 }
                                             },
@@ -465,9 +479,12 @@ fun RepeatingDeploymentPage() {
 
                 "generated" -> {
                     Column {
-                        LazyColumn (
+                        FadedLazyColumn (
                             modifier = Modifier.weight(1f)
                         ) {
+                            item {
+                                Spacer(modifier = Modifier.height(20.dp))
+                            }
                             for (i in generatedComponents.indices) {
                                 item {
                                     DisplayEventComponent(

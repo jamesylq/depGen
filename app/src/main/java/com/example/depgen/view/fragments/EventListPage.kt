@@ -1,5 +1,6 @@
 package com.example.depgen.view.fragments
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -49,8 +51,14 @@ fun EventListPage() {
     var showingPast by remember { mutableStateOf(false) }
     var confirmationShowing by remember { mutableIntStateOf(-1) }
 
-    eventRem.clear()
-    for (event in Global.eventList) eventRem.add(event)
+    LaunchedEffect (Unit) {
+        eventRem.clear()
+        for (event in Global.eventList) eventRem.add(event)
+    }
+
+    BackHandler {
+        safeNavigate("Master")
+    }
 
     Scaffold(
         topBar = {

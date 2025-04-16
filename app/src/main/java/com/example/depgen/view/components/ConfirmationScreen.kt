@@ -99,9 +99,9 @@ fun ConfirmationScreen(
                             onConfirm()
                         },
                         colors = ButtonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            containerColor = MaterialTheme.colorScheme.secondary,
                             contentColor = Color.Black,
-                            disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                            disabledContainerColor = MaterialTheme.colorScheme.secondary,
                             disabledContentColor = Color.Black
                         )
                     ) {

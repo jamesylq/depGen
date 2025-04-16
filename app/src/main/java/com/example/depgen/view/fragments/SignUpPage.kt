@@ -1,5 +1,6 @@
 package com.example.depgen.view.fragments
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import com.example.depgen.EMAIL_REGEX
 import com.example.depgen.Global
 import com.example.depgen.LOGGED_OUT
+import com.example.depgen.PASSWORD_REGEX
 import com.example.depgen.R
 import com.example.depgen.model.Profile
 import com.example.depgen.toast
@@ -56,6 +58,10 @@ fun SignUpPage() {
     var passwordError by remember { mutableStateOf("") }
     var emailError by remember { mutableStateOf("") }
     val password = remember { TextFieldState() }
+
+    BackHandler {
+        safeNavigate("Login")
+    }
 
     Scaffold { innerPadding ->
         Column(
@@ -84,7 +90,7 @@ fun SignUpPage() {
             OutlinedTextField(
                 value = username,
                 onValueChange = {
-                    username = it
+                    username = it.trim()
                     usernameError = ""
                     passwordError = ""
                 },
@@ -184,13 +190,9 @@ fun SignUpPage() {
                                     else if (profile != LOGGED_OUT) { "Username Already In Use!" }
                                     else { "" }
 
-                    //TODO: Password Safety Requirements
                     passwordError = if (password.text.isEmpty()) { "Password Cannot be Blank!" }
+                                    else if (!password.text.matches(PASSWORD_REGEX)) { "Password must have at least 8 characters, with 1 uppercase letter, 1 lowercase letter, and 1 symbol." }
                                     else { "" }
-
-//                    if (emailError.isEmpty() && passwordError.isEmpty() && emailError.isEmpty()) {
-//                        addUser(Profile(username, email), password.text.toString())
-//                    }
 
                     if (emailError.isEmpty() && passwordError.isEmpty() && emailError.isEmpty()) {
                         Global.profileList.add(

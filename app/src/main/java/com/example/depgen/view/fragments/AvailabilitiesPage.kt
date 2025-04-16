@@ -1,5 +1,6 @@
 package com.example.depgen.view.fragments
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -53,6 +54,10 @@ fun AvailabilitiesPage(idx: Int) {
         )
     }
     var confirmation by remember { mutableStateOf(false) }
+
+    BackHandler {
+        confirmation = true
+    }
 
     Scaffold (
         topBar = {

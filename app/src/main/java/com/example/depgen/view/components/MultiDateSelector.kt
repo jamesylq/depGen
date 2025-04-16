@@ -133,8 +133,8 @@ fun MultiDateSelector(
                             .let {
                                 if (date == highlightedDate) {
                                     it.border(
-                                        width = (4.5).dp,
-                                        color = MaterialTheme.colorScheme.tertiary,
+                                        width = 2.dp,
+                                        color = MaterialTheme.colorScheme.onBackground,
                                         shape = RoundedCornerShape(5.dp)
                                     )
                                 } else {

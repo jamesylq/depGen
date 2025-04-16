@@ -2,6 +2,7 @@ package com.example.depgen.view.fragments
 
 import UriFromCamera
 import UriFromGallery
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,7 +18,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -57,7 +60,8 @@ import com.example.depgen.view.components.CardButton
 
 @Composable
 fun ProfilePage(idx: Int, prev: Int) {
-    ProfilePage(idx,
+    ProfilePage(
+        idx,
         when (prev % Navigation.M) {
             Navigation.MASTER -> "Master"
             Navigation.EVENTLIST -> "EventList"
@@ -84,6 +88,10 @@ fun ProfilePage(idx: Int, prev: String) {
     var cameraActive by remember { mutableStateOf(false) }
     var galleryActive by remember { mutableStateOf(false) }
     var profileLuxury by remember { mutableStateOf<ProfileLuxury?>(luxuryManager.getLuxury(profile)) }
+
+    BackHandler {
+        safeNavigate(prev)
+    }
 
     Scaffold (
         topBar = {
@@ -200,6 +208,13 @@ fun ProfilePage(idx: Int, prev: String) {
             if (Global.idx == idx) {
                 CardButton(
                     text = "Sign Out",
+                    icon = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.Logout,
+                            contentDescription = "",
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    },
                     onClick = {
                         switchProfile(LOGGED_OUT)
                         safeNavigate("Login")
@@ -209,6 +224,13 @@ fun ProfilePage(idx: Int, prev: String) {
             }
             CardButton(
                 text = "Settings",
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                },
                 onClick = {
                     safeNavigate("Settings")
                 }

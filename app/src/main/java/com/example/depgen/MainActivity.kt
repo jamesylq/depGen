@@ -5,9 +5,9 @@ package com.example.depgen
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager.getDefaultSharedPreferences
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -16,8 +16,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -36,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,13 +55,16 @@ import com.example.depgen.model.Event
 import com.example.depgen.model.EventRole
 import com.example.depgen.model.LuxuryManager
 import com.example.depgen.model.Profile
+import com.example.depgen.model.ProfilePreferences
 import com.example.depgen.model.Skill
 import com.example.depgen.utils.isConnected
 import com.example.depgen.utils.load
 import com.example.depgen.utils.loadLuxuries
+import com.example.depgen.utils.loadPreferences
 import com.example.depgen.utils.safeNavigate
 import com.example.depgen.utils.switchProfile
 import com.example.depgen.view.components.ConfirmationScreen
+import com.example.depgen.view.components.OnboardingScreen
 import com.example.depgen.view.fragments.AvailabilitiesPage
 import com.example.depgen.view.fragments.EventListPage
 import com.example.depgen.view.fragments.EventPage
@@ -76,6 +84,7 @@ import com.example.depgen.view.fragments.SignUpPage
 import com.example.depgen.view.fragments.SkillPage
 import com.example.depgen.view.fragments.SkillsTrackerPage
 import com.example.depgen.view.theme.DepGenTheme
+import com.example.depgen.view.theme.THEMES
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -96,6 +105,7 @@ lateinit var ctxt : Context
 lateinit var auth: FirebaseAuth
 lateinit var luxuryManager: LuxuryManager
 lateinit var navController : NavHostController
+lateinit var profilePreferenceManager: ProfilePreferences
 
 @Serializable
 object Global {
@@ -135,7 +145,6 @@ object Global {
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
@@ -157,13 +166,22 @@ class MainActivity : ComponentActivity() {
 
             var permissionsRequested by remember { mutableStateOf(false) }
             var connected by remember { mutableStateOf(true) }
+            var displayTheme by remember { mutableStateOf(THEMES[0]) }
 
             val permissionLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.RequestMultiplePermissions(),
                 onResult = {}
             )
 
+            var startDestination by remember { mutableStateOf("") }
             LaunchedEffect(Unit) {
+                startDestination = "Onboarding"
+                getDefaultSharedPreferences(ctxt).apply {
+                    if (getBoolean("COMPLETED_ONBOARDING", false)) {
+                        startDestination = "Login"
+                    }
+                }
+
                 if (!permissionsRequested) {
                     permissionLauncher.launch(permissions)
                     permissionsRequested = true
@@ -191,6 +209,16 @@ class MainActivity : ComponentActivity() {
                         override fun onCancelled(error: DatabaseError) {}
                     }
                 )
+
+                dbRef.child("preferences").addValueEventListener(
+                    object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            loadPreferences()
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {}
+                    }
+                )
             }
 
             LaunchedEffect (Unit) {
@@ -200,7 +228,9 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            DepGenTheme {
+            DepGenTheme (
+                theme = displayTheme.scheme
+            ) {
                 navController = rememberNavController()
 
                 if (!connected) {
@@ -247,97 +277,103 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                NavHost(navController = navController, startDestination = "Login") {
-                    composable("Login") {
-                        LoginPage()
-                        BackHandler(enabled = true) {
-                            if (System.currentTimeMillis() - lastBack < DELTA) {
-                                val intent = Intent(Intent.ACTION_MAIN)
-                                intent.addCategory(Intent.CATEGORY_HOME)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                                ctxt.startActivity(intent)
+                if (startDestination == "") {
+                    Column (
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                if (isSystemInDarkTheme()) Color(0xff292b2c)
+                                else Color.White
+                            ),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Image(painterResource(R.drawable.icon_512), "")
+                    }
 
-                                if (active != null) {
-                                    active!!.cancel()
-                                    active = null
-                                }
-
-                            } else {
-                                lastBack = System.currentTimeMillis()
-                                toast("Press back again to exit!")
+                } else {
+                    NavHost(navController = navController, startDestination = startDestination) {
+                        composable("Login") {
+                            displayTheme = THEMES[0]
+                            LoginPage()
+                        }
+                        composable("Master") {
+                            var confirming by remember { mutableStateOf(false) }
+                            displayTheme = THEMES[
+                                profilePreferenceManager.getPreference("theme").toInt()
+                            ]
+                            MasterPage()
+                            if (confirming) {
+                                ConfirmationScreen(
+                                    onConfirm = {
+                                        switchProfile(LOGGED_OUT)
+                                        safeNavigate("Login")
+                                        confirming = false
+                                    },
+                                    onDecline = {
+                                        confirming = false
+                                    },
+                                    body = "You will be logged out of\nyour account!"
+                                )
+                            }
+                            BackHandler(enabled = true) {
+                                confirming = true
                             }
                         }
-                    }
-                    composable("Master") {
-                        var confirming by remember { mutableStateOf(false) }
-                        MasterPage()
-                        if (confirming) {
-                            ConfirmationScreen(
-                                onConfirm = {
-                                    switchProfile(LOGGED_OUT)
-                                    safeNavigate("Login")
-                                    confirming = false
-                                },
-                                onDecline = {
-                                    confirming = false
-                                },
-                                body = "You will be logged out of\nyour account!"
+                        composable("Profile/{idx}/{nxt}") {
+                            ProfilePage(
+                                it.arguments!!.getString("idx")!!.toInt(),
+                                it.arguments!!.getString("nxt")!!.toInt()
                             )
                         }
-                        BackHandler(enabled = true) {
-                            confirming = true
+                        composable("Event/{idx}") {
+                            EventPage(it.arguments!!.getString("idx")!!.toInt())
                         }
-                    }
-                    composable("Profile/{idx}/{nxt}") {
-                        ProfilePage(
-                            it.arguments!!.getString("idx")!!.toInt(),
-                            it.arguments!!.getString("nxt")!!.toInt()
-                        )
-                    }
-                    composable("Event/{idx}") {
-                        EventPage(it.arguments!!.getString("idx")!!.toInt())
-                    }
-                    composable("Availabilities/{idx}") {
-                        AvailabilitiesPage(it.arguments!!.getString("idx")!!.toInt())
-                    }
-                    composable("Schedule/{idx}") {
-                        SchedulePage(it.arguments!!.getString("idx")!!.toInt())
-                    }
-                    composable("MemberList") {
-                        MemberListPage()
-                    }
-                    composable("EventList") {
-                        EventListPage()
-                    }
-                    composable("SignUp") {
-                        SignUpPage()
-                    }
-                    composable("NewEvent") {
-                        NewEventPage()
-                    }
-                    composable("Settings") {
-                        SettingsPage()
-                    }
-                    composable("OneTimeDeployment") {
-                        OneTimeDeploymentPage()
-                    }
-                    composable("RepeatingDeployment") {
-                        RepeatingDeploymentPage()
-                    }
-                    composable("SkillsTracker") {
-                        SkillsTrackerPage()
-                    }
-                    composable("NewSkill") {
-                        NewSkillPage()
-                    }
-                    composable("Skill/{idx}") {
-                        SkillPage(it.arguments!!.getString("idx")!!.toInt())
-                    }
-                    composable("RolesList") {
-                        RolesListPage()
-                    }
-                    composable("NewRole/{idx}") {
-                        NewRolePage(it.arguments!!.getString("idx")!!.toInt())
+                        composable("Availabilities/{idx}") {
+                            AvailabilitiesPage(it.arguments!!.getString("idx")!!.toInt())
+                        }
+                        composable("Schedule/{idx}") {
+                            SchedulePage(it.arguments!!.getString("idx")!!.toInt())
+                        }
+                        composable("MemberList") {
+                            MemberListPage()
+                        }
+                        composable("EventList") {
+                            EventListPage()
+                        }
+                        composable("SignUp") {
+                            SignUpPage()
+                        }
+                        composable("NewEvent") {
+                            NewEventPage()
+                        }
+                        composable("Settings") {
+                            SettingsPage(onSelectTheme = { displayTheme = THEMES[it] })
+                        }
+                        composable("OneTimeDeployment") {
+                            OneTimeDeploymentPage()
+                        }
+                        composable("RepeatingDeployment") {
+                            RepeatingDeploymentPage()
+                        }
+                        composable("SkillsTracker") {
+                            SkillsTrackerPage()
+                        }
+                        composable("NewSkill") {
+                            NewSkillPage()
+                        }
+                        composable("Skill/{idx}") {
+                            SkillPage(it.arguments!!.getString("idx")!!.toInt())
+                        }
+                        composable("RolesList") {
+                            RolesListPage()
+                        }
+                        composable("NewRole/{idx}") {
+                            NewRolePage(it.arguments!!.getString("idx")!!.toInt())
+                        }
+                        composable("Onboarding") {
+                            OnboardingScreen()
+                        }
                     }
                 }
             }

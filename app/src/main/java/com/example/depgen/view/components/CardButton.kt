@@ -2,9 +2,11 @@ package com.example.depgen.view.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -24,6 +26,7 @@ fun CardButton(
         containerColor = MaterialTheme.colorScheme.secondary,
         disabledContainerColor = MaterialTheme.colorScheme.onTertiary
     ),
+    icon: @Composable (() -> Unit)? = null,
     enabled: Boolean = true
 ) {
     ElevatedCard(
@@ -39,6 +42,10 @@ fun CardButton(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxSize()
         ) {
+            if (icon != null) {
+                icon()
+                Spacer(modifier = Modifier.width(7.dp))
+            }
             Text(
                 text = text,
                 color = Color.Black

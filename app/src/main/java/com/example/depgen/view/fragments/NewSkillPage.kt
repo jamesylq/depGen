@@ -1,5 +1,6 @@
 package com.example.depgen.view.fragments
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -53,6 +54,10 @@ fun NewSkillPage() {
     var maxLvlEmpty by remember { mutableStateOf(false) }
     var defLvlEmpty by remember { mutableStateOf(false) }
     var nameError by remember { mutableStateOf(false) }
+
+    BackHandler {
+        confirmationShowing = true
+    }
 
     Scaffold(
         topBar = {

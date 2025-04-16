@@ -1,5 +1,6 @@
 package com.example.depgen.view.fragments
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -60,6 +61,10 @@ fun EventPage(idx: Int) {
                 expanded[component] = false
             }
         }
+    }
+
+    BackHandler {
+        safeNavigate("EventList")
     }
 
     Scaffold(

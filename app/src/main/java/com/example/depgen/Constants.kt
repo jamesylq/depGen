@@ -24,6 +24,7 @@ const val MAX_COMPLETE_SEARCH_DURATION = 60000L
 const val MAX_COMPLETE_CHECK_TIME_STATE_COUNT = 1000L
 
 val EMAIL_REGEX: Regex = Regex("^(?!.*\\.\\.)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$")
+val PASSWORD_REGEX: Regex = Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}$")
 
 var ADMIN = Profile(
     "admin",
@@ -35,6 +36,11 @@ var LOGGED_OUT = Profile(
     "Guest",
     "",
     ""
+)
+
+var PREFERENCES: Map<String, String> = mapOf(
+    "theme" to "0",
+//    "luxury" to "true"
 )
 
 val json = Json {

@@ -1,5 +1,7 @@
 package com.example.depgen.view.fragments
 
+import android.content.Intent
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,9 +36,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.depgen.DELTA
 import com.example.depgen.LOGGED_OUT
 import com.example.depgen.R
+import com.example.depgen.active
+import com.example.depgen.ctxt
 import com.example.depgen.exceptions.PasswordValidationException
+import com.example.depgen.lastBack
+import com.example.depgen.toast
 import com.example.depgen.utils.clearFocusOnKeyboardDismiss
 import com.example.depgen.utils.findProfile
 import com.example.depgen.utils.safeNavigate
@@ -49,6 +56,24 @@ fun LoginPage() {
     var usernameError by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
     val password = remember { TextFieldState() }
+
+    BackHandler(enabled = true) {
+        if (System.currentTimeMillis() - lastBack < DELTA) {
+            val intent = Intent(Intent.ACTION_MAIN)
+            intent.addCategory(Intent.CATEGORY_HOME)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            ctxt.startActivity(intent)
+
+            if (active != null) {
+                active!!.cancel()
+                active = null
+            }
+
+        } else {
+            lastBack = System.currentTimeMillis()
+            toast("Press back again to exit!")
+        }
+    }
 
     Scaffold { innerPadding ->
         Column(
@@ -77,7 +102,7 @@ fun LoginPage() {
             OutlinedTextField(
                 value = username,
                 onValueChange = {
-                    username = it
+                    username = it.trim()
                     usernameError = ""
                     passwordError = ""
                 },

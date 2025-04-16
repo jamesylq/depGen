@@ -1,6 +1,6 @@
 package com.example.depgen.view.fragments
 
-import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -67,6 +67,10 @@ fun SchedulePage(idx: Int) {
     var viewing by remember { mutableStateOf<LocalDate?>(null) }
     val deployments = remember { mutableStateListOf<DeploymentRecord>() }
 
+    BackHandler {
+        safeNavigate("Master")
+    }
+
     Scaffold (
         topBar = {
             TopAppBar(
@@ -114,7 +118,6 @@ fun SchedulePage(idx: Int) {
             MultiDateSelector(
                 selectedDates = selectedDates,
                 onDateToggle = {
-                    Log.d("DEPGENDEBUG", "WAHOO")
                     viewing = if (viewing == it) null else it
                 },
                 highlightedDate = viewing,
@@ -148,7 +151,7 @@ fun SchedulePage(idx: Int) {
                                         .clip(CircleShape)
                                         .background(MaterialTheme.colorScheme.tertiary)
                                 )
-                                Text("Available", modifier = Modifier.padding(start = 5.dp))
+                                Text("Deployed", modifier = Modifier.padding(start = 5.dp))
                             }
                             Row(
                                 verticalAlignment = Alignment.CenterVertically
@@ -159,7 +162,7 @@ fun SchedulePage(idx: Int) {
                                         .clip(CircleShape)
                                         .background(Color.LightGray)
                                 )
-                                Text("Unavailable", modifier = Modifier.padding(start = 5.dp))
+                                Text("No Deployments", modifier = Modifier.padding(start = 5.dp))
                             }
 
                         } else {
@@ -176,7 +179,7 @@ fun SchedulePage(idx: Int) {
                                     Column (
                                         modifier = Modifier.padding(8.dp)
                                     ) {
-                                        Text("${deployment.event.name} ${deployment.event.getComponentType(deployment.component)!!.componentType}", fontWeight = FontWeight.Bold)
+                                        Text("${deployment.event.name} (${deployment.event.getComponentType(deployment.component)!!.componentType})", fontWeight = FontWeight.Bold)
                                         Row {
                                             Text("Time: ", fontWeight = FontWeight.SemiBold)
                                             Text("${deployment.component.getStart().toHHMMTime()} to ${deployment.component.getEnd().toHHMMTime()}")

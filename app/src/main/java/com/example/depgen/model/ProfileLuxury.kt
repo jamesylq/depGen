@@ -21,7 +21,6 @@ import java.time.LocalDateTime
 @Serializable
 data class ProfileLuxury(
     var profilePicture: String? = null,
-    var preferences: HashMap<String, Int> = HashMap(),
     private var lastUpdate: String? = NO_DATE
 ) {
     @Composable

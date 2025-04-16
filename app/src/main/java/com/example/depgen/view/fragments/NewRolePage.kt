@@ -1,6 +1,7 @@
 package com.example.depgen.view.fragments
 
 import BrightnessSelector
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -91,6 +92,10 @@ fun NewRolePage(roleEditing: Int = -1) {
     var brightness by remember { mutableFloatStateOf(0f) }
     var selectedColor by remember { mutableStateOf(Color.Black) }
     var selectingColor by remember { mutableStateOf(false) }
+
+    BackHandler {
+        exitConfirmationShowing = true
+    }
 
     LaunchedEffect(Unit) {
         if (roleEditing != -1 && name != Global.rolesList[roleEditing].eventRole) {
@@ -343,7 +348,10 @@ fun NewRolePage(roleEditing: Int = -1) {
                             HsvColorPicker(
                                 modifier = Modifier,
                                 controller = controller,
-                                onColorChanged = { selectedHue = it.color },
+                                onColorChanged = {
+                                    selectedHue = it.color
+                                    selectedColor = selectedHue.applyBrightness(1 - brightness)
+                                },
                                 initialColor = selectedHue,
                                 drawOnPosSelected = {
                                     drawCircle(

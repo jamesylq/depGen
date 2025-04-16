@@ -1,5 +1,6 @@
 package com.example.depgen.view.fragments
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -78,7 +79,11 @@ fun NewEventPage() {
     var startTime by remember { mutableStateOf("") }
     var endTime by remember { mutableStateOf("") }
 
-     if (addingEventComponent) {
+    BackHandler {
+        confirmationShowing = true
+    }
+
+    if (addingEventComponent) {
         EditEventComponent(
             eventComponent = eventComponent!!,
             onExit = {
