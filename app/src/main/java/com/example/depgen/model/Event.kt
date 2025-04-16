@@ -1,6 +1,8 @@
 package com.example.depgen.model
 
+import com.example.depgen.utils.NO_DATE_OBJ
 import kotlinx.serialization.Serializable
+import java.time.LocalDateTime
 import java.util.TreeMap
 
 
@@ -22,6 +24,20 @@ data class Event (
             }
         }
         return null
+    }
+
+    fun hasCompleted(time: LocalDateTime? = null) : Boolean {
+        return !getLatest().isAfter(time?: LocalDateTime.now())
+    }
+
+    fun getLatest() : LocalDateTime {
+        var latest = NO_DATE_OBJ
+        for (entry in components) {
+            for (component in entry.value) {
+                latest = maxOf(latest, component.getEnd())
+            }
+        }
+        return latest
     }
 
     override fun toString(): String {

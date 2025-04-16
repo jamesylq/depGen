@@ -1,5 +1,6 @@
 package com.example.depgen.view.fragments
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CardDefaults
@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -39,11 +40,13 @@ import com.example.depgen.utils.save
 import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.ConfirmationScreen
 import com.example.depgen.view.components.DefaultTopAppBar
+import com.example.depgen.view.components.FadedLazyColumn
 
 
 @Composable
 fun EventListPage() {
     val eventRem = remember { mutableStateListOf<Event>() }
+    var showingPast by remember { mutableStateOf(false) }
     var confirmationShowing by remember { mutableIntStateOf(-1) }
 
     eventRem.clear()
@@ -55,10 +58,17 @@ fun EventListPage() {
         },
         floatingActionButton = {
             if (Global.isAdmin()) {
-                FloatingActionButton(onClick = {
-                    safeNavigate("NewEvent")
-                }) {
-                    Icon(Icons.Filled.Add, "")
+                FloatingActionButton(
+                    onClick = {
+                        safeNavigate("NewEvent")
+                    },
+                    containerColor = MaterialTheme.colorScheme.inversePrimary
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
                 }
             }
         }
@@ -84,125 +94,144 @@ fun EventListPage() {
                 .padding(innerPadding)
                 .padding(8.dp)
         ) {
-            Text(
-                text = "Event List",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 8.dp)
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth()
+            Column (
+                modifier = Modifier.padding(start = 8.dp, top = 3.dp)
             ) {
-                for (i in 0..< eventRem.size) {
-                    item {
-                        ElevatedCard(
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.tertiary,
-                                contentColor = Color.Black
-                            ),
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .fillMaxWidth()
-                                .heightIn(50.dp),
-                            onClick = {
-                                safeNavigate("Event/$i")
-                            }
-                        ) {
-                            Column(
-                                modifier = Modifier.padding(8.dp)
-                            ) {
-                                var rem = eventRem[i].getComponents().size
-                                Text(
-                                    eventRem[i].name,
-                                    fontWeight = FontWeight.SemiBold,
-                                    fontSize = 19.sp,
-                                    modifier = Modifier
-                                        .padding(bottom = 20.dp)
-                                        .padding(start = 4.dp)
-                                )
-                                for (entry in eventRem[i].getComponents()) {
-                                    Text(
-                                        text = entry.key.componentType,
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.SemiBold,
-                                        modifier = Modifier.padding(
-                                            bottom = 10.dp,
-                                            start = 4.dp
-                                        )
-                                    )
+                Text(
+                    text = "Event List",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 5.dp)
+                )
+                Text("Here, you can view a list of Upcoming Events!")
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            FadedLazyColumn (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                item {
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
 
-                                    entry.value.sortBy { it.getStart() }
-                                    for (component in entry.value) {
-                                        ElevatedCard(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(bottom = 12.dp),
-                                            colors = CardDefaults.cardColors(
-                                                containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                var displayed = 0
+                for (i in 0..< eventRem.size) {
+                    if (showingPast || !eventRem[i].hasCompleted()) {
+                        displayed++
+                        item {
+                            ElevatedCard(
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.tertiary,
+                                    contentColor = MaterialTheme.colorScheme.onSurface
+                                ),
+                                modifier = Modifier
+                                    .padding(8.dp)
+                                    .fillMaxWidth()
+                                    .heightIn(50.dp),
+                                onClick = {
+                                    safeNavigate("Event/$i")
+                                }
+                            ) {
+                                Column(
+                                    modifier = Modifier.padding(8.dp)
+                                ) {
+                                    var rem = eventRem[i].getComponents().size
+                                    Text(
+                                        eventRem[i].name,
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 19.sp,
+                                        modifier = Modifier
+                                            .padding(bottom = 20.dp)
+                                            .padding(start = 4.dp)
+                                    )
+                                    for (entry in eventRem[i].getComponents()) {
+                                        Text(
+                                            text = entry.key.componentType,
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            modifier = Modifier.padding(
+                                                bottom = 10.dp,
+                                                start = 4.dp
                                             )
-                                        ) {
-                                            Column(
-                                                modifier = Modifier.fillMaxSize()
+                                        )
+
+                                        entry.value.sortBy { it.getStart() }
+                                        for (component in entry.value) {
+                                            ElevatedCard(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(bottom = 12.dp),
+                                                colors = CardDefaults.cardColors(
+                                                    containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                                                )
                                             ) {
-                                                Row {
-                                                    Column(
-                                                        modifier = Modifier
-                                                            .padding(vertical = 3.dp)
-                                                            .padding(start = 8.dp)
-                                                    ) {
-                                                        Text(
-                                                            text = "Start:",
-                                                            modifier = Modifier.padding(bottom = 5.dp),
-                                                            fontWeight = FontWeight.SemiBold
-                                                        )
-                                                        Text(
-                                                            text = "  End:",
-                                                            modifier = Modifier.padding(bottom = 5.dp),
-                                                            fontWeight = FontWeight.SemiBold
-                                                        )
-                                                    }
-                                                    Column(
-                                                        modifier = Modifier
-                                                            .padding(vertical = 3.dp)
-                                                            .padding(start = 5.dp)
-                                                    ) {
-                                                        Text(
-                                                            text = component.getNaturalStart(),
-                                                            modifier = Modifier.padding(
-                                                                bottom = 5.dp
+                                                Column(
+                                                    modifier = Modifier.fillMaxSize()
+                                                ) {
+                                                    Row {
+                                                        Column(
+                                                            modifier = Modifier
+                                                                .padding(vertical = 3.dp)
+                                                                .padding(start = 8.dp)
+                                                        ) {
+                                                            Text(
+                                                                text = "Start:",
+                                                                modifier = Modifier.padding(bottom = 5.dp),
+                                                                fontWeight = FontWeight.SemiBold,
+                                                                color = Color.Black
                                                             )
-                                                        )
-                                                        Text(
-                                                            text = component.getNaturalEnd(),
-                                                            modifier = Modifier.padding(
-                                                                bottom = 5.dp
+                                                            Text(
+                                                                text = "  End:",
+                                                                modifier = Modifier.padding(bottom = 5.dp),
+                                                                fontWeight = FontWeight.SemiBold,
+                                                                color = Color.Black
                                                             )
-                                                        )
+                                                        }
+                                                        Column(
+                                                            modifier = Modifier
+                                                                .padding(vertical = 3.dp)
+                                                                .padding(start = 5.dp)
+                                                        ) {
+                                                            Text(
+                                                                text = component.getNaturalStart(),
+                                                                modifier = Modifier.padding(
+                                                                    bottom = 5.dp
+                                                                ),
+                                                                color = Color.Black
+                                                            )
+                                                            Text(
+                                                                text = component.getNaturalEnd(),
+                                                                modifier = Modifier.padding(
+                                                                    bottom = 5.dp
+                                                                ),
+                                                                color = Color.Black
+                                                            )
+                                                        }
                                                     }
                                                 }
                                             }
                                         }
+                                        if (--rem > 0) Spacer(modifier = Modifier.height(15.dp))
                                     }
-                                    if (--rem > 0) Spacer(modifier = Modifier.height(15.dp))
-                                }
-                                if (Global.isAdmin()) {
-                                    CardButton(
-                                        text = "Delete Event",
-                                        onClick = {
-                                            confirmationShowing = i
-                                        },
-                                        colors = CardDefaults.cardColors(
-                                            containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                                    if (Global.isAdmin()) {
+                                        CardButton(
+                                            text = "Delete Event",
+                                            onClick = {
+                                                confirmationShowing = i
+                                            },
+                                            colors = CardDefaults.cardColors(
+                                                containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                                            )
                                         )
-                                    )
+                                    }
                                 }
                             }
+                            Spacer(modifier = Modifier.height(10.dp))
                         }
-                        Spacer(modifier = Modifier.height(10.dp))
                     }
                 }
-                if (eventRem.isEmpty()) {
+                if (displayed == 0) {
                     item {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -223,6 +252,39 @@ fun EventListPage() {
                                 modifier = Modifier.padding(bottom = 10.dp)
                             )
                             Text("Time to take a well-deserved break!")
+                        }
+                    }
+                }
+                if (!showingPast && eventRem.size != displayed) {
+                    item {
+                        ElevatedCard(
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.tertiary,
+                                contentColor = MaterialTheme.colorScheme.onSurface
+                            ),
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Spacer(modifier = Modifier.height(30.dp))
+                                if (!showingPast) {
+                                    Text("Click below to view past events!")
+                                    Text(
+                                        text = "View Past Events",
+                                        modifier = Modifier
+                                            .padding(top = 5.dp)
+                                            .clickable {
+                                                showingPast = true
+                                            },
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(30.dp))
+                            }
                         }
                     }
                 }

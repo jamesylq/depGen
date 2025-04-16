@@ -57,10 +57,10 @@ import com.example.depgen.utils.safeNavigate
 import com.example.depgen.utils.saveExcelFile
 import com.example.depgen.view.components.BoldTextParser
 import com.example.depgen.view.components.CardButton
-import com.example.depgen.view.components.ComboBox
 import com.example.depgen.view.components.ConfirmationScreen
 import com.example.depgen.view.components.DateInputRow
 import com.example.depgen.view.components.DisplayEventComponent
+import com.example.depgen.view.components.MultiSelectComboBox
 import com.example.depgen.view.components.QuantityPicker
 import com.example.depgen.view.components.RepeatDaySelector
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
@@ -76,8 +76,7 @@ fun RepeatingDeploymentPage() {
     val rolesNotSelected = remember { mutableStateListOf<String>() }
     var searchingRole by remember { mutableStateOf(false) }
     var confirmationShowing by remember { mutableStateOf(false) }
-    var selectedRole by remember { mutableStateOf("") }
-    var roleError by remember { mutableStateOf("") }
+    var selectedRoles by remember { mutableStateOf(setOf<String>()) }
     var recompile by remember { mutableIntStateOf(1) }
     var screen by remember { mutableStateOf("customisation-1") }
 
@@ -123,15 +122,12 @@ fun RepeatingDeploymentPage() {
                                     "customisation-1" -> {
                                         confirmationShowing = true
                                     }
-
                                     "customisation-2" -> {
                                         screen = "customisation-1"
                                     }
-
                                     "generated" -> {
                                         safeNavigate("Master")
                                     }
-
                                     else -> {}
                                 }
                             },
@@ -210,7 +206,11 @@ fun RepeatingDeploymentPage() {
                             ElevatedCard(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(500.dp)
+                                    .height(500.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.background,
+                                    contentColor = MaterialTheme.colorScheme.onBackground
+                                )
                             ) {
                                 Column(
                                     modifier = Modifier.padding(16.dp)
@@ -222,37 +222,32 @@ fun RepeatingDeploymentPage() {
                                             text = "Select Role",
                                             fontWeight = FontWeight.Bold,
                                             fontSize = 20.sp,
-                                            color = Color.Black
+                                            color = MaterialTheme.colorScheme.onBackground
                                         )
                                     }
                                     Text(
                                         text = "Start typing to search for the role!",
                                         modifier = Modifier.padding(vertical = 8.dp)
                                     )
-                                    Spacer(modifier = Modifier.height(20.dp))
-                                    Row(
-                                        horizontalArrangement = Arrangement.Center
-                                    ) {
-                                        ComboBox(
-                                            rolesNotSelected,
-                                            selectedRole,
-                                            { selectedRole = it },
-                                            errorMessage = roleError,
-                                            resetErrorMessage = { roleError = "" }
-                                        )
-                                    }
+                                    MultiSelectComboBox(
+                                        rolesNotSelected,
+                                        selectedRoles,
+                                        {
+                                            if (selectedRoles.contains(it)) {
+                                                selectedRoles -= it
+                                                rolesNeeded.remove(findRole(it))
+                                            } else {
+                                                selectedRoles += it
+                                                rolesNeeded[findRole(it)!!] = 1
+                                            }
+                                        }
+                                    )
+
                                     Spacer(modifier = Modifier.weight(1f))
                                     CardButton(
                                         text = "Select",
                                         onClick = {
-                                            val role = findRole(selectedRole)
-                                            if (role == null) {
-                                                roleError = "Undefined Role!"
-                                            } else {
-                                                selectedRole = ""
-                                                rolesNeeded[role] = 1
-                                                searchingRole = false
-                                            }
+                                            searchingRole = false
                                         },
                                         colors = CardDefaults.cardColors(
                                             containerColor = MaterialTheme.colorScheme.primaryContainer

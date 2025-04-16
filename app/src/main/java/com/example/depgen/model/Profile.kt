@@ -1,7 +1,9 @@
 package com.example.depgen.model
 
 import com.example.depgen.Global
+import com.example.depgen.exceptions.PasswordValidationException
 import com.example.depgen.utils.STANDARD_FORMATTER
+import com.example.depgen.utils.encryptSHA256
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -67,5 +69,11 @@ data class Profile (
     
     fun getDeploymentList() : ArrayList<LocalDate> {
         return ArrayList(this.deployments.map { LocalDate.parse(it, STANDARD_FORMATTER) }.sorted())
+    }
+
+    @Throws(PasswordValidationException::class)
+    fun validate(pwd: String) : Boolean {
+        if (this.password == pwd.encryptSHA256()) return true
+        throw PasswordValidationException("")
     }
 }

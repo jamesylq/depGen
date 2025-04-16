@@ -1,5 +1,6 @@
 package com.example.depgen.view.fragments
 
+import BrightnessSelector
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -18,7 +18,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Square
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,14 +25,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,7 +42,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,8 +52,10 @@ import com.example.depgen.Global
 import com.example.depgen.model.Condition
 import com.example.depgen.model.EventRole
 import com.example.depgen.model.Skill
+import com.example.depgen.utils.applyBrightness
 import com.example.depgen.utils.clearFocusOnKeyboardDismiss
 import com.example.depgen.utils.isNotInt
+import com.example.depgen.utils.reverseSettings
 import com.example.depgen.utils.safeNavigate
 import com.example.depgen.utils.save
 import com.example.depgen.utils.toColor
@@ -62,6 +63,7 @@ import com.example.depgen.utils.toList
 import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.ComboBox
 import com.example.depgen.view.components.ConfirmationScreen
+import com.example.depgen.view.components.EventRoleRender
 import com.example.depgen.view.components.IntegerTextField
 import com.example.depgen.view.components.colorPicker.HsvColorPicker
 import com.example.depgen.view.components.colorPicker.rememberColorPickerController
@@ -84,6 +86,9 @@ fun NewRolePage(roleEditing: Int = -1) {
     var prerequisites = remember { mutableMapOf<Skill, ArrayList<Condition?>>() }
     var priority by remember { mutableIntStateOf(0) }
     var priorityError by remember { mutableStateOf(false) }
+    val controller = rememberColorPickerController()
+    var selectedHue by remember { mutableStateOf(Color.Black) }
+    var brightness by remember { mutableFloatStateOf(0f) }
     var selectedColor by remember { mutableStateOf(Color.Black) }
     var selectingColor by remember { mutableStateOf(false) }
 
@@ -158,23 +163,30 @@ fun NewRolePage(roleEditing: Int = -1) {
                 }
             ) {
                 ElevatedCard (
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(650.dp)
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        contentColor = Color.Black
+                    )
                 ) {
                     Column (
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Spacer(modifier = Modifier.height(30.dp))
                         Text(
                             text = "Role Prerequisite",
                             fontWeight = FontWeight.Bold,
-                            fontSize = 25.sp
+                            fontSize = 25.sp,
+                            color = MaterialTheme.colorScheme.onBackground
                         )
-                        Spacer(modifier = Modifier.height(50.dp))
-                        Text("Members must have", fontSize = 19.sp)
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(30.dp))
+                        Text(
+                            text = "Members must have",
+                            fontSize = 19.sp,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Spacer(modifier = Modifier.height(5.dp))
                         Row (
                             modifier = Modifier.width(150.dp)
                         ) {
@@ -186,10 +198,14 @@ fun NewRolePage(roleEditing: Int = -1) {
                                 resetErrorMessage = { conditionError = "" }
                             )
                         }
-                        Spacer(modifier = Modifier.height(20.dp))
-                        Text("a skill level of", fontSize = 19.sp)
-                        Spacer(modifier = Modifier.height(20.dp))
-                        TextField(
+                        Spacer(modifier = Modifier.height(5.dp))
+                        Text(
+                            text = "a skill level of",
+                            fontSize = 19.sp,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        OutlinedTextField(
                             skillLevel,
                             {
                                 skillLevel = it
@@ -215,11 +231,19 @@ fun NewRolePage(roleEditing: Int = -1) {
                                         tint = MaterialTheme.colorScheme.error
                                     )
                                 }
-                            }
+                            },
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+                            )
                         )
-                        Spacer(modifier = Modifier.height(20.dp))
-                        Text("in the skill", fontSize = 19.sp)
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(5.dp))
+                        Text(
+                            text = "in the skill",
+                            fontSize = 19.sp,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Spacer(modifier = Modifier.height(5.dp))
                         Row (
                             modifier = Modifier.width(150.dp)
                         ) {
@@ -231,7 +255,7 @@ fun NewRolePage(roleEditing: Int = -1) {
                                 resetErrorMessage = { skillError = "" }
                             )
                         }
-                        Spacer(modifier = Modifier.height(50.dp))
+                        Spacer(modifier = Modifier.height(35.dp))
                         Row (
                             modifier = Modifier.width(200.dp)
                         ) {
@@ -287,6 +311,7 @@ fun NewRolePage(roleEditing: Int = -1) {
                                 )
                             )
                         }
+                        Spacer(modifier = Modifier.height(35.dp))
                     }
                 }
             }
@@ -296,7 +321,12 @@ fun NewRolePage(roleEditing: Int = -1) {
                     selectingColor = false
                 }
             ) {
-                ElevatedCard {
+                ElevatedCard (
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        contentColor = MaterialTheme.colorScheme.onBackground
+                    )
+                ) {
                     Column (
                         modifier = Modifier.padding(50.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -308,17 +338,16 @@ fun NewRolePage(roleEditing: Int = -1) {
                             fontWeight = FontWeight.Bold
                         )
                         Column(
-                            modifier = Modifier.size(LocalConfiguration.current.screenWidthDp.dp)
+                            modifier = Modifier.fillMaxWidth().height(300.dp)
                         ) {
-                            val controller = rememberColorPickerController()
                             HsvColorPicker(
                                 modifier = Modifier,
                                 controller = controller,
-                                onColorChanged = { selectedColor = it.color },
-                                initialColor = selectedColor,
+                                onColorChanged = { selectedHue = it.color },
+                                initialColor = selectedHue,
                                 drawOnPosSelected = {
                                     drawCircle(
-                                        color = selectedColor,
+                                        color = selectedHue,
                                         radius = 20.0f,
                                         center = controller.selectedPoint.value
                                     )
@@ -331,11 +360,32 @@ fun NewRolePage(roleEditing: Int = -1) {
                                 }
                             )
                         }
+                        BrightnessSelector(
+                            modifier = Modifier.fillMaxWidth(),
+                            selectedColor = selectedHue,
+                            brightness = brightness,
+                            onBrightnessChange = {
+                                brightness = it
+                                selectedColor = selectedHue.applyBrightness(1 - brightness)
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(30.dp))
+                        Row (
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Preview:", fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.width(20.dp))
+                            EventRoleRender(
+                                EventRole("New Role", selectedColor.toList(), 0)
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(30.dp))
+
                         CardButton(
                             text = "Done",
                             onClick = { selectingColor = false },
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.primary
+                                containerColor = MaterialTheme.colorScheme.tertiary
                             )
                         )
                     }
@@ -386,7 +436,11 @@ fun NewRolePage(roleEditing: Int = -1) {
                                     tint = MaterialTheme.colorScheme.error
                                 )
                             }
-                        }
+                        },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+                        )
                     )
                     Text(
                         text = "Role Priority",
@@ -424,6 +478,9 @@ fun NewRolePage(roleEditing: Int = -1) {
                             tint = selectedColor,
                             modifier = Modifier.clickable {
                                 selectingColor = true
+                                val settings = selectedColor.reverseSettings()
+                                selectedHue = settings.first
+                                brightness = 1 - settings.second
                             }
                         )
                     }
@@ -524,11 +581,9 @@ fun NewRolePage(roleEditing: Int = -1) {
                     save()
                     safeNavigate("RolesList")
                 },
-                colors = CardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = Color.Black,
-                    disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                    disabledContentColor = Color.Black
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.tertiary,
+                    contentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         }

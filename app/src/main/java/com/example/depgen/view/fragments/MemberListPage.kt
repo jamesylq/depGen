@@ -35,9 +35,11 @@ fun MemberListPage() {
             Text(
                 text = "Member List",
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 5.dp)
             )
-            Spacer(modifier = Modifier.height(20.dp))
+            Text("here, you can view the list of members in your database!")
+            Spacer(modifier = Modifier.height(15.dp))
             MemberSearchScreen(
                 onClickMember = {
                     safeNavigate("Profile/$it/${Navigation.MEMBERLIST}")

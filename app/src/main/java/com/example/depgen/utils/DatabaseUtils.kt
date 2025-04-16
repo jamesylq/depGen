@@ -192,6 +192,7 @@ fun load() {
                     Global.skillsList.clear()
                     Global.rolesList.clear()
                     Global.eventList.addAll(wrapper.events)
+                    Global.sortEventList()
                     Global.profileList.addAll(wrapper.profiles)
                     Global.skillsList.addAll(wrapper.skills)
                     Global.rolesList.addAll(wrapper.roles)
@@ -230,6 +231,7 @@ fun load() {
                             Global.skillsList.clear()
                             Global.rolesList.clear()
                             Global.eventList.addAll(wrapper.events)
+                            Global.sortEventList()
                             Global.profileList.addAll(wrapper.profiles)
                             Global.skillsList.addAll(wrapper.skills)
                             Global.rolesList.addAll(wrapper.roles)
@@ -282,3 +284,45 @@ fun isConnected(context: Context = ctxt): Boolean {
     return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
             capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
 }
+
+//fun addUser(newProfile: Profile, password: String) {
+//    val dbRef = FirebaseDatabase.getInstance(FIREBASE_URL).reference
+//    dbRef
+//        .child("emails")
+//        .child(newProfile.username)
+//        .setValue(newProfile.email)
+//        .addOnCompleteListener {
+//            auth.createUserWithEmailAndPassword(newProfile.email, password)
+//                .addOnCompleteListener {
+//                    Global.profileList.add(newProfile)
+//                    save()
+//                    toast("Signed up account ${newProfile.username}!")
+//                    safeNavigate("Login")
+//                }
+//        }
+//}
+//
+//fun validate(profile: Profile, password: String) {
+//    val dbRef = FirebaseDatabase.getInstance(FIREBASE_URL).reference
+//
+//    dbRef
+//        .child("emails")
+//        .child(profile.username)
+//        .get()
+//        .addOnSuccessListener {
+//            if (it.exists()) {
+//                val email = it.getValue(String::class.java)!!
+//                auth.signInWithEmailAndPassword(email, password)
+//                    .addOnCompleteListener { task ->
+//                        if (task.isSuccessful) {
+//                            switchProfile(profile)
+//                            safeNavigate("Master")
+//                        } else {
+//                            throw PasswordValidationException("")
+//                        }
+//                    }
+//
+//            }
+//        }
+//
+//}

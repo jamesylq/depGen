@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -42,7 +43,11 @@ fun ConfirmationScreen(
         }
     ) {
         ElevatedCard (
-            modifier = Modifier.height(520.dp)
+            modifier = Modifier.height(520.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.background,
+                contentColor = MaterialTheme.colorScheme.onBackground
+            )
         ) {
             Column (
                 modifier = Modifier.fillMaxSize(),
@@ -55,10 +60,20 @@ fun ConfirmationScreen(
                     modifier = Modifier.clip(RoundedCornerShape(30.dp))
                 )
                 Spacer(modifier = Modifier.height(20.dp))
-                Text(title, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    text = title,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
                 Spacer(modifier = Modifier.height(60.dp))
                 for (text in body.split("\n")) {
-                    Text(text, fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+                    Text(
+                        text = text,
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                 }
                 Spacer(modifier = Modifier.height(60.dp))
                 Row (

@@ -12,7 +12,8 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TextField
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -53,7 +54,7 @@ fun QuantityPicker(onUpdate: (Int) -> Unit, initialQty: Int = 0, minQty: Int = 0
             )
         }
         Spacer(modifier = Modifier.width(5.dp))
-        TextField(
+        OutlinedTextField(
             value = tf,
             onValueChange = {
                 tf = it
@@ -65,7 +66,11 @@ fun QuantityPicker(onUpdate: (Int) -> Unit, initialQty: Int = 0, minQty: Int = 0
             modifier = Modifier
                 .height(50.dp)
                 .width(100.dp)
-                .clearFocusOnKeyboardDismiss()
+                .clearFocusOnKeyboardDismiss(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+            )
         )
         Spacer(modifier = Modifier.width(5.dp))
         IconButton(

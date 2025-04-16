@@ -54,10 +54,17 @@ fun SkillsTrackerPage() {
         },
         floatingActionButton = {
             if (Global.isAdmin()) {
-                FloatingActionButton(onClick = {
-                    safeNavigate("NewSkill")
-                }) {
-                    Icon(Icons.Filled.Add, "")
+                FloatingActionButton(
+                    onClick = {
+                        safeNavigate("NewSkill")
+                    },
+                    containerColor = MaterialTheme.colorScheme.inversePrimary
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
                 }
             }
         }

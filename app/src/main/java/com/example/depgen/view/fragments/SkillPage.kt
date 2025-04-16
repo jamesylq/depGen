@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -80,7 +81,11 @@ fun SkillPage(idx: Int) {
                 }
             ) {
                 ElevatedCard (
-                    modifier = Modifier.height(320.dp)
+                    modifier = Modifier.height(320.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.onTertiary,
+                        contentColor = Color.Black
+                    )
                 ) {
                     Column (
                         modifier = Modifier.fillMaxSize(),
@@ -147,7 +152,9 @@ fun SkillPage(idx: Int) {
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 15.dp)
             )
-            Column(modifier = Modifier.weight(1f)) {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
@@ -160,12 +167,16 @@ fun SkillPage(idx: Int) {
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(114.dp)
-                                        .padding(vertical = 7.dp)
+                                        .padding(vertical = 7.dp),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = MaterialTheme.colorScheme.onTertiary,
+                                        contentColor = Color.Black
+                                    )
                                 ) {
                                     Column {
                                         Row {
                                             luxuryManager.getLuxury(profile).ProfilePicture(
-                                                clip = RoundedCornerShape(13.dp),
+                                                clip = RoundedCornerShape(10.dp),
                                                 size = 100.dp
                                             )
                                             Text(

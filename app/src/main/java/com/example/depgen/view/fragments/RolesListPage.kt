@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -41,7 +40,7 @@ import com.example.depgen.utils.save
 import com.example.depgen.view.components.ConfirmationScreen
 import com.example.depgen.view.components.DefaultTopAppBar
 import com.example.depgen.view.components.EventRoleRender
-
+import com.example.depgen.view.components.FadedLazyColumn
 
 
 @Composable
@@ -56,10 +55,17 @@ fun RolesListPage() {
         },
         floatingActionButton = {
             if (Global.isAdmin()) {
-                FloatingActionButton(onClick = {
-                    safeNavigate("NewRole/-1")
-                }) {
-                    Icon(Icons.Filled.Add, "")
+                FloatingActionButton(
+                    onClick = {
+                        safeNavigate("NewRole/-1")
+                    },
+                    containerColor = MaterialTheme.colorScheme.inversePrimary
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
                 }
             }
         }
@@ -81,15 +87,21 @@ fun RolesListPage() {
         Column(
             modifier = Modifier
                 .padding(it)
-                .padding(16.dp)
+                .padding(top = 16.dp)
+                .padding(horizontal = 16.dp)
         ) {
             Text(
                 text = "List of Roles",
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 15.dp)
+                fontWeight = FontWeight.Bold
             )
-            LazyColumn {
+            Spacer(modifier = Modifier.height(10.dp))
+            FadedLazyColumn (
+                modifier = Modifier.weight(1f)
+            ) {
+                item {
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
                 for (i in remRolesList.indices) {
                     val role = remRolesList[i]
                     item {
@@ -150,7 +162,11 @@ fun RolesListPage() {
                                     }
                                 }
                                 for (entry in role.prerequisites) {
-                                    ElevatedCard {
+                                    ElevatedCard (
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = MaterialTheme.colorScheme.onTertiary
+                                        )
+                                    ) {
                                         Column(
                                             modifier = Modifier
                                                 .padding(8.dp)
@@ -171,7 +187,11 @@ fun RolesListPage() {
                                     }
                                 }
                                 if (role.prerequisites.isEmpty()) {
-                                    ElevatedCard {
+                                    ElevatedCard (
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = MaterialTheme.colorScheme.onTertiary
+                                        )
+                                    ) {
                                         Row(
                                             horizontalArrangement = Arrangement.Center,
                                             verticalAlignment = Alignment.CenterVertically,

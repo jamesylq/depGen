@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CardDefaults
@@ -18,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -45,6 +45,7 @@ import com.example.depgen.utils.save
 import com.example.depgen.view.components.CardButton
 import com.example.depgen.view.components.ConfirmationScreen
 import com.example.depgen.view.components.EditEventComponent
+import com.example.depgen.view.components.FadedLazyColumn
 import com.example.depgen.view.components.TimePickerScreen
 
 fun removeLetters(str: String): String {
@@ -194,7 +195,11 @@ fun NewEventPage() {
                     placeholder = { Text("Enter Event Name") },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clearFocusOnKeyboardDismiss()
+                        .clearFocusOnKeyboardDismiss(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+                    )
                 )
                 Text(
                     text = "Event Components",
@@ -208,13 +213,13 @@ fun NewEventPage() {
                     }
 
                 } else {
-                    LazyColumn(
+                    FadedLazyColumn(
                         modifier = Modifier
                             .weight(1f)
                     ) {
                         item {
+                            Spacer(modifier = Modifier.height(10.dp))
                             Column {
-                                var rem = newEvent.value.components.size
                                 for (entry in newEvent.value.components) {
                                     Text(
                                         text = entry.key.componentType,
@@ -278,7 +283,7 @@ fun NewEventPage() {
                                             }
                                         }
                                     }
-                                    if (--rem > 0) Spacer(modifier = Modifier.height(15.dp))
+                                    Spacer(modifier = Modifier.height(15.dp))
                                 }
                             }
                         }

@@ -45,7 +45,6 @@ import com.example.depgen.utils.getDate
 import com.example.depgen.utils.getDeployments
 import com.example.depgen.utils.safeNavigate
 import com.example.depgen.utils.toHHMMTime
-import com.example.depgen.view.components.ConfirmationScreen
 import com.example.depgen.view.components.DisplayProfileDeployment
 import com.example.depgen.view.components.MultiDateSelector
 import com.example.depgen.view.components.TopBarProfileIcon
@@ -66,7 +65,6 @@ fun SchedulePage(idx: Int) {
         )
     }
     var viewing by remember { mutableStateOf<LocalDate?>(null) }
-    var confirmation by remember { mutableStateOf(false) }
     val deployments = remember { mutableStateListOf<DeploymentRecord>() }
 
     Scaffold (
@@ -86,7 +84,7 @@ fun SchedulePage(idx: Int) {
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        confirmation = true
+                        safeNavigate("Master")
                     }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, "")
                     }
@@ -101,18 +99,6 @@ fun SchedulePage(idx: Int) {
             modifier = Modifier
                 .padding(innerPadding)
         ) {
-            if (confirmation) {
-                ConfirmationScreen(
-                    onConfirm = {
-                        confirmation = false
-                        safeNavigate("Master")
-                    },
-                    onDecline = {
-                        confirmation = false
-                    }
-                )
-            }
-
             Column (
                 modifier = Modifier.padding(16.dp)
             ) {
@@ -149,8 +135,13 @@ fun SchedulePage(idx: Int) {
                 LazyColumn {
                     item {
                         if (viewing == null) {
-                            Text("Legend", fontWeight = FontWeight.Bold)
-                            Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "Legend",
+                                fontWeight = FontWeight.Bold
+                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
                                 Box(
                                     modifier = Modifier
                                         .size(20.dp)
@@ -159,7 +150,9 @@ fun SchedulePage(idx: Int) {
                                 )
                                 Text("Available", modifier = Modifier.padding(start = 5.dp))
                             }
-                            Row(verticalAlignment = Alignment.CenterVertically) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
                                 Box(
                                     modifier = Modifier
                                         .size(20.dp)
@@ -197,15 +190,7 @@ fun SchedulePage(idx: Int) {
                         }
                     }
                 }
-
                 Spacer(modifier = Modifier.weight(1f))
-//                CardButton(
-//                    text = "Save Changes",
-//                    onClick = {
-//                        profile.unavailable = HashSet(selectedDates.map { it.toString() })
-//                        safeNavigate("Master")
-//                    }
-//                )
             }
         }
     }

@@ -188,6 +188,10 @@ fun SignUpPage() {
                     passwordError = if (password.text.isEmpty()) { "Password Cannot be Blank!" }
                                     else { "" }
 
+//                    if (emailError.isEmpty() && passwordError.isEmpty() && emailError.isEmpty()) {
+//                        addUser(Profile(username, email), password.text.toString())
+//                    }
+
                     if (emailError.isEmpty() && passwordError.isEmpty() && emailError.isEmpty()) {
                         Global.profileList.add(
                             Profile(
@@ -224,7 +228,7 @@ fun SignUpPage() {
                             safeNavigate("Login")
                         },
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primaryContainer
+                    color = MaterialTheme.colorScheme.inversePrimary
                 )
             }
         }

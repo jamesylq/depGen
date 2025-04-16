@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedSecureTextField
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,8 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.depgen.LOGGED_OUT
 import com.example.depgen.R
+import com.example.depgen.exceptions.PasswordValidationException
 import com.example.depgen.utils.clearFocusOnKeyboardDismiss
-import com.example.depgen.utils.encryptSHA256
 import com.example.depgen.utils.findProfile
 import com.example.depgen.utils.safeNavigate
 import com.example.depgen.utils.switchProfile
@@ -98,10 +99,13 @@ fun LoginPage() {
                         Icon(
                             Icons.Rounded.Warning,
                             "",
-                            tint = MaterialTheme.colorScheme.error
-                        )
+                            tint = MaterialTheme.colorScheme.error)
                     }
-                }
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+                )
             )
             OutlinedSecureTextField(
                 state = password,
@@ -129,7 +133,11 @@ fun LoginPage() {
                             tint = MaterialTheme.colorScheme.error
                         )
                     }
-                }
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+                )
             )
             Spacer(modifier = Modifier.height(10.dp))
             CardButton (
@@ -141,11 +149,17 @@ fun LoginPage() {
                         val profile = findProfile(username)
                         if (profile == LOGGED_OUT) {
                             usernameError = "Username Not Found!"
-                        } else if (profile.password == password.text.toString().encryptSHA256()) {
-                            switchProfile(profile)
-                            safeNavigate("Master")
+
                         } else {
-                            passwordError = "Incorrect Password!"
+                            try {
+                                if (profile.validate(password.text.toString())) {
+                                    switchProfile(profile)
+                                    safeNavigate("Master")
+                                }
+
+                            } catch (e: PasswordValidationException) {
+                                passwordError = "Incorect Password!"
+                            }
                         }
                     }
                 }
@@ -156,15 +170,15 @@ fun LoginPage() {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
-                Text(
-                    "Forgot Password",
-                    modifier = Modifier
-                        .clickable {
-                            //TODO: Forgot Password
-                        },
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.inversePrimary
-                )
+//                Text(
+//                    "Forgot Password",
+//                    modifier = Modifier
+//                        .clickable {
+//                            //TO-DO: Forgot Password
+//                        },
+//                    fontWeight = FontWeight.Bold,
+//                    color = MaterialTheme.colorScheme.inversePrimary
+//                )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
                     "Sign Up",

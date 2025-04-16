@@ -1,7 +1,6 @@
 package com.example.depgen.view.components
 
 import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -44,15 +43,16 @@ fun DatePickerScreen(
             TextButton(onClick = { onDismiss() }) {
                 Text("Cancel", color = MaterialTheme.colorScheme.error)
             }
-        },
-        colors = DatePickerDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            titleContentColor = MaterialTheme.colorScheme.primary,
-            headlineContentColor = MaterialTheme.colorScheme.onSurface,
-            weekdayContentColor = MaterialTheme.colorScheme.primary,
-            selectedDayContainerColor = MaterialTheme.colorScheme.primary,
-            selectedDayContentColor = MaterialTheme.colorScheme.onPrimary
-        )
+        }
+//        colors = DatePickerDefaults.colors(
+//            containerColor = MaterialTheme.colorScheme.tertiary,
+//            titleContentColor = MaterialTheme.colorScheme.primary,
+//            headlineContentColor = MaterialTheme.colorScheme.onBackground,
+//            weekdayContentColor = MaterialTheme.colorScheme.primary,
+//            selectedDayContainerColor = MaterialTheme.colorScheme.tertiary,
+//            selectedDayContentColor = MaterialTheme.colorScheme.onPrimary,
+//            dayContentColor = MaterialTheme.colorScheme.onBackground
+//        )
     ) {
         DatePicker(
             state = datePickerState,

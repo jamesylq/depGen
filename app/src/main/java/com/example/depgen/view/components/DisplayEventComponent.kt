@@ -39,7 +39,8 @@ fun DisplayEventComponent(
             .fillMaxWidth()
             .padding(bottom = 12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.tertiary
+            containerColor = MaterialTheme.colorScheme.tertiary,
+            contentColor = MaterialTheme.colorScheme.onSurface
         )
     ) {
         Column(

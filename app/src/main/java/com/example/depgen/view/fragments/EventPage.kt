@@ -90,18 +90,28 @@ fun EventPage(idx: Int) {
                 FloatingActionButton(
                     onClick = {
                         copyToClipboard(event.toString())
-                    }
+                    },
+                    containerColor = MaterialTheme.colorScheme.inversePrimary
                 ) {
-                    Icon(Icons.Default.ContentCopy, "")
+                    Icon(
+                        imageVector = Icons.Default.ContentCopy,
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
                 }
                 if (Global.isAdmin()) {
                     if (editingComponent == null && addingComponent == null) {
                         FloatingActionButton(
                             onClick = {
                                 addingComponent = EventComponent(HashMap(), HashMap(), "", "")
-                            }
+                            },
+                            containerColor = MaterialTheme.colorScheme.inversePrimary
                         ) {
-                            Icon(Icons.Filled.Add, "")
+                            Icon(
+                                imageVector = Icons.Filled.Add,
+                                contentDescription = "",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
                         }
                     }
                 }

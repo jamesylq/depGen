@@ -8,8 +8,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -70,7 +72,7 @@ fun DateInputRow(
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(end = 8.dp).weight(0.22f)
         )
-        TextField(
+        OutlinedTextField(
             value = day,
             onValueChange = {
                 updateDay(removeLetters(it))
@@ -85,9 +87,13 @@ fun DateInputRow(
                 .clearFocusOnKeyboardDismiss(),
             placeholder = {
                 Text("DD")
-            }
+            },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+            )
         )
-        TextField(
+        OutlinedTextField(
             value = month,
             onValueChange = {
                 updateMonth(removeLetters(it))
@@ -102,9 +108,13 @@ fun DateInputRow(
                 .clearFocusOnKeyboardDismiss(),
             placeholder = {
                 Text("MM")
-            }
+            },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+            )
         )
-        TextField(
+        OutlinedTextField(
             value = year,
             onValueChange = {
                 updateYear(removeLetters(it))
@@ -119,7 +129,11 @@ fun DateInputRow(
                 .clearFocusOnKeyboardDismiss(),
             placeholder = {
                 Text("YYYY")
-            }
+            },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+            )
         )
         IconButton(
             onClick = {

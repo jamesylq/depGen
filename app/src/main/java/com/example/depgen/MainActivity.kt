@@ -77,10 +77,13 @@ import com.example.depgen.view.fragments.SkillPage
 import com.example.depgen.view.fragments.SkillsTrackerPage
 import com.example.depgen.view.theme.DepGenTheme
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
@@ -90,6 +93,7 @@ var lastBack: Long = 0
 val luxuryProfiles = HashMap<String, LocalDateTime>()
 
 lateinit var ctxt : Context
+lateinit var auth: FirebaseAuth
 lateinit var luxuryManager: LuxuryManager
 lateinit var navController : NavHostController
 
@@ -120,6 +124,13 @@ object Global {
         }
         return null
     }
+
+    fun sortEventList() {
+        eventList.apply {
+            sortBy { it.getLatest() }
+            sortBy { it.hasCompleted() }
+        }
+    }
 }
 
 class MainActivity : ComponentActivity() {
@@ -133,6 +144,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ctxt = LocalContext.current
+            auth = Firebase.auth
 
             val permissions = buildList {
                 add(Manifest.permission.CAMERA)
@@ -202,7 +214,8 @@ class MainActivity : ComponentActivity() {
                                 .fillMaxWidth()
                                 .height(500.dp),
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.tertiary
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                contentColor = MaterialTheme.colorScheme.onBackground
                             )
                         ) {
                             Column (

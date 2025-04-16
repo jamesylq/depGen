@@ -29,14 +29,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -129,7 +131,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
     var componentType: ComponentType? by remember { mutableStateOf(comType) }
 
     var confirmationShowing by remember { mutableStateOf(false) }
-    val selectedRoles = remember { mutableStateListOf<Boolean>() }
+    var selectedRoles by remember { mutableStateOf(setOf<String>()) }
     var recompile by remember { mutableIntStateOf(1) }
     var deployedMembersCount by remember { mutableIntStateOf(0) }
 
@@ -138,15 +140,12 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
     val rolesNotSelected = remember { mutableStateListOf<String>() }
     val delta = remember { mutableStateMapOf<Profile, Int>() }
     var searchingRole by remember { mutableStateOf(false) }
-    var selectedRole by remember { mutableStateOf("") }
-    var roleError by remember { mutableStateOf("") }
     var appendingRole by remember { mutableStateOf<EventRole?>(null) }
 
-    if (selectedRoles.isEmpty()) {
+    LaunchedEffect (Unit) {
         membersDeployed.clear()
         rolesNeeded.clear()
 
-        for (role in Global.rolesList) selectedRoles.add(false)
         for (entry in eventComponent.rolesRequired) rolesNeeded[entry.key] = entry.value
         for (entry in eventComponent.deployment) {
             for (role in entry.value) {
@@ -236,49 +235,48 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                     ElevatedCard(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(500.dp)
+                            .height(500.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.background,
+                            contentColor = MaterialTheme.colorScheme.onBackground
+                        )
                     ) {
-                        Column (
+                        Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
-                            Row (
+                            Row(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Text(
                                     text = "Select Role",
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 20.sp,
-                                    color = Color.Black
+                                    color = MaterialTheme.colorScheme.onBackground
                                 )
                             }
                             Text(
                                 text = "Start typing to search for the role!",
                                 modifier = Modifier.padding(vertical = 8.dp)
                             )
-                            Spacer(modifier = Modifier.height(20.dp))
-                            Row (
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                ComboBox(
-                                    rolesNotSelected,
-                                    selectedRole,
-                                    { selectedRole = it },
-                                    errorMessage = roleError,
-                                    resetErrorMessage = { roleError = "" }
-                                )
-                            }
+                            MultiSelectComboBox(
+                                rolesNotSelected,
+                                selectedRoles,
+                                {
+                                    if (selectedRoles.contains(it)) {
+                                        selectedRoles -= it
+                                        rolesNeeded.remove(findRole(it))
+                                    } else {
+                                        selectedRoles += it
+                                        rolesNeeded[findRole(it)!!] = 1
+                                    }
+                                }
+                            )
+
                             Spacer(modifier = Modifier.weight(1f))
                             CardButton(
                                 text = "Select",
                                 onClick = {
-                                    val role = findRole(selectedRole)
-                                    if (role == null) {
-                                        roleError = "Undefined Role!"
-                                    } else {
-                                        selectedRole = ""
-                                        rolesNeeded[role] = 1
-                                        searchingRole = false
-                                    }
+                                    searchingRole = false
                                 },
                                 colors = CardDefaults.cardColors(
                                     containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -369,7 +367,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                     ) {
                         Text("Start Time: ", fontWeight = FontWeight.SemiBold)
                         Spacer(modifier = Modifier.width(30.dp))
-                        TextField(
+                        OutlinedTextField(
                             value = startTime,
                             onValueChange = { startTime = it },
                             modifier = Modifier
@@ -378,7 +376,11 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                 .clearFocusOnKeyboardDismiss(),
                             placeholder = {
                                 Text("Enter Start Time")
-                            }
+                            },
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+                            )
                         )
                         IconButton(
                             onClick = { picking = 1 },
@@ -393,7 +395,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                     ) {
                         Text("End Time: ", fontWeight = FontWeight.SemiBold)
                         Spacer(modifier = Modifier.width(38.dp))
-                        TextField(
+                        OutlinedTextField(
                             value = endTime,
                             onValueChange = { endTime = it },
                             modifier = Modifier
@@ -402,7 +404,11 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                 .clearFocusOnKeyboardDismiss(),
                             placeholder = {
                                 Text("Enter End Time")
-                            }
+                            },
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+                            )
                         )
                         IconButton(
                             onClick = { picking = 2 },
@@ -444,8 +450,8 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                 colors = RadioButtonColors(
                                     selectedColor = MaterialTheme.colorScheme.primary,
                                     disabledSelectedColor = MaterialTheme.colorScheme.primary,
-                                    unselectedColor = Color.Gray,
-                                    disabledUnselectedColor = Color.Gray
+                                    unselectedColor = MaterialTheme.colorScheme.onBackground,
+                                    disabledUnselectedColor = MaterialTheme.colorScheme.onBackground
                                 )
                             )
                             Text(text = EVENT_TYPES[i].componentType)
@@ -497,13 +503,16 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                     Text(
                         text = "Select the roles needed for your event!",
                     )
-                    Spacer(modifier = Modifier.height(20.dp))
-                    LazyColumn (
+                    Spacer(modifier = Modifier.height(10.dp))
+                    FadedLazyColumn (
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f)
                     ) {
+                        item {
+                            Spacer(modifier = Modifier.height(10.dp))
+                        }
                         for (entry in rolesNeeded) {
                             item {
                                 Row(

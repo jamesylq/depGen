@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -78,11 +78,9 @@ fun MasterPage() {
                     },
                     modifier = Modifier
                         .size(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp),
-                    colors = CardColors(
+                    colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.tertiary,
-                        contentColor = Color.Black,
-                        disabledContentColor = Color.Black,
-                        disabledContainerColor = MaterialTheme.colorScheme.tertiary
+                        contentColor = MaterialTheme.colorScheme.onSurface
                     )
                 ) {
                     Column (
@@ -102,11 +100,9 @@ fun MasterPage() {
                     modifier = Modifier
                         .width(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp)
                         .height(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp),
-                    colors = CardColors(
+                    colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.tertiary,
-                        contentColor = Color.Black,
-                        disabledContentColor = Color.Black,
-                        disabledContainerColor = MaterialTheme.colorScheme.tertiary
+                        contentColor = MaterialTheme.colorScheme.onSurface
                     )
                 ) {
                     Column (
@@ -133,11 +129,9 @@ fun MasterPage() {
                         modifier = Modifier
                             .width(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp)
                             .height(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp),
-                        colors = CardColors(
+                        colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.tertiary,
-                            contentColor = Color.Black,
-                            disabledContentColor = Color.Black,
-                            disabledContainerColor = MaterialTheme.colorScheme.tertiary
+                            contentColor = MaterialTheme.colorScheme.onSurface
                         )
                     ) {
                         Column(
@@ -161,11 +155,9 @@ fun MasterPage() {
                         modifier = Modifier
                             .width(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp)
                             .height(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp),
-                        colors = CardColors(
+                        colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.tertiary,
-                            contentColor = Color.Black,
-                            disabledContentColor = Color.Black,
-                            disabledContainerColor = MaterialTheme.colorScheme.tertiary
+                            contentColor = MaterialTheme.colorScheme.onSurface
                         )
                     ) {
                         Column(
@@ -195,11 +187,9 @@ fun MasterPage() {
                     modifier = Modifier
                         .width(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp)
                         .height(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp),
-                    colors = CardColors(
+                    colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.tertiary,
-                        contentColor = Color.Black,
-                        disabledContentColor = Color.Black,
-                        disabledContainerColor = MaterialTheme.colorScheme.tertiary
+                        contentColor = MaterialTheme.colorScheme.onSurface
                     )
                 ) {
                     Column (
@@ -223,11 +213,9 @@ fun MasterPage() {
                     modifier = Modifier
                         .width(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp)
                         .height(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp),
-                    colors = CardColors(
+                    colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.tertiary,
-                        contentColor = Color.Black,
-                        disabledContentColor = Color.Black,
-                        disabledContainerColor = MaterialTheme.colorScheme.tertiary
+                        contentColor = MaterialTheme.colorScheme.onSurface
                     )
                 ) {
                     Column (
@@ -258,11 +246,9 @@ fun MasterPage() {
                         modifier = Modifier
                             .width(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp)
                             .height(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp),
-                        colors = CardColors(
+                        colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.tertiary,
-                            contentColor = Color.Black,
-                            disabledContentColor = Color.Black,
-                            disabledContainerColor = MaterialTheme.colorScheme.tertiary
+                            contentColor = MaterialTheme.colorScheme.onSurface
                         )
                     ) {
                         Column(
@@ -286,11 +272,9 @@ fun MasterPage() {
                         modifier = Modifier
                             .width(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp)
                             .height(((LocalConfiguration.current.screenWidthDp - 50) / 2).dp),
-                        colors = CardColors(
+                        colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.tertiary,
-                            contentColor = Color.Black,
-                            disabledContentColor = Color.Black,
-                            disabledContainerColor = MaterialTheme.colorScheme.tertiary
+                            contentColor = MaterialTheme.colorScheme.onSurface
                         )
                     ) {
                         Column(

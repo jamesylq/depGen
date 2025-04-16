@@ -1,6 +1,5 @@
 package com.example.depgen.view.components
 
-import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -54,8 +53,6 @@ fun MultiDateSelector(
     unselectedColor: Color = MaterialTheme.colorScheme.secondary
 ) {
     var currentMonth by remember { mutableStateOf(YearMonth.now()) }
-    if (highlightedDate != null) Log.d("DEPGENDEBUG", highlightedDate.toString())
-    else Log.d("DEPGENDEBUG", "null")
 
     Column(
         modifier = modifier.padding(16.dp)
@@ -135,7 +132,11 @@ fun MultiDateSelector(
                             .clickable { onDateToggle(date) }
                             .let {
                                 if (date == highlightedDate) {
-                                    it.border(3.dp, Color.Black, RoundedCornerShape(5.dp))
+                                    it.border(
+                                        width = (4.5).dp,
+                                        color = MaterialTheme.colorScheme.tertiary,
+                                        shape = RoundedCornerShape(5.dp)
+                                    )
                                 } else {
                                     it
                                 }

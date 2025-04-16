@@ -22,7 +22,7 @@ fun CardButton(
     onClick: () -> Unit,
     colors: CardColors = CardDefaults.cardColors(
         containerColor = MaterialTheme.colorScheme.secondary,
-        disabledContainerColor = Color.LightGray
+        disabledContainerColor = MaterialTheme.colorScheme.onTertiary
     ),
     enabled: Boolean = true
 ) {

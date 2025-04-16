@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -131,7 +132,11 @@ fun NewSkillPage() {
                             tint = MaterialTheme.colorScheme.error
                         )
                     }
-                }
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+                )
             )
             Text(
                 text = "Skill Level Settings",
@@ -185,7 +190,11 @@ fun NewSkillPage() {
                             tint = MaterialTheme.colorScheme.error
                         )
                     }
-                }
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+                )
             )
             Text(
                 text = "Default Skill Level",
@@ -227,7 +236,11 @@ fun NewSkillPage() {
                             tint = MaterialTheme.colorScheme.error
                         )
                     }
-                }
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+                )
             )
             Spacer(modifier = Modifier.weight(1f))
             CardButton(
