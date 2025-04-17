@@ -36,6 +36,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -75,7 +76,7 @@ import java.time.LocalDate
 fun RepeatingDeploymentPage() {
     val roleNums = remember { mutableStateListOf<Int>() }
     val rolesNeeded = remember { mutableStateMapOf<EventRole, Int>() }
-    val rolesNotSelected = remember { mutableStateListOf<String>() }
+    val roles = remember { Global.rolesList.map { it.eventRole }.toMutableStateList() }
     var searchingRole by remember { mutableStateOf(false) }
     var confirmationShowing by remember { mutableStateOf(false) }
     var selectedRoles by remember { mutableStateOf(setOf<String>()) }
@@ -243,7 +244,7 @@ fun RepeatingDeploymentPage() {
                                         modifier = Modifier.padding(vertical = 8.dp)
                                     )
                                     MultiSelectComboBox(
-                                        rolesNotSelected,
+                                        roles,
                                         selectedRoles,
                                         {
                                             if (selectedRoles.contains(it)) {
@@ -349,12 +350,6 @@ fun RepeatingDeploymentPage() {
                         text = "Add Role Needed",
                         onClick = {
                             searchingRole = true
-                            rolesNotSelected.clear()
-                            for (role in Global.rolesList) {
-                                if (!rolesNeeded.containsKey(role)) {
-                                    rolesNotSelected.add(role.eventRole)
-                                }
-                            }
                         },
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer

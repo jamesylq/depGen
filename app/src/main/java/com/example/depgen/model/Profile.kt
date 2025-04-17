@@ -40,14 +40,11 @@ data class Profile (
         this.deployments.remove(component.getStart().toLocalDate().format(STANDARD_FORMATTER))
     }
 
-    fun overworkedness(start: LocalDate? = null, end: LocalDate? = null) : Double {
+    fun overworkedness(start: LocalDate, end: LocalDate) : Double {
         var sum = 0.0
         var prev: LocalDate? = null
-        for (component in this.getDeploymentList()) {
-            if (
-                (start == null || component.isAfter(start)) &&
-                (end == null || component.isBefore(end))
-            ) {
+        for (component in this.getDeploymentList(start)) {
+            if (component.isAfter(start) && component.isBefore(end)) {
                 if (prev != null) {
                     sum += DeploymentProposal.overworkedMetric(
                         ChronoUnit.DAYS.between(prev, component).toDouble()
@@ -61,14 +58,16 @@ data class Profile (
 
     fun overworkedness(eventComponent: EventComponent): Double {
         return overworkedness(
-            eventComponent.getStart().toLocalDate().minusDays(14L),
-            eventComponent.getStart().toLocalDate().plusDays(14L)
+            eventComponent.getStart().toLocalDate().minusDays(30L),
+            eventComponent.getStart().toLocalDate().plusDays(30L)
         )
     }
 
     
-    fun getDeploymentList() : ArrayList<LocalDate> {
-        return ArrayList(this.deployments.map { LocalDate.parse(it, STANDARD_FORMATTER) }.sorted())
+    fun getDeploymentList(start: LocalDate? = null) : ArrayList<LocalDate> {
+        val lst = ArrayList(this.deployments.map { LocalDate.parse(it, STANDARD_FORMATTER) })
+        if (start != null) lst.add(start)
+        return ArrayList(lst.sorted())
     }
 
     @Throws(PasswordValidationException::class)

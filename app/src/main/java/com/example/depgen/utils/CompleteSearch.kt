@@ -22,25 +22,26 @@ private var executionStart = -1L
 class OTDCompleteSearchHelper(
     private val eventComponent: EventComponent
 ) {
-    private val k = eventComponent.rolesRequired.size
-    private val roles = eventComponent.rolesRequired.keys.toList()
-
-    private fun propose(ind: Int, curr: HashMap<EventRole, List<Profile>>): Pair<Double, HashMap<EventRole, List<Profile>>> {
-        if (ind == k) return Pair(DeploymentProposal(eventComponent, curr).penalty(), curr)
-
-        val n = eventComponent.rolesRequired[roles[ind]]!!
-        var ans = Pair(Double.MAX_VALUE, HashMap<EventRole, List<Profile>>())
-        for (possibility in Global.profileList.subList(2, Global.profileList.size).shuffled().combinations(n)) {
-            val new = HashMap(curr)
-            new[roles[ind]] = possibility
-            val res = propose(ind + 1, new)
-            if (ans.first > res.first) ans = res
-        }
-        return ans
-    }
-
     fun generate() : HashMap<EventRole, List<Profile>> {
-        return propose(0, HashMap()).second
+        var currBest = Double.MAX_VALUE
+        var currBestCurr: HashMap<EventRole, List<Profile>>? = null
+
+        for (i in 1..10000) {
+            var pt = 0
+            val curr = HashMap<EventRole, List<Profile>>()
+            val depList = Global.profileList.subList(2, Global.profileList.size).shuffled()
+            for (entry in eventComponent.rolesRequired) {
+                curr[entry.key] = ArrayList(depList.subList(pt, pt + entry.value))
+                pt += entry.value
+            }
+            val penalty = DeploymentProposal(eventComponent, curr).penalty()
+            if (penalty < currBest) {
+                currBest = penalty
+                currBestCurr = curr
+            }
+        }
+
+        return currBestCurr!!
     }
 }
 
@@ -147,20 +148,6 @@ class RDCompleteSearchHelper(
     }
 }
 
-
-fun <T> List<T>.combinations(size: Int): List<List<T>> {
-    if (size > this.size) return listOf()
-
-    return if (size == 0) {
-        listOf(emptyList())
-    } else {
-        this.indices.flatMap { index ->
-            this.subList(index + 1, this.size)
-                .combinations(size - 1)
-                .map { listOf(this[index]) + it }
-        }
-    }
-}
 
 fun List<Pair<LocalDate, Profile>>.shuffledToDeployOn(
     date: LocalDate? = null,

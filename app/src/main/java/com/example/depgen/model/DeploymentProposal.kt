@@ -1,5 +1,6 @@
 package com.example.depgen.model
 
+import java.util.Random
 import kotlin.math.exp
 import kotlin.math.pow
 
@@ -20,34 +21,33 @@ class DeploymentProposal (
     }
 
     private fun overworkedIndex() : Double {
-        return deploymentByMember.keys.toList().sumOf { it.overworkedness(eventComponent) } +
-               deploymentByMember.values.toList().sumOf { multiRoleMetric(it.size) }
+        return deploymentByMember.keys.sumOf { it.overworkedness(eventComponent) } +
+               deploymentByMember.values.sumOf { multiRoleMetric(it.size) }
     }
 
     private fun skillIndex() : Double {
         var sum = 0.0
         for (roleEntry in proposal) {
-            sum += deploymentByMember.keys.toList().sumOf{
-                skillPenalty(it, roleEntry.key)
+            for (profile in roleEntry.value) {
+                sum += skillPenalty(profile, roleEntry.key)
             }
         }
         return sum
     }
 
     fun penalty() : Double {
-        return overworkedIndex() + skillIndex()
+        return overworkedIndex() + skillIndex() + 0.5 * Random().nextGaussian()
     }
 
     companion object {
         fun overworkedMetric(d: Double): Double {
-            return 3 * (maxOf(0.0, minOf(1.0,
-                1.1 / (1.0 + exp(0.6 * (d - 18.0)))
-            )) + 1 / (d + 0.1) - 5.0 / (1 + exp(-0.1 * (d - 70.0))))
+            return 3 * (1.1 / (1.0 + exp(0.6 * (d - 18.0))).coerceIn(0.0, 1.0)
+                    + 1 / (d + 0.1) - 5.0 / (1 + exp(-0.1 * (d - 70.0))))
         }
 
         fun multiRoleMetric(d: Int): Double {
             if (d == 0) return 0.0
-            return (d.toDouble().pow(d) - 1) / 10
+            return (d.toDouble().pow(d) - 1)
         }
 
         fun skillPenalty(profile: Profile, role: EventRole): Double {

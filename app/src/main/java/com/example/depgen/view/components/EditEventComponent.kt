@@ -46,6 +46,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -131,13 +132,13 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
     var componentType: ComponentType? by remember { mutableStateOf(comType) }
 
     var confirmationShowing by remember { mutableStateOf(false) }
-    var selectedRoles by remember { mutableStateOf(setOf<String>()) }
+    var selectedRoles by remember { mutableStateOf(eventComponent.rolesRequired.keys.map { it.eventRole }.toSet()) }
     var recompile by remember { mutableIntStateOf(1) }
     var deployedMembersCount by remember { mutableIntStateOf(0) }
 
     val rolesNeeded = remember { mutableStateMapOf<EventRole, Int>() }
     val membersDeployed = remember { mutableStateMapOf<EventRole, ArrayList<Profile>>() }
-    val rolesNotSelected = remember { mutableStateListOf<String>() }
+    val roles = remember { Global.rolesList.map { it.eventRole }.toMutableStateList() }
     val delta = remember { mutableStateMapOf<Profile, Int>() }
     var searchingRole by remember { mutableStateOf(false) }
     var appendingRole by remember { mutableStateOf<EventRole?>(null) }
@@ -259,7 +260,7 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                                 modifier = Modifier.padding(vertical = 8.dp)
                             )
                             MultiSelectComboBox(
-                                rolesNotSelected,
+                                roles,
                                 selectedRoles,
                                 {
                                     if (selectedRoles.contains(it)) {
@@ -548,12 +549,6 @@ fun EditEventComponent(eventComponent: EventComponent, onExit: (ComponentType?) 
                         text = "Add Role Needed",
                         onClick = {
                             searchingRole = true
-                            rolesNotSelected.clear()
-                            for (role in Global.rolesList) {
-                                if (!rolesNeeded.containsKey(role)) {
-                                    rolesNotSelected.add(role.eventRole)
-                                }
-                            }
                         },
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer

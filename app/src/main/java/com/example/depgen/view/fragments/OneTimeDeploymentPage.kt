@@ -33,6 +33,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -58,9 +59,9 @@ import com.example.depgen.view.components.QuantityPicker
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OneTimeDeploymentPage() {
+    val roles = remember { Global.rolesList.map { it.eventRole }.toMutableStateList() }
     val roleNums = remember { mutableStateListOf<Int>() }
     val rolesNeeded = remember { mutableStateMapOf<EventRole, Int>() }
-    val rolesNotSelected = remember { mutableStateListOf<String>() }
     var confirmationShowing by remember { mutableStateOf(false) }
     var searchingRole by remember { mutableStateOf(false) }
     var selectedRoles by remember { mutableStateOf(setOf<String>()) }
@@ -186,7 +187,7 @@ fun OneTimeDeploymentPage() {
                                         modifier = Modifier.padding(vertical = 8.dp)
                                     )
                                     MultiSelectComboBox(
-                                        rolesNotSelected,
+                                        roles,
                                         selectedRoles,
                                         {
                                             if (selectedRoles.contains(it)) {
@@ -293,12 +294,6 @@ fun OneTimeDeploymentPage() {
                         text = "Add Role Needed",
                         onClick = {
                             searchingRole = true
-                            rolesNotSelected.clear()
-                            for (role in Global.rolesList) {
-                                if (!rolesNeeded.containsKey(role)) {
-                                    rolesNotSelected.add(role.eventRole)
-                                }
-                            }
                         },
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -350,6 +345,29 @@ fun OneTimeDeploymentPage() {
                                 copyToClipboard(component.toString(false))
                             }
                         )
+                    }
+                }
+
+                else -> {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Spacer(
+                            modifier = Modifier.height(
+                                maxOf(
+                                    0,
+                                    LocalConfiguration.current.screenHeightDp / 2
+                                ).dp
+                            )
+                        )
+                        Text(
+                            "Generating...",
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 18.sp,
+                            modifier = Modifier.padding(bottom = 10.dp)
+                        )
+                        Text("Please give us a few seconds!")
                     }
                 }
             }
